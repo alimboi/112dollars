@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { QuizService, Quiz, QuizQuestion } from '../../core/services/quiz.service';
 
 @Component({
   selector: 'app-quiz',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, TranslateModule],
   templateUrl: './quiz.component.html',
   styleUrls: ['./quiz.component.scss']
 })

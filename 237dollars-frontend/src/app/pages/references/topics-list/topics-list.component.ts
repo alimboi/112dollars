@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { ReferencesService, Topic } from '../../../core/services/references.service';
 
 @Component({
   selector: 'app-topics-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './topics-list.component.html',
   styleUrls: ['./topics-list.component.scss']
 })

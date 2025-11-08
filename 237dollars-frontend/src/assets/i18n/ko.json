@@ -1,0 +1,224 @@
+{
+  "nav": {
+    "home": "홈",
+    "references": "학습 자료",
+    "quiz": "퀴즈",
+    "blog": "블로그",
+    "contact": "문의",
+    "profile": "프로필",
+    "admin": "관리자",
+    "login": "로그인",
+    "register": "회원가입",
+    "logout": "로그아웃"
+  },
+  "home": {
+    "title": "237DOLLARS",
+    "subtitle": "교육 우수성을 향한 관문",
+    "description": "종합 학습 플랫폼으로 한국어, 영어, 코딩을 마스터하세요. 진행 상황을 추적하고, 퀴즈를 풀고, 보상을 받으세요.",
+    "getStarted": "시작하기",
+    "learnMore": "자세히 알아보기",
+    "features": {
+      "title": "왜 237DOLLARS인가?",
+      "comprehensive": {
+        "title": "포괄적인 콘텐츠",
+        "description": "한국어, 영어, 코딩 과목에 걸쳐 양질의 학습 자료에 액세스하세요"
+      },
+      "interactive": {
+        "title": "인터랙티브 퀴즈",
+        "description": "매력적인 퀴즈와 즉각적인 피드백으로 지식을 테스트하세요"
+      },
+      "progress": {
+        "title": "진행 상황 추적",
+        "description": "상세한 분석과 성취도로 학습 여정을 모니터링하세요"
+      },
+      "gamification": {
+        "title": "보상 획득",
+        "description": "코스와 퀴즈를 완료하면서 포인트를 얻고 할인을 잠금 해제하세요"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "계정에 로그인",
+      "email": "이메일 주소",
+      "password": "비밀번호",
+      "submit": "로그인",
+      "noAccount": "계정이 없으신가요?",
+      "registerLink": "여기서 가입하세요",
+      "forgotPassword": "비밀번호를 잊으셨나요?",
+      "success": "로그인 성공!",
+      "error": "로그인 실패. 자격 증명을 확인하세요."
+    },
+    "register": {
+      "title": "계정 만들기",
+      "fullName": "전체 이름",
+      "email": "이메일 주소",
+      "password": "비밀번호",
+      "confirmPassword": "비밀번호 확인",
+      "submit": "회원가입",
+      "hasAccount": "이미 계정이 있으신가요?",
+      "loginLink": "여기서 로그인하세요",
+      "success": "가입 성공! 로그인해 주세요.",
+      "error": "가입 실패. 다시 시도해 주세요.",
+      "passwordMismatch": "비밀번호가 일치하지 않습니다"
+    }
+  },
+  "references": {
+    "title": "학습 참고 자료",
+    "selectMajor": "전공 선택",
+    "selectTopic": "주제 선택",
+    "loading": "참고 자료 로드 중...",
+    "error": "참고 자료 로드 실패",
+    "noReferences": "사용 가능한 참고 자료 없음",
+    "readMore": "더 읽기",
+    "takeQuiz": "퀴즈 풀기",
+    "contentBlocks": {
+      "text": "텍스트 콘텐츠",
+      "image": "이미지",
+      "video": "비디오",
+      "code": "코드 예제"
+    },
+    "majors": {
+      "korean": "한국어",
+      "english": "영어",
+      "coding": "프로그래밍 및 코딩"
+    }
+  },
+  "quiz": {
+    "title": "퀴즈",
+    "question": "문제",
+    "of": "/",
+    "progress": "진행률",
+    "selectAnswer": "답변을 선택하세요",
+    "next": "다음",
+    "previous": "이전",
+    "submit": "퀴즈 제출",
+    "retake": "다시 풀기",
+    "loading": "퀴즈 로드 중...",
+    "error": "퀴즈 로드 실패",
+    "result": {
+      "title": "퀴즈 결과",
+      "score": "당신의 점수",
+      "passed": "축하합니다! 통과했습니다!",
+      "failed": "이번에는 통과하지 못했습니다. 다시 시도하세요!",
+      "correctAnswers": "정답 수",
+      "timeTaken": "소요 시간",
+      "seconds": "초",
+      "pointsEarned": "획득 포인트"
+    }
+  },
+  "blog": {
+    "title": "블로그 게시물",
+    "readMore": "더 읽기",
+    "backToList": "블로그로 돌아가기",
+    "loading": "게시물 로드 중...",
+    "error": "블로그 게시물 로드 실패",
+    "noPosts": "사용 가능한 블로그 게시물 없음",
+    "pagination": {
+      "previous": "이전",
+      "next": "다음",
+      "page": "페이지"
+    },
+    "publishedOn": "게시일",
+    "author": "작성자"
+  },
+  "contact": {
+    "title": "문의하기",
+    "subtitle": "여러분의 의견을 듣고 싶습니다",
+    "form": {
+      "name": "이름",
+      "email": "이메일",
+      "subject": "제목",
+      "message": "메시지",
+      "submit": "메시지 보내기"
+    },
+    "success": "메시지가 성공적으로 전송되었습니다! 곧 연락드리겠습니다.",
+    "error": "메시지 전송 실패. 다시 시도해 주세요.",
+    "info": {
+      "title": "연락처 정보",
+      "email": "이메일",
+      "phone": "전화",
+      "address": "주소"
+    }
+  },
+  "profile": {
+    "title": "내 프로필",
+    "personalInfo": "개인 정보",
+    "fullName": "전체 이름",
+    "email": "이메일",
+    "updateProfile": "프로필 업데이트",
+    "changePassword": "비밀번호 변경",
+    "currentPassword": "현재 비밀번호",
+    "newPassword": "새 비밀번호",
+    "confirmPassword": "새 비밀번호 확인",
+    "updatePassword": "비밀번호 업데이트",
+    "preferences": "환경설정",
+    "language": "언어",
+    "darkMode": "다크 모드",
+    "savePreferences": "환경설정 저장",
+    "success": "프로필이 성공적으로 업데이트되었습니다",
+    "error": "프로필 업데이트 실패",
+    "passwordSuccess": "비밀번호가 성공적으로 변경되었습니다",
+    "passwordError": "비밀번호 변경 실패"
+  },
+  "admin": {
+    "title": "관리자 대시보드",
+    "welcome": "관리자 대시보드에 오신 것을 환영합니다",
+    "statistics": {
+      "title": "통계",
+      "totalUsers": "총 사용자",
+      "activeUsers": "활성 사용자",
+      "totalStudents": "총 학생",
+      "pendingEnrollments": "대기 중인 등록",
+      "totalReferences": "총 참고 자료",
+      "totalQuizzes": "총 퀴즈"
+    },
+    "quickActions": {
+      "title": "빠른 작업",
+      "manageUsers": "사용자 관리",
+      "manageStudents": "학생 관리",
+      "manageContent": "콘텐츠 관리",
+      "viewAnalytics": "분석 보기",
+      "approveEnrollments": "등록 승인",
+      "exportData": "데이터 내보내기"
+    },
+    "recentActivity": {
+      "title": "최근 활동",
+      "noActivity": "최근 활동 없음"
+    }
+  },
+  "common": {
+    "loading": "로드 중...",
+    "error": "오류가 발생했습니다",
+    "success": "성공",
+    "cancel": "취소",
+    "save": "저장",
+    "delete": "삭제",
+    "edit": "편집",
+    "view": "보기",
+    "back": "뒤로",
+    "search": "검색",
+    "filter": "필터",
+    "sortBy": "정렬 기준",
+    "actions": "작업",
+    "yes": "예",
+    "no": "아니오",
+    "confirm": "확인",
+    "close": "닫기"
+  },
+  "footer": {
+    "about": "237DOLLARS 소개",
+    "aboutText": "237DOLLARS는 한국어, 영어, 코딩 기술을 마스터하기 위한 종합 학습 플랫폼입니다.",
+    "quickLinks": "빠른 링크",
+    "contact": "문의",
+    "copyright": "© 2024 237DOLLARS. 모든 권리 보유.",
+    "terms": "이용 약관",
+    "privacy": "개인정보 보호정책"
+  },
+  "languages": {
+    "en": "영어",
+    "uz": "우즈베크어",
+    "ru": "러시아어",
+    "ko": "한국어"
+  }
+}

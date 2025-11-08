@@ -13,34 +13,48 @@
         <ul class="navbar-nav">
           <li class="nav-item">
             <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-              Home
+              {{ 'nav.home' | translate }}
             </a>
           </li>
           <li class="nav-item" *ngIf="authService.isAuthenticated()">
             <a routerLink="/references" class="nav-link" routerLinkActive="active">
-              References
+              {{ 'nav.references' | translate }}
             </a>
           </li>
           <li class="nav-item">
             <a routerLink="/blog" class="nav-link" routerLinkActive="active">
-              Blog
+              {{ 'nav.blog' | translate }}
             </a>
           </li>
           <li class="nav-item">
             <a routerLink="/contact" class="nav-link" routerLinkActive="active">
-              Contact
+              {{ 'nav.contact' | translate }}
             </a>
           </li>
         </ul>
 
         <div class="navbar-actions">
+          <!-- Language Switcher -->
+          <div class="dropdown me-2">
+            <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ languages.find(l => l.code === currentLang)?.flag }} {{ languages.find(l => l.code === currentLang)?.name }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+              <li *ngFor="let lang of languages">
+                <a class="dropdown-item" (click)="switchLanguage(lang.code)" [class.active]="currentLang === lang.code">
+                  {{ lang.flag }} {{ lang.name }}
+                </a>
+              </li>
+            </ul>
+          </div>
+
           <ng-container *ngIf="!authService.isAuthenticated(); else loggedIn">
-            <a routerLink="/auth/login" class="btn btn-outline-light btn-sm me-2">Login</a>
-            <a routerLink="/auth/register" class="btn btn-primary btn-sm">Register</a>
+            <a routerLink="/auth/login" class="btn btn-outline-light btn-sm me-2">{{ 'nav.login' | translate }}</a>
+            <a routerLink="/auth/register" class="btn btn-primary btn-sm">{{ 'nav.register' | translate }}</a>
           </ng-container>
           <ng-template #loggedIn>
-            <a routerLink="/profile" class="btn btn-outline-light btn-sm me-2">Profile</a>
-            <button (click)="logout()" class="btn btn-primary btn-sm">Logout</button>
+            <a routerLink="/profile" class="btn btn-outline-light btn-sm me-2">{{ 'nav.profile' | translate }}</a>
+            <button (click)="logout()" class="btn btn-primary btn-sm">{{ 'nav.logout' | translate }}</button>
           </ng-template>
         </div>
       </div>

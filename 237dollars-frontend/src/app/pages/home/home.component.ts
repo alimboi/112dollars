@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })

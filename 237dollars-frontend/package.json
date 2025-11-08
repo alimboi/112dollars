@@ -18,6 +18,8 @@
     "@angular/platform-browser": "^17.3.0",
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
+    "@ngx-translate/core": "^17.0.0",
+    "@ngx-translate/http-loader": "^17.0.0",
     "@types/three": "^0.181.0",
     "bootstrap": "^5.3.8",
     "gsap": "^3.13.0",

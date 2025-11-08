@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { ReferencesService, Reference } from '../../../core/services/references.service';
 
 @Component({
   selector: 'app-reference-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './reference-detail.component.html',
   styleUrls: ['./reference-detail.component.scss']
 })

@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { BlogService, BlogPost } from '../../../core/services/blog.service';
 
 @Component({
   selector: 'app-blog-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './blog-detail.component.html',
   styleUrls: ['./blog-detail.component.scss']
 })

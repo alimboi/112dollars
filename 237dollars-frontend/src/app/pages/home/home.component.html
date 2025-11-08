@@ -2,15 +2,15 @@
   <canvas #canvas class="matrix-canvas"></canvas>
 
   <div class="hero-content">
-    <h1 class="hero-title">237 DOLLARS</h1>
-    <p class="hero-subtitle">Master Korean, English & Coding for just $237</p>
+    <h1 class="hero-title">{{ 'home.title' | translate }}</h1>
+    <p class="hero-subtitle">{{ 'home.subtitle' | translate }}</p>
 
     <div class="cta-buttons">
       <button routerLink="/references" class="btn btn-primary btn-lg">
-        Explore References
+        {{ 'home.learnMore' | translate }}
       </button>
       <button routerLink="/auth/register" class="btn btn-outline-light btn-lg">
-        Get Started
+        {{ 'home.getStarted' | translate }}
       </button>
     </div>
 
@@ -18,20 +18,20 @@
       <div class="row g-4">
         <div class="col-md-4">
           <div class="feature-card">
-            <h3>Korean Language</h3>
-            <p>Master Korean from basics to advanced levels</p>
+            <h3>{{ 'references.majors.korean' | translate }}</h3>
+            <p>{{ 'home.features.comprehensive.description' | translate }}</p>
           </div>
         </div>
         <div class="col-md-4">
           <div class="feature-card">
-            <h3>English Mastery</h3>
-            <p>Perfect your English communication skills</p>
+            <h3>{{ 'references.majors.english' | translate }}</h3>
+            <p>{{ 'home.features.interactive.description' | translate }}</p>
           </div>
         </div>
         <div class="col-md-4">
           <div class="feature-card">
-            <h3>Coding Skills</h3>
-            <p>Learn programming from scratch</p>
+            <h3>{{ 'references.majors.coding' | translate }}</h3>
+            <p>{{ 'home.features.progress.description' | translate }}</p>
           </div>
         </div>
       </div>

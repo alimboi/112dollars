@@ -1,0 +1,224 @@
+{
+  "nav": {
+    "home": "Home",
+    "references": "References",
+    "quiz": "Quiz",
+    "blog": "Blog",
+    "contact": "Contact",
+    "profile": "Profile",
+    "admin": "Admin",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "home": {
+    "title": "237DOLLARS",
+    "subtitle": "Your Gateway to Educational Excellence",
+    "description": "Master Korean, English, and Coding with our comprehensive learning platform. Track your progress, take quizzes, and earn rewards.",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More",
+    "features": {
+      "title": "Why Choose 237DOLLARS?",
+      "comprehensive": {
+        "title": "Comprehensive Content",
+        "description": "Access quality learning materials across Korean, English, and Coding subjects"
+      },
+      "interactive": {
+        "title": "Interactive Quizzes",
+        "description": "Test your knowledge with engaging quizzes and instant feedback"
+      },
+      "progress": {
+        "title": "Track Progress",
+        "description": "Monitor your learning journey with detailed analytics and achievements"
+      },
+      "gamification": {
+        "title": "Earn Rewards",
+        "description": "Gain points and unlock discounts as you complete courses and quizzes"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login to Your Account",
+      "email": "Email Address",
+      "password": "Password",
+      "submit": "Login",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Register here",
+      "forgotPassword": "Forgot password?",
+      "success": "Login successful!",
+      "error": "Login failed. Please check your credentials."
+    },
+    "register": {
+      "title": "Create Your Account",
+      "fullName": "Full Name",
+      "email": "Email Address",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Register",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Login here",
+      "success": "Registration successful! Please login.",
+      "error": "Registration failed. Please try again.",
+      "passwordMismatch": "Passwords do not match"
+    }
+  },
+  "references": {
+    "title": "Learning References",
+    "selectMajor": "Select a Major",
+    "selectTopic": "Select a Topic",
+    "loading": "Loading references...",
+    "error": "Failed to load references",
+    "noReferences": "No references available",
+    "readMore": "Read More",
+    "takeQuiz": "Take Quiz",
+    "contentBlocks": {
+      "text": "Text Content",
+      "image": "Image",
+      "video": "Video",
+      "code": "Code Example"
+    },
+    "majors": {
+      "korean": "Korean Language",
+      "english": "English Language",
+      "coding": "Programming & Coding"
+    }
+  },
+  "quiz": {
+    "title": "Quiz",
+    "question": "Question",
+    "of": "of",
+    "progress": "Progress",
+    "selectAnswer": "Select your answer",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit Quiz",
+    "retake": "Retake Quiz",
+    "loading": "Loading quiz...",
+    "error": "Failed to load quiz",
+    "result": {
+      "title": "Quiz Results",
+      "score": "Your Score",
+      "passed": "Congratulations! You passed!",
+      "failed": "You didn't pass this time. Try again!",
+      "correctAnswers": "Correct Answers",
+      "timeTaken": "Time Taken",
+      "seconds": "seconds",
+      "pointsEarned": "Points Earned"
+    }
+  },
+  "blog": {
+    "title": "Blog Posts",
+    "readMore": "Read More",
+    "backToList": "Back to Blog",
+    "loading": "Loading posts...",
+    "error": "Failed to load blog posts",
+    "noPosts": "No blog posts available",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page"
+    },
+    "publishedOn": "Published on",
+    "author": "Author"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "We'd love to hear from you",
+    "form": {
+      "name": "Your Name",
+      "email": "Your Email",
+      "subject": "Subject",
+      "message": "Your Message",
+      "submit": "Send Message"
+    },
+    "success": "Message sent successfully! We'll get back to you soon.",
+    "error": "Failed to send message. Please try again.",
+    "info": {
+      "title": "Contact Information",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address"
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "personalInfo": "Personal Information",
+    "fullName": "Full Name",
+    "email": "Email",
+    "updateProfile": "Update Profile",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "updatePassword": "Update Password",
+    "preferences": "Preferences",
+    "language": "Language",
+    "darkMode": "Dark Mode",
+    "savePreferences": "Save Preferences",
+    "success": "Profile updated successfully",
+    "error": "Failed to update profile",
+    "passwordSuccess": "Password changed successfully",
+    "passwordError": "Failed to change password"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "welcome": "Welcome to Admin Dashboard",
+    "statistics": {
+      "title": "Statistics",
+      "totalUsers": "Total Users",
+      "activeUsers": "Active Users",
+      "totalStudents": "Total Students",
+      "pendingEnrollments": "Pending Enrollments",
+      "totalReferences": "Total References",
+      "totalQuizzes": "Total Quizzes"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "manageUsers": "Manage Users",
+      "manageStudents": "Manage Students",
+      "manageContent": "Manage Content",
+      "viewAnalytics": "View Analytics",
+      "approveEnrollments": "Approve Enrollments",
+      "exportData": "Export Data"
+    },
+    "recentActivity": {
+      "title": "Recent Activity",
+      "noActivity": "No recent activity"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "back": "Back",
+    "search": "Search",
+    "filter": "Filter",
+    "sortBy": "Sort By",
+    "actions": "Actions",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm",
+    "close": "Close"
+  },
+  "footer": {
+    "about": "About 237DOLLARS",
+    "aboutText": "237DOLLARS is your comprehensive learning platform for mastering Korean, English, and Coding skills.",
+    "quickLinks": "Quick Links",
+    "contact": "Contact",
+    "copyright": "© 2024 237DOLLARS. All rights reserved.",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy"
+  },
+  "languages": {
+    "en": "English",
+    "uz": "Uzbek",
+    "ru": "Russian",
+    "ko": "Korean"
+  }
+}

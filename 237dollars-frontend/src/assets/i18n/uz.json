@@ -1,0 +1,224 @@
+{
+  "nav": {
+    "home": "Bosh sahifa",
+    "references": "Ma'lumotnomalar",
+    "quiz": "Test",
+    "blog": "Blog",
+    "contact": "Aloqa",
+    "profile": "Profil",
+    "admin": "Administrator",
+    "login": "Kirish",
+    "register": "Ro'yxatdan o'tish",
+    "logout": "Chiqish"
+  },
+  "home": {
+    "title": "237DOLLARS",
+    "subtitle": "Ta'lim mukammalligiga yo'l",
+    "description": "Bizning keng qamrovli ta'lim platformamiz bilan koreys, ingliz va dasturlashni o'rganing. O'z yutuqlaringizni kuzating, testlar ishlang va mukofotlar qo'lga kiriting.",
+    "getStarted": "Boshlash",
+    "learnMore": "Batafsil",
+    "features": {
+      "title": "Nima uchun 237DOLLARS?",
+      "comprehensive": {
+        "title": "Keng qamrovli kontent",
+        "description": "Koreys, ingliz va dasturlash bo'yicha sifatli o'quv materiallariga ega bo'ling"
+      },
+      "interactive": {
+        "title": "Interaktiv testlar",
+        "description": "Qiziqarli testlar va tezkor fikr-mulohazalar bilan bilimingizni sinab ko'ring"
+      },
+      "progress": {
+        "title": "Yutuqlarni kuzatish",
+        "description": "Batafsil tahlil va yutuqlar bilan o'rganish jarayoningizni kuzatib boring"
+      },
+      "gamification": {
+        "title": "Mukofotlar qo'lga kiriting",
+        "description": "Kurslar va testlarni tugatganingizda ball to'plang va chegirmalarni oching"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Hisobga kirish",
+      "email": "Elektron pochta",
+      "password": "Parol",
+      "submit": "Kirish",
+      "noAccount": "Hisobingiz yo'qmi?",
+      "registerLink": "Bu yerda ro'yxatdan o'ting",
+      "forgotPassword": "Parolni unutdingizmi?",
+      "success": "Kirish muvaffaqiyatli!",
+      "error": "Kirish amalga oshmadi. Iltimos, ma'lumotlaringizni tekshiring."
+    },
+    "register": {
+      "title": "Hisob yaratish",
+      "fullName": "To'liq ism",
+      "email": "Elektron pochta",
+      "password": "Parol",
+      "confirmPassword": "Parolni tasdiqlang",
+      "submit": "Ro'yxatdan o'tish",
+      "hasAccount": "Hisobingiz bormi?",
+      "loginLink": "Bu yerda kiring",
+      "success": "Ro'yxatdan o'tish muvaffaqiyatli! Iltimos, kiring.",
+      "error": "Ro'yxatdan o'tish amalga oshmadi. Iltimos, qayta urinib ko'ring.",
+      "passwordMismatch": "Parollar mos kelmayapti"
+    }
+  },
+  "references": {
+    "title": "O'quv ma'lumotnomalar",
+    "selectMajor": "Yo'nalish tanlang",
+    "selectTopic": "Mavzu tanlang",
+    "loading": "Ma'lumotnomalar yuklanmoqda...",
+    "error": "Ma'lumotnomalarni yuklashda xatolik",
+    "noReferences": "Ma'lumotnomalar mavjud emas",
+    "readMore": "Batafsil o'qish",
+    "takeQuiz": "Test ishlash",
+    "contentBlocks": {
+      "text": "Matnli kontent",
+      "image": "Rasm",
+      "video": "Video",
+      "code": "Kod namunasi"
+    },
+    "majors": {
+      "korean": "Koreys tili",
+      "english": "Ingliz tili",
+      "coding": "Dasturlash va kodlash"
+    }
+  },
+  "quiz": {
+    "title": "Test",
+    "question": "Savol",
+    "of": "dan",
+    "progress": "Jarayon",
+    "selectAnswer": "Javobni tanlang",
+    "next": "Keyingi",
+    "previous": "Oldingi",
+    "submit": "Testni yuborish",
+    "retake": "Qayta ishlash",
+    "loading": "Test yuklanmoqda...",
+    "error": "Testni yuklashda xatolik",
+    "result": {
+      "title": "Test natijalari",
+      "score": "Sizning balingiz",
+      "passed": "Tabriklaymiz! Siz o'tdingiz!",
+      "failed": "Siz bu safar o'ta olmadingiz. Qayta urinib ko'ring!",
+      "correctAnswers": "To'g'ri javoblar",
+      "timeTaken": "Sarflangan vaqt",
+      "seconds": "soniya",
+      "pointsEarned": "Qo'lga kiritilgan ballar"
+    }
+  },
+  "blog": {
+    "title": "Blog maqolalari",
+    "readMore": "Batafsil o'qish",
+    "backToList": "Blogga qaytish",
+    "loading": "Maqolalar yuklanmoqda...",
+    "error": "Blog maqolalarini yuklashda xatolik",
+    "noPosts": "Blog maqolalari mavjud emas",
+    "pagination": {
+      "previous": "Oldingi",
+      "next": "Keyingi",
+      "page": "Sahifa"
+    },
+    "publishedOn": "Chop etilgan",
+    "author": "Muallif"
+  },
+  "contact": {
+    "title": "Biz bilan bog'laning",
+    "subtitle": "Sizdan eshitishni xohlaymiz",
+    "form": {
+      "name": "Ismingiz",
+      "email": "Elektron pochtangiz",
+      "subject": "Mavzu",
+      "message": "Xabaringiz",
+      "submit": "Xabar yuborish"
+    },
+    "success": "Xabar muvaffaqiyatli yuborildi! Tez orada siz bilan bog'lanamiz.",
+    "error": "Xabarni yuborishda xatolik. Iltimos, qayta urinib ko'ring.",
+    "info": {
+      "title": "Aloqa ma'lumotlari",
+      "email": "Elektron pochta",
+      "phone": "Telefon",
+      "address": "Manzil"
+    }
+  },
+  "profile": {
+    "title": "Mening profilim",
+    "personalInfo": "Shaxsiy ma'lumotlar",
+    "fullName": "To'liq ism",
+    "email": "Elektron pochta",
+    "updateProfile": "Profilni yangilash",
+    "changePassword": "Parolni o'zgartirish",
+    "currentPassword": "Joriy parol",
+    "newPassword": "Yangi parol",
+    "confirmPassword": "Yangi parolni tasdiqlang",
+    "updatePassword": "Parolni yangilash",
+    "preferences": "Sozlamalar",
+    "language": "Til",
+    "darkMode": "Tungi rejim",
+    "savePreferences": "Sozlamalarni saqlash",
+    "success": "Profil muvaffaqiyatli yangilandi",
+    "error": "Profilni yangilashda xatolik",
+    "passwordSuccess": "Parol muvaffaqiyatli o'zgartirildi",
+    "passwordError": "Parolni o'zgartirishda xatolik"
+  },
+  "admin": {
+    "title": "Administrator paneli",
+    "welcome": "Administrator paneliga xush kelibsiz",
+    "statistics": {
+      "title": "Statistika",
+      "totalUsers": "Jami foydalanuvchilar",
+      "activeUsers": "Faol foydalanuvchilar",
+      "totalStudents": "Jami talabalar",
+      "pendingEnrollments": "Kutilayotgan ro'yxatdan o'tishlar",
+      "totalReferences": "Jami ma'lumotnomalar",
+      "totalQuizzes": "Jami testlar"
+    },
+    "quickActions": {
+      "title": "Tezkor harakatlar",
+      "manageUsers": "Foydalanuvchilarni boshqarish",
+      "manageStudents": "Talabalarni boshqarish",
+      "manageContent": "Kontentni boshqarish",
+      "viewAnalytics": "Tahlilni ko'rish",
+      "approveEnrollments": "Ro'yxatdan o'tishlarni tasdiqlash",
+      "exportData": "Ma'lumotlarni eksport qilish"
+    },
+    "recentActivity": {
+      "title": "So'nggi faoliyat",
+      "noActivity": "So'nggi faoliyat yo'q"
+    }
+  },
+  "common": {
+    "loading": "Yuklanmoqda...",
+    "error": "Xatolik yuz berdi",
+    "success": "Muvaffaqiyat",
+    "cancel": "Bekor qilish",
+    "save": "Saqlash",
+    "delete": "O'chirish",
+    "edit": "Tahrirlash",
+    "view": "Ko'rish",
+    "back": "Orqaga",
+    "search": "Qidirish",
+    "filter": "Filtrlash",
+    "sortBy": "Saralash",
+    "actions": "Harakatlar",
+    "yes": "Ha",
+    "no": "Yo'q",
+    "confirm": "Tasdiqlash",
+    "close": "Yopish"
+  },
+  "footer": {
+    "about": "237DOLLARS haqida",
+    "aboutText": "237DOLLARS - koreys, ingliz va dasturlash ko'nikmalarini o'zlashtirishingiz uchun keng qamrovli ta'lim platformasi.",
+    "quickLinks": "Tezkor havolalar",
+    "contact": "Aloqa",
+    "copyright": "© 2024 237DOLLARS. Barcha huquqlar himoyalangan.",
+    "terms": "Foydalanish shartlari",
+    "privacy": "Maxfiylik siyosati"
+  },
+  "languages": {
+    "en": "Inglizcha",
+    "uz": "O'zbekcha",
+    "ru": "Ruscha",
+    "ko": "Koreyscha"
+  }
+}

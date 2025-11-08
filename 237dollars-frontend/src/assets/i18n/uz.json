@@ -214,7 +214,13 @@
     "about": "237DOLLARS haqida",
     "aboutText": "237DOLLARS - koreys, ingliz va dasturlash ko'nikmalarini o'zlashtirishingiz uchun keng qamrovli ta'lim platformasi.",
     "quickLinks": "Tezkor havolalar",
+    "studentFeatures": "Talaba imkoniyatlari",
+    "resources": "Resurslar",
+    "getStarted": "Boshlash",
     "contact": "Aloqa",
+    "contactInfo": "Aloqa ma'lumotlari",
+    "emailLabel": "Elektron pochta",
+    "phoneLabel": "Telefon",
     "copyright": "© 2024 237DOLLARS. Barcha huquqlar himoyalangan.",
     "terms": "Foydalanish shartlari",
     "privacy": "Maxfiylik siyosati"

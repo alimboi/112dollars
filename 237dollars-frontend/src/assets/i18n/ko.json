@@ -214,7 +214,13 @@
     "about": "237DOLLARS 소개",
     "aboutText": "237DOLLARS는 한국어, 영어, 코딩 기술을 마스터하기 위한 종합 학습 플랫폼입니다.",
     "quickLinks": "빠른 링크",
+    "studentFeatures": "학생 기능",
+    "resources": "리소스",
+    "getStarted": "시작하기",
     "contact": "문의",
+    "contactInfo": "연락처 정보",
+    "emailLabel": "이메일",
+    "phoneLabel": "전화",
     "copyright": "© 2024 237DOLLARS. 모든 권리 보유.",
     "terms": "이용 약관",
     "privacy": "개인정보 보호정책"

@@ -8,30 +8,41 @@
 
       <div class="footer-links">
         <div class="footer-section">
-          <h4>Quick Links</h4>
+          <h4>{{ 'footer.quickLinks' | translate }}</h4>
           <ul>
-            <li><a routerLink="/">Home</a></li>
-            <li><a routerLink="/references">References</a></li>
-            <li><a routerLink="/blog">Blog</a></li>
-            <li><a routerLink="/contact">Contact</a></li>
+            <li><a routerLink="/">{{ 'nav.home' | translate }}</a></li>
+            <li *ngIf="authService.isAuthenticated()"><a routerLink="/references">{{ 'nav.references' | translate }}</a></li>
+            <li><a routerLink="/blog">{{ 'nav.blog' | translate }}</a></li>
+            <li><a routerLink="/contact">{{ 'nav.contact' | translate }}</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section" *ngIf="authService.isAuthenticated()">
+          <h4>{{ 'footer.studentFeatures' | translate }}</h4>
+          <ul>
+            <li><a routerLink="/points">{{ 'nav.points' | translate }}</a></li>
+            <li><a routerLink="/discounts">{{ 'nav.discounts' | translate }}</a></li>
+            <li><a routerLink="/enrollment">{{ 'nav.enrollment' | translate }}</a></li>
+            <li><a routerLink="/documents">{{ 'nav.documents' | translate }}</a></li>
           </ul>
         </div>
 
         <div class="footer-section">
-          <h4>Resources</h4>
+          <h4>{{ 'footer.resources' | translate }}</h4>
           <ul>
-            <li><a routerLink="/auth/register">Get Started</a></li>
-            <li><a routerLink="/about">About Us</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
+            <li *ngIf="!authService.isAuthenticated()"><a routerLink="/auth/register">{{ 'footer.getStarted' | translate }}</a></li>
+            <li *ngIf="authService.isAuthenticated()"><a routerLink="/profile">{{ 'nav.profile' | translate }}</a></li>
+            <li *ngIf="!authService.isAuthenticated()"><a routerLink="/auth/login">{{ 'nav.login' | translate }}</a></li>
+            <li><a href="#">{{ 'footer.privacy' | translate }}</a></li>
+            <li><a href="#">{{ 'footer.terms' | translate }}</a></li>
           </ul>
         </div>
 
         <div class="footer-section">
-          <h4>Contact</h4>
+          <h4>{{ 'footer.contactInfo' | translate }}</h4>
           <ul>
-            <li>Email: info@237dollars.com</li>
-            <li>Phone: +82 10-1234-5678</li>
+            <li>{{ 'footer.emailLabel' | translate }}: info@237dollars.com</li>
+            <li>{{ 'footer.phoneLabel' | translate }}: +82 10-1234-5678</li>
             <li>Seoul, South Korea</li>
           </ul>
         </div>

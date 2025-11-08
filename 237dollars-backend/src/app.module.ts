@@ -7,6 +7,10 @@ import { AppService } from './app.service';
 import { typeOrmConfig } from './config/database.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { StudentsModule } from './modules/students/students.module';
+import { EnrollmentsModule } from './modules/enrollments/enrollments.module';
+import { ContactModule } from './modules/contact/contact.module';
+import { BlogModule } from './modules/blog/blog.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 
@@ -19,6 +23,10 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     TypeOrmModule.forRoot(typeOrmConfig),
     AuthModule,
     UsersModule,
+    StudentsModule,
+    EnrollmentsModule,
+    ContactModule,
+    BlogModule,
   ],
   controllers: [AppController],
   providers: [

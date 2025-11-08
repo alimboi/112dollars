@@ -1,6 +1,7 @@
 {
   "nav": {
     "home": "Главная",
+    "dashboard": "Панель управления",
     "references": "Справочники",
     "quiz": "Тест",
     "blog": "Блог",
@@ -230,5 +231,39 @@
     "uz": "Узбекский",
     "ru": "Русский",
     "ko": "Корейский"
+  },
+  "dashboard": {
+    "goodMorning": "Доброе утро",
+    "goodAfternoon": "Добрый день",
+    "goodEvening": "Добрый вечер",
+    "subtitle": "Обзор вашего прогресса в обучении",
+    "totalPoints": "Всего баллов",
+    "enrollments": "Регистрации",
+    "documents": "Документы",
+    "availableDiscounts": "Доступные скидки",
+    "reading": "Чтение",
+    "quiz": "Тест",
+    "pending": "Ожидание",
+    "approved": "Утверждено",
+    "uploadedFiles": "Загруженные файлы",
+    "viewDetails": "Подробнее",
+    "quickActions": "Быстрые действия",
+    "browseReferences": "Просмотр справочников",
+    "browseReferencesDesc": "Изучайте учебные материалы и темы",
+    "viewLeaderboard": "Посмотреть рейтинг",
+    "viewLeaderboardDesc": "Посмотрите свой рейтинг и лучших студентов",
+    "applyDiscount": "Получить скидку",
+    "applyDiscountDesc": "Получите заработанные коды скидок",
+    "uploadDocument": "Загрузить документ",
+    "uploadDocumentDesc": "Отправьте необходимые документы",
+    "recentDocuments": "Недавние документы",
+    "noRecentDocuments": "Документы еще не загружены",
+    "uploadFirst": "Загрузите свой первый документ",
+    "viewAllDocuments": "Посмотреть все документы",
+    "pointsProgress": "Прогресс баллов",
+    "nextDiscount": "Следующая скидка",
+    "readingPoints": "Баллы за чтение",
+    "quizPoints": "Баллы за тесты",
+    "earnMorePoints": "Заработать больше баллов"
   }
 }

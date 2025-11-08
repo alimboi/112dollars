@@ -17,6 +17,11 @@
             </a>
           </li>
           <li class="nav-item" *ngIf="authService.isAuthenticated()">
+            <a routerLink="/dashboard" class="nav-link" routerLinkActive="active">
+              {{ 'nav.dashboard' | translate }}
+            </a>
+          </li>
+          <li class="nav-item" *ngIf="authService.isAuthenticated()">
             <a routerLink="/references" class="nav-link" routerLinkActive="active">
               {{ 'nav.references' | translate }}
             </a>

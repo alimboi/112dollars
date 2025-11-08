@@ -1,6 +1,7 @@
 {
   "nav": {
     "home": "홈",
+    "dashboard": "대시보드",
     "references": "학습 자료",
     "quiz": "퀴즈",
     "blog": "블로그",
@@ -230,5 +231,39 @@
     "uz": "우즈베크어",
     "ru": "러시아어",
     "ko": "한국어"
+  },
+  "dashboard": {
+    "goodMorning": "좋은 아침입니다",
+    "goodAfternoon": "좋은 오후입니다",
+    "goodEvening": "좋은 저녁입니다",
+    "subtitle": "학습 진행 상황 개요입니다",
+    "totalPoints": "총 포인트",
+    "enrollments": "등록",
+    "documents": "문서",
+    "availableDiscounts": "사용 가능한 할인",
+    "reading": "읽기",
+    "quiz": "퀴즈",
+    "pending": "대기 중",
+    "approved": "승인됨",
+    "uploadedFiles": "업로드된 파일",
+    "viewDetails": "자세히 보기",
+    "quickActions": "빠른 작업",
+    "browseReferences": "학습 자료 탐색",
+    "browseReferencesDesc": "학습 자료 및 주제 탐색",
+    "viewLeaderboard": "리더보드 보기",
+    "viewLeaderboardDesc": "순위 및 상위 학생 보기",
+    "applyDiscount": "할인 신청",
+    "applyDiscountDesc": "획득한 할인 코드 받기",
+    "uploadDocument": "문서 업로드",
+    "uploadDocumentDesc": "필요한 문서 제출",
+    "recentDocuments": "최근 문서",
+    "noRecentDocuments": "아직 업로드된 문서가 없습니다",
+    "uploadFirst": "첫 번째 문서 업로드",
+    "viewAllDocuments": "모든 문서 보기",
+    "pointsProgress": "포인트 진행 상황",
+    "nextDiscount": "다음 할인",
+    "readingPoints": "읽기 포인트",
+    "quizPoints": "퀴즈 포인트",
+    "earnMorePoints": "더 많은 포인트 획득"
   }
 }

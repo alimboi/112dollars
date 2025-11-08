@@ -1,6 +1,7 @@
 {
   "nav": {
     "home": "Bosh sahifa",
+    "dashboard": "Boshqaruv paneli",
     "references": "Ma'lumotnomalar",
     "quiz": "Test",
     "blog": "Blog",
@@ -230,5 +231,39 @@
     "uz": "O'zbekcha",
     "ru": "Ruscha",
     "ko": "Koreyscha"
+  },
+  "dashboard": {
+    "goodMorning": "Xayrli tong",
+    "goodAfternoon": "Xayrli kun",
+    "goodEvening": "Xayrli kech",
+    "subtitle": "O'quv jarayoningiz haqida umumiy ma'lumot",
+    "totalPoints": "Jami ballar",
+    "enrollments": "Ro'yxatdan o'tishlar",
+    "documents": "Hujjatlar",
+    "availableDiscounts": "Mavjud chegirmalar",
+    "reading": "O'qish",
+    "quiz": "Test",
+    "pending": "Kutilmoqda",
+    "approved": "Tasdiqlangan",
+    "uploadedFiles": "Yuklangan fayllar",
+    "viewDetails": "Batafsil",
+    "quickActions": "Tezkor harakatlar",
+    "browseReferences": "Ma'lumotnomalarni ko'rish",
+    "browseReferencesDesc": "O'quv materiallari va mavzularni o'rganish",
+    "viewLeaderboard": "Reyting jadvalini ko'rish",
+    "viewLeaderboardDesc": "O'z o'rningiz va eng yaxshi talabalarni ko'ring",
+    "applyDiscount": "Chegirma olish",
+    "applyDiscountDesc": "Ishlab topgan chegirma kodlarini olish",
+    "uploadDocument": "Hujjat yuklash",
+    "uploadDocumentDesc": "Kerakli hujjatlarni yuklash",
+    "recentDocuments": "So'nggi hujjatlar",
+    "noRecentDocuments": "Hali hujjatlar yuklanmagan",
+    "uploadFirst": "Birinchi hujjatingizni yuklang",
+    "viewAllDocuments": "Barcha hujjatlarni ko'rish",
+    "pointsProgress": "Ballar taraqqiyoti",
+    "nextDiscount": "Keyingi chegirma",
+    "readingPoints": "O'qish ballari",
+    "quizPoints": "Test ballari",
+    "earnMorePoints": "Ko'proq ball toplash"
   }
 }

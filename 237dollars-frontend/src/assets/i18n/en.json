@@ -1,6 +1,7 @@
 {
   "nav": {
     "home": "Home",
+    "dashboard": "Dashboard",
     "references": "References",
     "quiz": "Quiz",
     "blog": "Blog",
@@ -283,5 +284,39 @@
     "leaderboard": "Leaderboard",
     "rank": "Rank",
     "topStudents": "Top Students"
+  },
+  "dashboard": {
+    "goodMorning": "Good Morning",
+    "goodAfternoon": "Good Afternoon",
+    "goodEvening": "Good Evening",
+    "subtitle": "Here's an overview of your learning progress",
+    "totalPoints": "Total Points",
+    "enrollments": "Enrollments",
+    "documents": "Documents",
+    "availableDiscounts": "Available Discounts",
+    "reading": "Reading",
+    "quiz": "Quiz",
+    "pending": "Pending",
+    "approved": "Approved",
+    "uploadedFiles": "Uploaded Files",
+    "viewDetails": "View Details",
+    "quickActions": "Quick Actions",
+    "browseReferences": "Browse References",
+    "browseReferencesDesc": "Explore learning materials and topics",
+    "viewLeaderboard": "View Leaderboard",
+    "viewLeaderboardDesc": "See your rank and top students",
+    "applyDiscount": "Apply for Discount",
+    "applyDiscountDesc": "Claim your earned discount codes",
+    "uploadDocument": "Upload Document",
+    "uploadDocumentDesc": "Submit required documents",
+    "recentDocuments": "Recent Documents",
+    "noRecentDocuments": "No documents uploaded yet",
+    "uploadFirst": "Upload Your First Document",
+    "viewAllDocuments": "View All Documents",
+    "pointsProgress": "Points Progress",
+    "nextDiscount": "Next Discount",
+    "readingPoints": "Reading Points",
+    "quizPoints": "Quiz Points",
+    "earnMorePoints": "Earn More Points"
   }
 }

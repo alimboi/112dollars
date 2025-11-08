@@ -156,4 +156,40 @@
       }
     }
   }
+
+  &.chart-card {
+    .chart-container {
+      position: relative;
+      height: 280px;
+      padding: 1rem 0;
+
+      canvas {
+        max-height: 100%;
+      }
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .admin-card.chart-card .chart-container {
+    height: 250px;
+  }
+
+  .stat-card {
+    padding: 20px;
+
+    h3 {
+      font-size: 2rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .admin-card.chart-card .chart-container {
+    height: 220px;
+  }
 }

@@ -5,6 +5,7 @@ export const routes: Routes = [
   { path: '', loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent) },
   { path: 'auth/login', loadComponent: () => import('./pages/auth/login/login.component').then(m => m.LoginComponent) },
   { path: 'auth/register', loadComponent: () => import('./pages/auth/register/register.component').then(m => m.RegisterComponent) },
+  { path: 'auth/password-reset', loadComponent: () => import('./pages/auth/password-reset/password-reset.component').then(m => m.PasswordResetComponent) },
   { path: 'references', canActivate: [authGuard], loadComponent: () => import('./pages/references/references-list/references-list.component').then(m => m.ReferencesListComponent) },
   { path: 'references/major/:id', canActivate: [authGuard], loadComponent: () => import('./pages/references/topics-list/topics-list.component').then(m => m.TopicsListComponent) },
   { path: 'references/topic/:id', canActivate: [authGuard], loadComponent: () => import('./pages/references/reference-detail/reference-detail.component').then(m => m.ReferenceDetailComponent) },
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'documents', canActivate: [authGuard], loadComponent: () => import('./pages/student-documents/student-documents.component').then(m => m.StudentDocumentsComponent) },
   { path: 'enrollment', canActivate: [authGuard], loadComponent: () => import('./pages/enrollment/enrollment.component').then(m => m.EnrollmentComponent) },
   { path: 'points', canActivate: [authGuard], loadComponent: () => import('./pages/points/points.component').then(m => m.PointsComponent) },
+  { path: 'discounts', canActivate: [authGuard], loadComponent: () => import('./pages/discounts/discounts.component').then(m => m.DiscountsComponent) },
   { path: 'admin', canActivate: [authGuard], loadComponent: () => import('./pages/admin/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent) },
   { path: '**', redirectTo: '' }
 ];

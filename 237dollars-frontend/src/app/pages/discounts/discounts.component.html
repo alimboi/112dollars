@@ -1,0 +1,175 @@
+<div class="container py-5">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ 'discounts.title' | translate }}</h2>
+        <button
+          class="btn btn-primary"
+          (click)="toggleApplyForm()"
+          *ngIf="!showApplyForm && eligibleForDiscount"
+        >
+          <i class="bi bi-plus-circle me-2"></i>{{ 'discounts.apply' | translate }}
+        </button>
+      </div>
+
+      <!-- Success/Error Messages -->
+      <div class="alert alert-success" *ngIf="success">
+        <i class="bi bi-check-circle me-2"></i>{{ success }}
+      </div>
+      <div class="alert alert-danger" *ngIf="error">
+        <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+      </div>
+
+      <!-- Eligibility Card -->
+      <div class="card mb-4" *ngIf="!eligibleForDiscount">
+        <div class="card-body text-center">
+          <div class="eligibility-info">
+            <i class="bi bi-info-circle eligibility-icon"></i>
+            <h5 class="mt-3">Earn More Points to Unlock Discounts!</h5>
+            <p class="text-muted">You need at least {{ requiredPoints }} points to apply for discount codes.</p>
+
+            <div class="points-progress">
+              <div class="progress-wrapper">
+                <div class="progress">
+                  <div
+                    class="progress-bar"
+                    [style.width.%]="(currentPoints / requiredPoints) * 100"
+                  ></div>
+                </div>
+                <p class="mt-2">
+                  <strong>{{ currentPoints }}</strong> / {{ requiredPoints }} points
+                </p>
+              </div>
+            </div>
+
+            <a routerLink="/points" class="btn btn-outline-primary mt-3">
+              <i class="bi bi-trophy me-2"></i>View My Points
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Application Form -->
+      <div class="card mb-4" *ngIf="showApplyForm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="card-title mb-0">{{ 'discounts.apply' | translate }}</h5>
+            <button type="button" class="btn-close" (click)="toggleApplyForm()"></button>
+          </div>
+
+          <div class="alert alert-info">
+            <i class="bi bi-lightbulb me-2"></i>
+            <strong>Tip:</strong> Explain how you've contributed to the platform and why you deserve a discount.
+            Applications with detailed reasons are more likely to be approved!
+          </div>
+
+          <form [formGroup]="applyForm" (ngSubmit)="applyForDiscount()">
+            <div class="mb-3">
+              <label for="reason" class="form-label">Why do you deserve a discount?</label>
+              <textarea
+                class="form-control"
+                id="reason"
+                rows="5"
+                formControlName="reason"
+                placeholder="Describe your achievements, dedication, quiz scores, or any other reasons..."
+              ></textarea>
+              <small class="form-text text-muted">Minimum 50 characters required</small>
+              <div class="invalid-feedback" *ngIf="applyForm.get('reason')?.invalid && applyForm.get('reason')?.touched">
+                Please provide a detailed reason (minimum 50 characters)
+              </div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="applyForm.invalid || submitting"
+              >
+                <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
+                {{ 'enrollment.form.submit' | translate }}
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="toggleApplyForm()">
+                {{ 'common.cancel' | translate }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Discount Codes List -->
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-4">{{ 'discounts.myDiscounts' | translate }}</h5>
+
+          <div *ngIf="loading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+
+          <div *ngIf="!loading && discountCodes.length === 0" class="text-center py-5 text-muted">
+            <i class="bi bi-ticket-perforated" style="font-size: 3rem;"></i>
+            <p class="mt-3">{{ 'discounts.noDiscounts' | translate }}</p>
+            <button
+              class="btn btn-primary mt-2"
+              (click)="toggleApplyForm()"
+              *ngIf="eligibleForDiscount"
+            >
+              {{ 'discounts.apply' | translate }}
+            </button>
+          </div>
+
+          <div *ngIf="!loading && discountCodes.length > 0" class="discount-list">
+            <div class="discount-item" *ngFor="let discount of discountCodes">
+              <div class="discount-header">
+                <div class="discount-info">
+                  <h6 class="mb-1">{{ 'discounts.code' | translate }}</h6>
+                  <div class="code-display">
+                    <code class="discount-code">{{ discount.code }}</code>
+                    <button
+                      class="btn btn-sm btn-outline-primary ms-2"
+                      (click)="copyCode(discount.code)"
+                      title="Copy code"
+                    >
+                      <i class="bi bi-clipboard"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="discount-percentage">
+                  <span [class]="getDiscountBadgeClass(discount.discountPercentage)">
+                    {{ discount.discountPercentage }}% OFF
+                  </span>
+                </div>
+              </div>
+
+              <div class="discount-body">
+                <div class="discount-meta">
+                  <div class="meta-item">
+                    <i class="bi bi-calendar-check me-2"></i>
+                    <span class="text-muted">Generated: {{ discount.generatedAt | date:'medium' }}</span>
+                  </div>
+                  <div class="meta-item" *ngIf="discount.expiresAt">
+                    <i class="bi bi-calendar-x me-2"></i>
+                    <span class="text-muted">Expires: {{ discount.expiresAt | date:'medium' }}</span>
+                  </div>
+                  <div class="meta-item" *ngIf="discount.usedAt">
+                    <i class="bi bi-check2-circle me-2"></i>
+                    <span class="text-muted">Used: {{ discount.usedAt | date:'medium' }}</span>
+                  </div>
+                </div>
+
+                <div class="discount-status mt-3">
+                  <span [class]="getStatusBadgeClass(discount.status)">
+                    <i [class]="getStatusIcon(discount.status)" class="me-1"></i>
+                    {{ discount.status }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

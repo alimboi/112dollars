@@ -19,7 +19,7 @@
           <h1>{{ post.title }}</h1>
         </header>
 
-        <div class="article-body" [innerHTML]="post.content"></div>
+        <div class="article-body" [innerHTML]="sanitizedContent"></div>
 
         <footer class="article-footer">
           <p class="text-secondary">Last updated: {{ post.updatedAt | date:'MMM dd, yyyy' }}</p>

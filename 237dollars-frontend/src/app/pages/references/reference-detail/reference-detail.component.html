@@ -31,7 +31,7 @@
 
       <div class="reference-body">
         <div class="content-block" *ngFor="let block of reference.contentBlocks" [ngSwitch]="block.type">
-          <div *ngSwitchCase="'text'" [innerHTML]="block.content" class="text-block"></div>
+          <div *ngSwitchCase="'text'" [innerHTML]="getSafeContent(block.content)" class="text-block"></div>
           <div *ngSwitchCase="'image'" class="image-block">
             <img [src]="block.content" alt="Content image" class="img-fluid">
           </div>

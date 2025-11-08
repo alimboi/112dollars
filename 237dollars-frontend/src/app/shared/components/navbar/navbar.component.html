@@ -21,6 +21,26 @@
               {{ 'nav.references' | translate }}
             </a>
           </li>
+          <li class="nav-item" *ngIf="authService.isAuthenticated()">
+            <a routerLink="/points" class="nav-link" routerLinkActive="active">
+              {{ 'nav.points' | translate }}
+            </a>
+          </li>
+          <li class="nav-item" *ngIf="authService.isAuthenticated()">
+            <a routerLink="/discounts" class="nav-link" routerLinkActive="active">
+              {{ 'nav.discounts' | translate }}
+            </a>
+          </li>
+          <li class="nav-item" *ngIf="authService.isAuthenticated()">
+            <a routerLink="/enrollment" class="nav-link" routerLinkActive="active">
+              {{ 'nav.enrollment' | translate }}
+            </a>
+          </li>
+          <li class="nav-item" *ngIf="authService.isAuthenticated()">
+            <a routerLink="/documents" class="nav-link" routerLinkActive="active">
+              {{ 'nav.documents' | translate }}
+            </a>
+          </li>
           <li class="nav-item">
             <a routerLink="/blog" class="nav-link" routerLinkActive="active">
               {{ 'nav.blog' | translate }}

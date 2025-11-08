@@ -13,6 +13,9 @@ export const routes: Routes = [
   { path: 'blog/:id', loadComponent: () => import('./pages/blog/blog-detail/blog-detail.component').then(m => m.BlogDetailComponent) },
   { path: 'contact', loadComponent: () => import('./pages/contact/contact.component').then(m => m.ContactComponent) },
   { path: 'profile', canActivate: [authGuard], loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent) },
+  { path: 'documents', canActivate: [authGuard], loadComponent: () => import('./pages/student-documents/student-documents.component').then(m => m.StudentDocumentsComponent) },
+  { path: 'enrollment', canActivate: [authGuard], loadComponent: () => import('./pages/enrollment/enrollment.component').then(m => m.EnrollmentComponent) },
+  { path: 'points', canActivate: [authGuard], loadComponent: () => import('./pages/points/points.component').then(m => m.PointsComponent) },
   { path: 'admin', canActivate: [authGuard], loadComponent: () => import('./pages/admin/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent) },
   { path: '**', redirectTo: '' }
 ];

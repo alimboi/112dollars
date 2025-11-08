@@ -1,0 +1,91 @@
+.card {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+  margin-bottom: 1.5rem;
+
+  .card-title {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .card-body {
+    padding: 2rem;
+  }
+}
+
+.table {
+  color: var(--text-primary);
+
+  thead {
+    th {
+      border-bottom: 2px solid var(--border-color);
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.875rem;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid var(--border-color);
+
+      &:hover {
+        background-color: var(--bg-tertiary);
+      }
+
+      td {
+        vertical-align: middle;
+        padding: 1rem;
+      }
+    }
+  }
+}
+
+.btn-group {
+  .btn {
+    &:hover {
+      transform: translateY(-2px);
+      transition: all 0.2s ease;
+    }
+  }
+}
+
+.form-control {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+
+  &:focus {
+    background-color: var(--bg-tertiary);
+    border-color: var(--accent);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 0.2rem rgba(233, 69, 96, 0.25);
+  }
+}
+
+.alert {
+  border-radius: 8px;
+  border: none;
+
+  &.alert-success {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+  }
+
+  &.alert-danger {
+    background-color: rgba(233, 69, 96, 0.2);
+    color: var(--accent);
+  }
+}
+
+.badge {
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.bi-inbox {
+  color: var(--text-secondary);
+  opacity: 0.5;
+}

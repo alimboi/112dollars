@@ -5,6 +5,7 @@
     "quiz": "Quiz",
     "blog": "Blog",
     "contact": "Contact",
+    "documents": "Documents",
     "profile": "Profile",
     "admin": "Admin",
     "login": "Login",
@@ -220,5 +221,58 @@
     "uz": "Uzbek",
     "ru": "Russian",
     "ko": "Korean"
+  },
+  "documents": {
+    "title": "My Documents",
+    "myDocuments": "Uploaded Documents",
+    "noDocuments": "No documents uploaded yet",
+    "upload": {
+      "title": "Upload New Document",
+      "description": "Upload your student documents, certificates, or any required files",
+      "allowedTypes": "Allowed file types",
+      "button": "Upload Document",
+      "uploading": "Uploading..."
+    },
+    "table": {
+      "fileName": "File Name",
+      "fileType": "Type",
+      "uploadedAt": "Uploaded Date",
+      "actions": "Actions"
+    }
+  },
+  "enrollment": {
+    "title": "Enrollment Application",
+    "apply": "Apply for Enrollment",
+    "status": {
+      "pending": "Pending Review",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "form": {
+      "preferredMajor": "Preferred Major",
+      "reason": "Why do you want to enroll?",
+      "submit": "Submit Application"
+    },
+    "success": "Application submitted successfully",
+    "error": "Failed to submit application"
+  },
+  "discounts": {
+    "title": "Discount Codes",
+    "apply": "Apply for Discount",
+    "myDiscounts": "My Discount Codes",
+    "noDiscounts": "No discount codes available",
+    "code": "Discount Code",
+    "percentage": "Discount",
+    "status": "Status",
+    "generatedAt": "Generated Date"
+  },
+  "points": {
+    "title": "My Points",
+    "totalPoints": "Total Points",
+    "readingPoints": "Reading Points",
+    "quizPoints": "Quiz Points",
+    "leaderboard": "Leaderboard",
+    "rank": "Rank",
+    "topStudents": "Top Students"
   }
 }

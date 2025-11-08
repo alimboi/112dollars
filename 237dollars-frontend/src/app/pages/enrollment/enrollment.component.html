@@ -1,0 +1,131 @@
+<div class="container py-5">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ 'enrollment.title' | translate }}</h2>
+        <button class="btn btn-primary" (click)="toggleForm()" *ngIf="!showForm">
+          <i class="bi bi-plus-circle me-2"></i>{{ 'enrollment.apply' | translate }}
+        </button>
+      </div>
+
+      <!-- Success/Error Messages -->
+      <div class="alert alert-success" *ngIf="success">
+        <i class="bi bi-check-circle me-2"></i>{{ success }}
+      </div>
+      <div class="alert alert-danger" *ngIf="error">
+        <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+      </div>
+
+      <!-- Application Form -->
+      <div class="card mb-4" *ngIf="showForm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="card-title mb-0">{{ 'enrollment.apply' | translate }}</h5>
+            <button type="button" class="btn-close" (click)="toggleForm()"></button>
+          </div>
+
+          <form [formGroup]="enrollmentForm" (ngSubmit)="submitApplication()">
+            <div class="mb-3">
+              <label for="majorId" class="form-label">{{ 'enrollment.form.preferredMajor' | translate }}</label>
+              <select class="form-select" id="majorId" formControlName="majorId">
+                <option value="">Select a major...</option>
+                <option *ngFor="let major of majors" [value]="major.id">
+                  {{ major.name }}
+                </option>
+              </select>
+              <div class="invalid-feedback" *ngIf="enrollmentForm.get('majorId')?.invalid && enrollmentForm.get('majorId')?.touched">
+                Please select a major
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="reason" class="form-label">{{ 'enrollment.form.reason' | translate }}</label>
+              <textarea
+                class="form-control"
+                id="reason"
+                rows="4"
+                formControlName="reason"
+                placeholder="Tell us why you want to enroll in this program..."
+              ></textarea>
+              <small class="form-text text-muted">Minimum 20 characters</small>
+              <div class="invalid-feedback" *ngIf="enrollmentForm.get('reason')?.invalid && enrollmentForm.get('reason')?.touched">
+                Please provide a reason (minimum 20 characters)
+              </div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="enrollmentForm.invalid || submitting"
+              >
+                <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
+                {{ 'enrollment.form.submit' | translate }}
+              </button>
+              <button type="button" class="btn btn-secondary" (click)="toggleForm()">
+                {{ 'common.cancel' | translate }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Enrollments List -->
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-4">My Applications</h5>
+
+          <div *ngIf="loading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+
+          <div *ngIf="!loading && enrollments.length === 0" class="text-center py-5 text-muted">
+            <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+            <p class="mt-3">No enrollment applications yet</p>
+            <button class="btn btn-primary mt-2" (click)="toggleForm()">
+              {{ 'enrollment.apply' | translate }}
+            </button>
+          </div>
+
+          <div *ngIf="!loading && enrollments.length > 0" class="enrollment-list">
+            <div class="enrollment-item" *ngFor="let enrollment of enrollments">
+              <div class="enrollment-header">
+                <div>
+                  <h6 class="mb-1">{{ enrollment.majorName }}</h6>
+                  <small class="text-muted">
+                    <i class="bi bi-calendar me-1"></i>
+                    Applied on {{ enrollment.createdAt | date:'medium' }}
+                  </small>
+                </div>
+                <span [class]="getStatusBadgeClass(enrollment.status)">
+                  <i [class]="getStatusIcon(enrollment.status)" class="me-1"></i>
+                  {{ 'enrollment.status.' + enrollment.status.toLowerCase() | translate }}
+                </span>
+              </div>
+
+              <div class="enrollment-body">
+                <p class="mb-2"><strong>Reason:</strong></p>
+                <p class="text-muted">{{ enrollment.reason }}</p>
+
+                <div *ngIf="enrollment.adminNotes" class="admin-notes mt-3">
+                  <p class="mb-1"><strong>Admin Notes:</strong></p>
+                  <p class="text-muted">{{ enrollment.adminNotes }}</p>
+                </div>
+              </div>
+
+              <div class="enrollment-footer" *ngIf="enrollment.approvedAt || enrollment.rejectedAt">
+                <small class="text-muted">
+                  <i class="bi bi-clock me-1"></i>
+                  {{ enrollment.status === 'APPROVED' ? 'Approved' : 'Rejected' }} on
+                  {{ (enrollment.approvedAt || enrollment.rejectedAt) | date:'medium' }}
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

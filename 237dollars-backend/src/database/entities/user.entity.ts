@@ -58,6 +58,9 @@ export class User {
   @Column({ name: 'dark_mode', default: true })
   darkMode: boolean;
 
+  @Column({ name: 'real_test_passed', default: false })
+  realTestPassed: boolean;
+
   // Relations
   @OneToOne(() => Student, (student) => student.user)
   student: Student;

@@ -11,7 +11,7 @@ export class EmailService {
     const gmailPassword = this.configService.get<string>('GMAIL_APP_PASSWORD');
 
     if (gmailEmail && gmailPassword) {
-      this.transporter = nodemailer.createTransporter({
+      this.transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
           user: gmailEmail,

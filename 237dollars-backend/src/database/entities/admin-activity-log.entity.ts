@@ -19,7 +19,10 @@ export class AdminActivityLog {
   @Column()
   action: string;
 
-  @Column({ name: 'entity_type', length: 100 })
+  @Column({ type: 'text', nullable: true })
+  description: string;
+
+  @Column({ name: 'entity_type', length: 100, nullable: true })
   entityType: string;
 
   @Column({ name: 'entity_id', nullable: true })

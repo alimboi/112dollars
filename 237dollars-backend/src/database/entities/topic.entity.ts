@@ -12,7 +12,6 @@ import { Major } from './major.entity';
 import { Reference } from './reference.entity';
 import { UserPoints } from './user-points.entity';
 import { DiscountEligibility } from './discount-eligibility.entity';
-import { DiscountApplication } from './discount-application.entity';
 
 @Entity('topics')
 export class Topic {
@@ -50,7 +49,4 @@ export class Topic {
 
   @OneToMany(() => DiscountEligibility, (discount) => discount.topic)
   discountEligibility: DiscountEligibility[];
-
-  @OneToMany(() => DiscountApplication, (application) => application.topic)
-  discountApplications: DiscountApplication[];
 }

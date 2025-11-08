@@ -1,0 +1,160 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(22, 33, 62, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 15px 0;
+  z-index: 1000;
+  border-bottom: 1px solid var(--border-color);
+
+  .navbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-decoration: none;
+
+    .brand-text {
+      color: var(--text-primary);
+    }
+
+    .brand-accent {
+      color: var(--accent);
+    }
+  }
+
+  .navbar-toggler {
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+
+    .navbar-toggler-icon {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background-color: var(--text-primary);
+      position: relative;
+
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 3px;
+        background-color: var(--text-primary);
+        transition: all 0.3s ease;
+      }
+
+      &::before {
+        top: -8px;
+      }
+
+      &::after {
+        bottom: -8px;
+      }
+    }
+  }
+
+  .navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+
+    @media (max-width: 768px) {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background-color: var(--bg-secondary);
+      flex-direction: column;
+      padding: 20px;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+
+      &.active {
+        transform: translateX(0);
+      }
+    }
+  }
+
+  .navbar-nav {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 30px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      width: 100%;
+      gap: 15px;
+    }
+
+    .nav-item {
+      .nav-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+
+        &:hover,
+        &.active {
+          color: var(--accent);
+        }
+      }
+    }
+  }
+
+  .navbar-actions {
+    display: flex;
+    gap: 10px;
+
+    @media (max-width: 768px) {
+      width: 100%;
+
+      .btn {
+        flex: 1;
+      }
+    }
+
+    .btn {
+      padding: 8px 20px;
+      border-radius: 25px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+
+      &.btn-outline-light {
+        border: 2px solid var(--text-primary);
+        color: var(--text-primary);
+        background: transparent;
+
+        &:hover {
+          background-color: var(--text-primary);
+          color: var(--bg-primary);
+        }
+      }
+
+      &.btn-primary {
+        background-color: var(--accent);
+        border: none;
+        color: white;
+
+        &:hover {
+          background-color: var(--accent-hover);
+        }
+      }
+    }
+  }
+}
+
+body {
+  padding-top: 70px;
+}

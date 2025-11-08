@@ -1,0 +1,49 @@
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-content">
+      <a routerLink="/" class="navbar-brand">
+        <span class="brand-text">237</span><span class="brand-accent">DOLLARS</span>
+      </a>
+
+      <button class="navbar-toggler d-md-none" (click)="toggleMenu()">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="navbar-menu" [class.active]="isMenuOpen">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              Home
+            </a>
+          </li>
+          <li class="nav-item" *ngIf="authService.isAuthenticated()">
+            <a routerLink="/references" class="nav-link" routerLinkActive="active">
+              References
+            </a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/blog" class="nav-link" routerLinkActive="active">
+              Blog
+            </a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/contact" class="nav-link" routerLinkActive="active">
+              Contact
+            </a>
+          </li>
+        </ul>
+
+        <div class="navbar-actions">
+          <ng-container *ngIf="!authService.isAuthenticated(); else loggedIn">
+            <a routerLink="/auth/login" class="btn btn-outline-light btn-sm me-2">Login</a>
+            <a routerLink="/auth/register" class="btn btn-primary btn-sm">Register</a>
+          </ng-container>
+          <ng-template #loggedIn>
+            <a routerLink="/profile" class="btn btn-outline-light btn-sm me-2">Profile</a>
+            <button (click)="logout()" class="btn btn-primary btn-sm">Logout</button>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

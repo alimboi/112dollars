@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EmailService {
   private transporter: nodemailer.Transporter;
+  private readonly logger = new Logger(EmailService.name);
 
   constructor(private configService: ConfigService) {
     const gmailEmail = this.configService.get<string>('GMAIL_EMAIL');
@@ -18,19 +19,15 @@ export class EmailService {
           pass: gmailPassword,
         },
       });
+      this.logger.log('Email service configured');
     } else {
-      console.warn('⚠️  Email service not configured. Set GMAIL_EMAIL and GMAIL_APP_PASSWORD in .env');
+      this.logger.warn('Email service not configured');
     }
   }
 
-  async sendEmail(
-    to: string,
-    subject: string,
-    html: string,
-  ): Promise<boolean> {
+  async sendEmail(to: string, subject: string, html: string): Promise<boolean> {
     if (!this.transporter) {
-      console.log('📧 Email would be sent to:', to);
-      console.log('Subject:', subject);
+      this.logger.debug(`Email would be sent to: ${to}`);
       return false;
     }
 
@@ -41,10 +38,10 @@ export class EmailService {
         subject,
         html,
       });
-      console.log(`✅ Email sent to ${to}`);
+      this.logger.log(`Email sent to ${to}`);
       return true;
     } catch (error) {
-      console.error('❌ Email sending failed:', error.message);
+      this.logger.error(`Failed to send email: ${error.message}`);
       return false;
     }
   }
@@ -67,17 +64,13 @@ export class EmailService {
     return await this.sendEmail(email, subject, html);
   }
 
-  async sendEnrollmentApprovalEmail(
-    email: string,
-    studentName: string,
-  ): Promise<boolean> {
+  async sendEnrollmentApprovalEmail(email: string, studentName: string): Promise<boolean> {
     const subject = '237dollars - Enrollment Approved';
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2>Congratulations ${studentName}!</h2>
         <p>Your enrollment has been approved.</p>
         <p>Please visit our office to sign the contract and complete the enrollment process.</p>
-        <p>We'll send you another email with your account creation link after the contract is signed.</p>
         <hr>
         <p style="color: #666; font-size: 12px;">237dollars Educational Platform</p>
       </div>
@@ -85,10 +78,7 @@ export class EmailService {
     return await this.sendEmail(email, subject, html);
   }
 
-  async sendAccountCreationLink(
-    email: string,
-    link: string,
-  ): Promise<boolean> {
+  async sendAccountCreationLink(email: string, link: string): Promise<boolean> {
     const subject = '237dollars - Create Your Account';
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -107,11 +97,7 @@ export class EmailService {
     return await this.sendEmail(email, subject, html);
   }
 
-  async sendDiscountCodeEmail(
-    email: string,
-    code: string,
-    discountPercentage: number,
-  ): Promise<boolean> {
+  async sendDiscountCodeEmail(email: string, code: string, discountPercentage: number): Promise<boolean> {
     const subject = '237dollars - Your Discount Code';
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -122,7 +108,6 @@ export class EmailService {
           ${code}
         </div>
         <p>This code is valid for 1 month.</p>
-        <p>Use it when enrolling in a course.</p>
         <hr>
         <p style="color: #666; font-size: 12px;">237dollars Educational Platform</p>
       </div>
@@ -136,7 +121,6 @@ export class EmailService {
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2>Thank you ${name}!</h2>
         <p>We received your message and will get back to you soon.</p>
-        <p>Our team typically responds within 24-48 hours.</p>
         <hr>
         <p style="color: #666; font-size: 12px;">237dollars Educational Platform</p>
       </div>
@@ -144,11 +128,7 @@ export class EmailService {
     return await this.sendEmail(email, subject, html);
   }
 
-  async sendAdminNotification(
-    adminEmail: string,
-    subject: string,
-    message: string,
-  ): Promise<boolean> {
+  async sendAdminNotification(adminEmail: string, subject: string, message: string): Promise<boolean> {
     const html = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2>Admin Notification</h2>

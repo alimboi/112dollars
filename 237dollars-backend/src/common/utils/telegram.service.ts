@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -6,6 +6,7 @@ export class TelegramService {
   private botToken: string;
   private adminChatId: string;
   private isConfigured: boolean = false;
+  private readonly logger = new Logger(TelegramService.name);
 
   constructor(private configService: ConfigService) {
     this.botToken = this.configService.get<string>('TELEGRAM_BOT_TOKEN');
@@ -13,17 +14,15 @@ export class TelegramService {
 
     if (this.botToken && this.adminChatId) {
       this.isConfigured = true;
-      console.log('✅ Telegram bot configured');
+      this.logger.log('Telegram bot configured');
     } else {
-      console.warn(
-        '⚠️  Telegram bot not configured (optional). Set TELEGRAM_BOT_TOKEN and TELEGRAM_ADMIN_CHAT_ID in .env to enable.',
-      );
+      this.logger.warn('Telegram bot not configured (optional)');
     }
   }
 
   async sendMessage(message: string, chatId?: string): Promise<boolean> {
     if (!this.isConfigured) {
-      console.log('📱 Telegram message would be sent:', message);
+      this.logger.debug(`Telegram message would be sent`);
       return false;
     }
 
@@ -42,23 +41,19 @@ export class TelegramService {
       });
 
       if (response.ok) {
-        console.log('✅ Telegram message sent');
+        this.logger.log('Telegram message sent');
         return true;
       } else {
-        console.error('❌ Telegram API error:', await response.text());
+        this.logger.error('Telegram API error');
         return false;
       }
     } catch (error) {
-      console.error('❌ Telegram sending failed:', error.message);
+      this.logger.error(`Telegram error: ${error.message}`);
       return false;
     }
   }
 
-  async sendEnrollmentNotification(
-    studentName: string,
-    courseName: string,
-    email: string,
-  ): Promise<boolean> {
+  async sendEnrollmentNotification(studentName: string, courseName: string, email: string): Promise<boolean> {
     const message = `
 <b>🎓 New Enrollment Request</b>
 
@@ -68,15 +63,10 @@ export class TelegramService {
 
 Please review in admin panel.
     `.trim();
-
     return await this.sendMessage(message);
   }
 
-  async sendDiscountApplicationNotification(
-    userName: string,
-    topicName: string,
-    email: string,
-  ): Promise<boolean> {
+  async sendDiscountApplicationNotification(userName: string, topicName: string, email: string): Promise<boolean> {
     const message = `
 <b>💰 New Discount Application</b>
 
@@ -86,15 +76,10 @@ Please review in admin panel.
 
 Please review in admin panel.
     `.trim();
-
     return await this.sendMessage(message);
   }
 
-  async sendContactNotification(
-    name: string,
-    email: string,
-    subject: string,
-  ): Promise<boolean> {
+  async sendContactNotification(name: string, email: string, subject: string): Promise<boolean> {
     const message = `
 <b>📨 New Contact Message</b>
 
@@ -102,17 +87,12 @@ Please review in admin panel.
 <b>Email:</b> ${email}
 <b>Subject:</b> ${subject}
 
-Please check admin panel for full message.
+Please check admin panel.
     `.trim();
-
     return await this.sendMessage(message);
   }
 
-  async sendStudentDeletionRequest(
-    studentName: string,
-    studentId: string,
-    requestedBy: string,
-  ): Promise<boolean> {
+  async sendStudentDeletionRequest(studentName: string, studentId: string, requestedBy: string): Promise<boolean> {
     const message = `
 <b>🗑️ Student Deletion Request</b>
 
@@ -120,9 +100,8 @@ Please check admin panel for full message.
 <b>ID:</b> ${studentId}
 <b>Requested by:</b> ${requestedBy}
 
-Super Admin approval required in admin panel.
+Super Admin approval required.
     `.trim();
-
     return await this.sendMessage(message);
   }
 }

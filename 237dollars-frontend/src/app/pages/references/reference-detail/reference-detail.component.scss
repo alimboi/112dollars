@@ -1,0 +1,133 @@
+.reference-container {
+  min-height: 100vh;
+  padding-top: 80px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.reference-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.reference-header {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 40px;
+  margin-bottom: 40px;
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+  }
+
+  .description {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+
+    .badge {
+      padding: 8px 15px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+  }
+}
+
+.reference-body {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 40px;
+  margin-bottom: 40px;
+
+  .content-block {
+    margin-bottom: 30px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .text-block {
+    color: var(--text-primary);
+    line-height: 1.8;
+    font-size: 1.1rem;
+
+    p {
+      margin-bottom: 20px;
+    }
+
+    h2, h3, h4 {
+      color: var(--accent);
+      margin-top: 30px;
+      margin-bottom: 15px;
+    }
+  }
+
+  .image-block {
+    img {
+      border-radius: 8px;
+      max-width: 100%;
+    }
+  }
+
+  .video-block {
+    video {
+      border-radius: 8px;
+    }
+  }
+
+  .code-block {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    overflow-x: auto;
+
+    pre {
+      margin: 0;
+      color: var(--text-primary);
+      font-family: 'Courier New', monospace;
+      font-size: 0.95rem;
+
+      code {
+        color: var(--text-primary);
+      }
+    }
+  }
+}
+
+.reference-footer {
+  text-align: center;
+  padding: 40px 0;
+
+  .btn-primary {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    background-color: var(--accent);
+    border: none;
+
+    &:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(233, 69, 96, 0.3);
+    }
+  }
+}

@@ -1,0 +1,159 @@
+.admin-container {
+  min-height: 100vh;
+  padding-top: 80px;
+  background-color: var(--bg-primary);
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.stat-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 1.8rem;
+
+    &.users {
+      background-color: rgba(0, 123, 255, 0.1);
+      color: #007bff;
+    }
+
+    &.students {
+      background-color: rgba(233, 69, 96, 0.1);
+      color: var(--accent);
+    }
+
+    &.enrollments {
+      background-color: rgba(255, 193, 7, 0.1);
+      color: #ffc107;
+    }
+
+    &.content {
+      background-color: rgba(40, 167, 69, 0.1);
+      color: #28a745;
+    }
+  }
+
+  h3 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  p {
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+  }
+
+  small {
+    font-size: 0.875rem;
+  }
+}
+
+.admin-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 30px;
+
+  .card-title {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    font-weight: 600;
+  }
+
+  .action-links {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .action-link {
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+
+      i {
+        font-size: 1.5rem;
+        color: var(--accent);
+      }
+
+      &:hover {
+        border-color: var(--accent);
+        transform: translateX(10px);
+        background-color: rgba(233, 69, 96, 0.05);
+      }
+    }
+  }
+
+  .status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      background-color: var(--bg-primary);
+      border-radius: 8px;
+      color: var(--text-primary);
+
+      .status-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+
+        &.success {
+          background-color: #28a745;
+        }
+
+        &.warning {
+          background-color: #ffc107;
+        }
+
+        &.danger {
+          background-color: var(--accent);
+        }
+      }
+    }
+  }
+}

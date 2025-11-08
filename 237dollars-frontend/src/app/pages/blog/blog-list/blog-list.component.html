@@ -1,0 +1,36 @@
+<div class="blog-container">
+  <div class="container py-5">
+    <h1 class="page-title text-center mb-5">Blog & News</h1>
+
+    <div class="loading" *ngIf="loading">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+
+    <div class="row g-4" *ngIf="!loading && !error">
+      <div class="col-md-6 col-lg-4" *ngFor="let post of posts">
+        <div class="blog-card" [routerLink]="['/blog', post.id]">
+          <div class="blog-date">{{ post.createdAt | date:'MMM dd, yyyy' }}</div>
+          <h3>{{ post.title }}</h3>
+          <p>{{ post.excerpt }}</p>
+          <div class="read-more">
+            Read More <i class="bi bi-arrow-right"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pagination" *ngIf="total > limit">
+      <button class="btn btn-outline-light" (click)="previousPage()" [disabled]="page === 1">
+        <i class="bi bi-arrow-left"></i> Previous
+      </button>
+      <span class="page-info">Page {{ page }} of {{ Math.ceil(total / limit) }}</span>
+      <button class="btn btn-outline-light" (click)="nextPage()" [disabled]="page * limit >= total">
+        Next <i class="bi bi-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+<div class="reference-container">
+  <div class="container py-5">
+    <div class="loading" *ngIf="loading">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+
+    <div *ngIf="!loading && !error && reference" class="reference-content">
+      <button routerLink="/references" class="btn btn-outline-light mb-4">
+        <i class="bi bi-arrow-left"></i> Back to References
+      </button>
+
+      <div class="reference-header">
+        <h1>{{ reference.title }}</h1>
+        <p class="description">{{ reference.description }}</p>
+        <div class="meta">
+          <span class="badge bg-primary me-2">
+            <i class="bi bi-clock"></i> {{ reference.readingTimeMinutes }} min read
+          </span>
+          <span class="badge bg-success" *ngIf="reference.isFree">
+            <i class="bi bi-unlock"></i> Free
+          </span>
+          <span class="badge bg-warning" *ngIf="!reference.isFree">
+            <i class="bi bi-lock"></i> Premium
+          </span>
+        </div>
+      </div>
+
+      <div class="reference-body">
+        <div class="content-block" *ngFor="let block of reference.contentBlocks" [ngSwitch]="block.type">
+          <div *ngSwitchCase="'text'" [innerHTML]="block.content" class="text-block"></div>
+          <div *ngSwitchCase="'image'" class="image-block">
+            <img [src]="block.content" alt="Content image" class="img-fluid">
+          </div>
+          <div *ngSwitchCase="'video'" class="video-block">
+            <video [src]="block.content" controls class="w-100"></video>
+          </div>
+          <div *ngSwitchCase="'code'" class="code-block">
+            <pre><code>{{ block.content }}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="reference-footer">
+        <button routerLink="/quiz/{{ reference.id }}" class="btn btn-primary btn-lg">
+          Take Quiz <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

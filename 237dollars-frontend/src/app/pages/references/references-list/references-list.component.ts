@@ -33,4 +33,13 @@ export class ReferencesListComponent implements OnInit {
       }
     });
   }
+
+  getMajorIcon(name: string): string {
+    const icons: Record<string, string> = {
+      'Korean': 'bi bi-translate',
+      'English': 'bi bi-book',
+      'Coding': 'bi bi-code-slash'
+    };
+    return icons[name] || 'bi bi-star';
+  }
 }

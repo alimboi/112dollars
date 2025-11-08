@@ -5,5 +5,14 @@ export const routes: Routes = [
   { path: '', loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent) },
   { path: 'auth/login', loadComponent: () => import('./pages/auth/login/login.component').then(m => m.LoginComponent) },
   { path: 'auth/register', loadComponent: () => import('./pages/auth/register/register.component').then(m => m.RegisterComponent) },
+  { path: 'references', canActivate: [authGuard], loadComponent: () => import('./pages/references/references-list/references-list.component').then(m => m.ReferencesListComponent) },
+  { path: 'references/major/:id', canActivate: [authGuard], loadComponent: () => import('./pages/references/topics-list/topics-list.component').then(m => m.TopicsListComponent) },
+  { path: 'references/topic/:id', canActivate: [authGuard], loadComponent: () => import('./pages/references/reference-detail/reference-detail.component').then(m => m.ReferenceDetailComponent) },
+  { path: 'quiz/:referenceId', canActivate: [authGuard], loadComponent: () => import('./pages/quiz/quiz.component').then(m => m.QuizComponent) },
+  { path: 'blog', loadComponent: () => import('./pages/blog/blog-list/blog-list.component').then(m => m.BlogListComponent) },
+  { path: 'blog/:id', loadComponent: () => import('./pages/blog/blog-detail/blog-detail.component').then(m => m.BlogDetailComponent) },
+  { path: 'contact', loadComponent: () => import('./pages/contact/contact.component').then(m => m.ContactComponent) },
+  { path: 'profile', canActivate: [authGuard], loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent) },
+  { path: 'admin', canActivate: [authGuard], loadComponent: () => import('./pages/admin/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent) },
   { path: '**', redirectTo: '' }
 ];

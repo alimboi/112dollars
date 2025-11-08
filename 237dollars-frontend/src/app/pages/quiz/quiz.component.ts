@@ -20,6 +20,7 @@ export class QuizComponent implements OnInit {
   error = '';
   submitted = false;
   result: any = null;
+  Math = Math;
 
   constructor(
     private route: ActivatedRoute,

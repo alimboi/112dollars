@@ -1,0 +1,55 @@
+<div class="not-found-container">
+  <div class="container">
+    <div class="not-found-content">
+      <!-- 404 Illustration -->
+      <div class="error-code">
+        <h1>404</h1>
+        <div class="error-animation">
+          <i class="bi bi-search"></i>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-message">
+        <h2>{{ 'notFound.title' | translate }}</h2>
+        <p class="lead">{{ 'notFound.message' | translate }}</p>
+        <p class="text-muted">{{ 'notFound.description' | translate }}</p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="error-actions">
+        <a routerLink="/" class="btn btn-primary btn-lg">
+          <i class="bi bi-house-door me-2"></i>
+          {{ 'notFound.goHome' | translate }}
+        </a>
+        <button onclick="window.history.back()" class="btn btn-outline-light btn-lg">
+          <i class="bi bi-arrow-left me-2"></i>
+          {{ 'notFound.goBack' | translate }}
+        </button>
+      </div>
+
+      <!-- Helpful Links -->
+      <div class="helpful-links">
+        <p class="mb-3">{{ 'notFound.helpfulLinks' | translate }}:</p>
+        <div class="links-grid">
+          <a routerLink="/dashboard" class="link-card">
+            <i class="bi bi-speedometer2"></i>
+            <span>{{ 'nav.dashboard' | translate }}</span>
+          </a>
+          <a routerLink="/references" class="link-card">
+            <i class="bi bi-book"></i>
+            <span>{{ 'nav.references' | translate }}</span>
+          </a>
+          <a routerLink="/blog" class="link-card">
+            <i class="bi bi-newspaper"></i>
+            <span>{{ 'nav.blog' | translate }}</span>
+          </a>
+          <a routerLink="/contact" class="link-card">
+            <i class="bi bi-envelope"></i>
+            <span>{{ 'nav.contact' | translate }}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

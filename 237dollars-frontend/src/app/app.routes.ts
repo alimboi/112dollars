@@ -20,5 +20,6 @@ export const routes: Routes = [
   { path: 'points', canActivate: [authGuard], loadComponent: () => import('./pages/points/points.component').then(m => m.PointsComponent) },
   { path: 'discounts', canActivate: [authGuard], loadComponent: () => import('./pages/discounts/discounts.component').then(m => m.DiscountsComponent) },
   { path: 'admin', canActivate: [authGuard], loadComponent: () => import('./pages/admin/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent) },
-  { path: '**', redirectTo: '' }
+  { path: '404', loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent) },
+  { path: '**', loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent) }
 ];

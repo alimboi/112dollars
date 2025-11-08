@@ -266,4 +266,13 @@
     "quizPoints": "Test ballari",
     "earnMorePoints": "Ko'proq ball toplash"
   }
+  },
+  "notFound": {
+    "title": "Sahifa topilmadi",
+    "message": "Kechirasiz! Siz qidirayotgan sahifa mavjud emas.",
+    "description": "Sahifa ko'chirilgan, o'chirilgan yoki URL manzilini noto'g'ri kiritgan bo'lishingiz mumkin.",
+    "goHome": "Bosh sahifaga o'tish",
+    "goBack": "Orqaga qaytish",
+    "helpfulLinks": "Foydali havolalar"
+  }
 }

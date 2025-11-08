@@ -318,5 +318,13 @@
     "readingPoints": "Reading Points",
     "quizPoints": "Quiz Points",
     "earnMorePoints": "Earn More Points"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "message": "Oops! The page you're looking for doesn't exist.",
+    "description": "The page may have been moved, deleted, or you may have mistyped the URL.",
+    "goHome": "Go to Homepage",
+    "goBack": "Go Back",
+    "helpfulLinks": "Here are some helpful links"
   }
 }

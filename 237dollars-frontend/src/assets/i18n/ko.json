@@ -266,4 +266,13 @@
     "quizPoints": "퀴즈 포인트",
     "earnMorePoints": "더 많은 포인트 획득"
   }
+  },
+  "notFound": {
+    "title": "페이지를 찾을 수 없습니다",
+    "message": "죄송합니다! 찾으시는 페이지가 존재하지 않습니다.",
+    "description": "페이지가 이동되거나 삭제되었거나 URL을 잘못 입력했을 수 있습니다.",
+    "goHome": "홈페이지로 이동",
+    "goBack": "뒤로 가기",
+    "helpfulLinks": "유용한 링크"
+  }
 }

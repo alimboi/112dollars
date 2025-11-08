@@ -52,6 +52,9 @@ All backend and frontend features have been implemented and pushed to the reposi
 6. **Contact** - Form with validation, success message
 7. **Profile** - User settings, password change, preferences (language, dark mode)
 8. **Admin Dashboard** - Statistics cards, quick actions, system status
+9. **Student Documents** - File upload (PDF/images), document management, download/delete
+10. **Enrollment Application** - Apply for programs, track status, view admin feedback
+11. **Points & Leaderboard** - Points dashboard, topic breakdown, top 10 leaderboard
 
 **Shared Components:**
 - ✅ Navbar - Responsive, authentication state, mobile menu
@@ -65,6 +68,11 @@ All backend and frontend features have been implemented and pushed to the reposi
 - ✅ Error handling
 - ✅ Form validation with Bootstrap
 - ✅ Smooth animations and transitions
+- ✅ **i18n Support** - 4 languages (English, Uzbek, Russian, Korean)
+- ✅ **Rich Email Templates** - Professional HTML emails for all notifications
+- ✅ **Language Switcher** - Dropdown with flag icons, synced with backend
+- ✅ **File Upload** - Drag-and-drop support with validation
+- ✅ **Gamification** - Points system with visual leaderboard
 
 ---
 

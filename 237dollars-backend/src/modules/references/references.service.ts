@@ -87,6 +87,7 @@ export class ReferencesService {
       skip: (page - 1) * limit,
       take: limit,
       order: { createdAt: 'DESC' },
+      relations: ['topic', 'topic.major'],
     });
 
     return {

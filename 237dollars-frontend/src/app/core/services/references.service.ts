@@ -32,9 +32,44 @@ export interface Reference {
 export interface ContentBlock {
   id: number;
   referenceId: number;
-  type: 'text' | 'image' | 'video' | 'code';
+  blockType: 'heading' | 'text' | 'image' | 'video' | 'code_block';
   content: string;
-  displayOrder: number;
+  blockOrder: number;
+  styling?: {
+    fontFamily?: string;
+    fontSize?: number;
+    color?: string;
+    backgroundColor?: string;
+    fontWeight?: string;
+    fontStyle?: string;
+    textDecoration?: string;
+    textAlign?: string;
+    lineHeight?: number;
+    letterSpacing?: number;
+    marginTop?: number;
+    marginBottom?: number;
+    padding?: number;
+  };
+  blockData?: {
+    // For images
+    url?: string;
+    alt?: string;
+    width?: string;
+    height?: string;
+    alignment?: string;
+    borderRadius?: number;
+    boxShadow?: string;
+    filename?: string;
+    // For videos
+    videoId?: string;
+    showTitle?: boolean;
+    showDescription?: boolean;
+    // For code
+    language?: string;
+  };
+  topicName?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 @Injectable({

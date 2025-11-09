@@ -44,6 +44,9 @@ export class Reference {
   @Column({ name: 'is_published', default: false })
   isPublished: boolean;
 
+  @Column({ name: 'is_free', default: true })
+  isFree: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

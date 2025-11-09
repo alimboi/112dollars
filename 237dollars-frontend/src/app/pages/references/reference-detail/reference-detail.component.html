@@ -75,7 +75,7 @@
           <!-- Video Block (YouTube Embed) -->
           <div *ngSwitchCase="'video'" class="video-block" [ngStyle]="{'text-align': block.blockData?.alignment}">
             <iframe *ngIf="block.blockData?.videoId"
-                    [src]="'https://www.youtube.com/embed/' + block.blockData.videoId | safeUrl"
+                    [src]="'https://www.youtube.com/embed/' + block.blockData?.videoId | safeUrl"
                     [style.width]="block.blockData?.width"
                     height="400"
                     frameborder="0"

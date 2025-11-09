@@ -57,7 +57,7 @@ export class ReferenceDetailComponent implements OnInit, OnDestroy {
     if (this.reference?.contentBlocks) {
       this.reference.contentBlocks = this.reference.contentBlocks.map(block => ({
         ...block,
-        content: block.type === 'text'
+        content: block.blockType === 'text'
           ? (this.sanitizer.sanitize(1, block.content) || '')
           : block.content
       }));

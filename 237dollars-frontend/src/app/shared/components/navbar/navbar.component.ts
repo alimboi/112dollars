@@ -116,11 +116,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
         error: (err) => console.error('Failed to sync language preference', err)
       });
     }
-
-    // Close menu after language selection on mobile
-    if (window.innerWidth <= 991) {
-      this.closeMenu();
-    }
   }
 
   toggleMenu(): void {

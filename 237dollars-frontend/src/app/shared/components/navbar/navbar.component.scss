@@ -543,10 +543,6 @@
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
-
-  @media (max-width: 991px) {
-    display: none;
-  }
 }
 
 .lang-option {

@@ -352,12 +352,12 @@
     bottom: 20%;
     left: 15%;
     animation: float 8s ease-in-out infinite 2s;
-    background: linear-gradient(135deg, var(--orange-50) 0%, var(--white) 100%);
-    border-color: var(--orange-300);
-    color: var(--orange-700);
+    background: linear-gradient(135deg, var(--accent-50) 0%, var(--white) 100%);
+    border-color: var(--accent-300);
+    color: var(--accent-700);
 
     svg {
-      stroke: var(--orange-700);
+      stroke: var(--accent-700);
     }
   }
 
@@ -1081,7 +1081,12 @@
     }
 
     &.card-3 {
-      background: linear-gradient(135deg, var(--orange-100) 0%, var(--neutral-50) 100%);
+      background: linear-gradient(135deg, var(--accent-100) 0%, var(--neutral-50) 100%);
+      color: var(--accent-700);
+
+      svg {
+        stroke: var(--accent-700);
+      }
     }
   }
 

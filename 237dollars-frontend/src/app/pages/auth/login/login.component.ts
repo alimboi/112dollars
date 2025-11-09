@@ -46,4 +46,10 @@ export class LoginComponent {
       });
     }
   }
+
+  loginWithGoogle(): void {
+    // Redirect to backend Google OAuth endpoint
+    const backendUrl = 'http://localhost:3000';
+    window.location.href = `${backendUrl}/auth/google`;
+  }
 }

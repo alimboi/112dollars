@@ -30,17 +30,67 @@
       </div>
 
       <div class="reference-body">
-        <div class="content-block" *ngFor="let block of reference.contentBlocks" [ngSwitch]="block.type">
-          <div *ngSwitchCase="'text'" [innerHTML]="getSafeContent(block.content)" class="text-block"></div>
-          <div *ngSwitchCase="'image'" class="image-block">
-            <img [src]="block.content" alt="Content image" class="img-fluid">
+        <div class="content-block" *ngFor="let block of reference.contentBlocks" [ngSwitch]="block.blockType">
+          <!-- Heading Block -->
+          <h2 *ngSwitchCase="'heading'" class="heading-block" [ngStyle]="{
+            'font-family': block.styling?.fontFamily,
+            'font-size.px': block.styling?.fontSize,
+            'color': block.styling?.color,
+            'background-color': block.styling?.backgroundColor,
+            'font-weight': block.styling?.fontWeight,
+            'text-align': block.styling?.textAlign,
+            'line-height': block.styling?.lineHeight,
+            'margin-top.px': block.styling?.marginTop,
+            'margin-bottom.px': block.styling?.marginBottom,
+            'padding.px': block.styling?.padding
+          }">{{ block.content }}</h2>
+
+          <!-- Text Block -->
+          <p *ngSwitchCase="'text'" class="text-block" [ngStyle]="{
+            'font-family': block.styling?.fontFamily,
+            'font-size.px': block.styling?.fontSize,
+            'color': block.styling?.color,
+            'background-color': block.styling?.backgroundColor,
+            'font-weight': block.styling?.fontWeight,
+            'text-align': block.styling?.textAlign,
+            'line-height': block.styling?.lineHeight,
+            'letter-spacing.px': block.styling?.letterSpacing,
+            'margin-top.px': block.styling?.marginTop,
+            'margin-bottom.px': block.styling?.marginBottom,
+            'padding.px': block.styling?.padding
+          }">{{ block.content }}</p>
+
+          <!-- Image Block -->
+          <div *ngSwitchCase="'image'" class="image-block" [ngStyle]="{'text-align': block.blockData?.alignment}">
+            <img [src]="block.blockData?.url"
+                 [alt]="block.blockData?.alt || 'Content image'"
+                 [ngStyle]="{
+                   'width': block.blockData?.width,
+                   'height': block.blockData?.height,
+                   'border-radius.px': block.blockData?.borderRadius
+                 }"
+                 [class]="'shadow-' + block.blockData?.boxShadow">
           </div>
-          <div *ngSwitchCase="'video'" class="video-block">
-            <video [src]="block.content" controls class="w-100"></video>
+
+          <!-- Video Block (YouTube Embed) -->
+          <div *ngSwitchCase="'video'" class="video-block" [ngStyle]="{'text-align': block.blockData?.alignment}">
+            <iframe *ngIf="block.blockData?.videoId"
+                    [src]="'https://www.youtube.com/embed/' + block.blockData.videoId | safeUrl"
+                    [style.width]="block.blockData?.width"
+                    height="400"
+                    frameborder="0"
+                    allowfullscreen>
+            </iframe>
           </div>
-          <div *ngSwitchCase="'code'" class="code-block">
-            <pre><code>{{ block.content }}</code></pre>
-          </div>
+
+          <!-- Code Block -->
+          <pre *ngSwitchCase="'code_block'" class="code-block" [ngStyle]="{
+            'background-color': block.styling?.backgroundColor,
+            'color': block.styling?.color,
+            'padding.px': block.styling?.padding,
+            'margin-top.px': block.styling?.marginTop,
+            'margin-bottom.px': block.styling?.marginBottom
+          }"><code>{{ block.content }}</code></pre>
         </div>
       </div>
 

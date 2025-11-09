@@ -1,0 +1,63 @@
+<div class="references-container">
+  <div class="container py-5">
+    <div class="d-flex align-items-center mb-5">
+      <button routerLink="/references" class="btn btn-outline-light me-3">
+        <i class="bi bi-arrow-left"></i> Back to Majors
+      </button>
+      <h1 class="page-title mb-0">References</h1>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading" *ngIf="loading">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!loading && !error && references.length === 0">
+      <div class="empty-icon">📚</div>
+      <h3>No References Available</h3>
+      <p>There are no references published for this topic yet.</p>
+      <button routerLink="/references" class="btn btn-primary mt-3">
+        Browse Other Topics
+      </button>
+    </div>
+
+    <!-- References List -->
+    <div class="row g-4" *ngIf="!loading && !error && references.length > 0">
+      <div class="col-12 col-md-6 col-lg-4" *ngFor="let reference of references">
+        <div class="reference-card" [routerLink]="['/references', reference.id]">
+          <div class="reference-header">
+            <span class="reference-badge" *ngIf="reference.isFree">
+              <i class="bi bi-unlock"></i> Free
+            </span>
+            <span class="reference-badge premium" *ngIf="!reference.isFree">
+              <i class="bi bi-star"></i> Premium
+            </span>
+          </div>
+
+          <h3 class="reference-title">{{ reference.title }}</h3>
+          <p class="reference-description">{{ reference.description }}</p>
+
+          <div class="reference-meta">
+            <span class="meta-item" *ngIf="reference.readingTimeMinutes">
+              <i class="bi bi-clock"></i> {{ reference.readingTimeMinutes }} min
+            </span>
+            <span class="meta-item" *ngIf="reference.totalWords">
+              <i class="bi bi-file-text"></i> {{ reference.totalWords }} words
+            </span>
+          </div>
+
+          <div class="reference-arrow">
+            <span>Read Now</span>
+            <i class="bi bi-arrow-right"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

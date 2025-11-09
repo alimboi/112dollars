@@ -5,11 +5,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { ReferencesService, Reference } from '../../../core/services/references.service';
+import { SafeUrlPipe } from '../../../shared/pipes/safe-url.pipe';
 
 @Component({
   selector: 'app-reference-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule],
+  imports: [CommonModule, RouterModule, TranslateModule, SafeUrlPipe],
   templateUrl: './reference-detail.component.html',
   styleUrls: ['./reference-detail.component.scss']
 })

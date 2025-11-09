@@ -119,7 +119,7 @@
           <!-- Dark Mode Toggle -->
           <button
             class="theme-toggle"
-            (click)="toggleDarkMode($event)"
+            (click)="toggleDarkMode()"
             [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'"
             type="button">
             <svg *ngIf="!isDarkMode" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -140,7 +140,7 @@
 
           <!-- Language Switcher -->
           <div class="language-switcher">
-            <button class="lang-button" [class.active]="isLangDropdownOpen" (click)="toggleLangDropdown($event)" type="button">
+            <button class="lang-button" [class.active]="isLangDropdownOpen" (click)="toggleLangDropdown()" type="button">
               <span class="lang-flag">{{ getCurrentLanguage()?.flag }}</span>
               <span class="lang-name hide-mobile">{{ getCurrentLanguage()?.name }}</span>
               <svg class="lang-arrow" width="12" height="12" viewBox="0 0 12 8" fill="none">
@@ -150,7 +150,7 @@
             <ul class="lang-dropdown" [class.active]="isLangDropdownOpen">
               <li *ngFor="let lang of languages" class="lang-option">
                 <button
-                  (click)="switchLanguage(lang.code, $event)"
+                  (click)="switchLanguage(lang.code)"
                   [class.active]="currentLang === lang.code"
                   class="lang-option-button">
                   <span class="lang-flag">{{ lang.flag }}</span>

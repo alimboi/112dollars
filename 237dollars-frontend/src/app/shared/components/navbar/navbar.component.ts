@@ -41,7 +41,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Load saved language preference or use default
     const savedLang = this.storage.getItem<string>('language') || 'en';
-    this.switchLanguage(savedLang);
+    this.currentLang = savedLang;
+    this.storage.setItem('language', savedLang);
 
     // Load saved theme preference or use default
     const savedTheme = this.storage.getItem<string>('theme') || 'light';
@@ -70,14 +71,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.isMenuOpen) {
       this.closeMenu();
     }
-    if (this.isLangDropdownOpen) {
-      this.isLangDropdownOpen = false;
-    }
-  }
-
-  // Close language dropdown when clicking outside
-  @HostListener('document:click')
-  onDocumentClick(): void {
     if (this.isLangDropdownOpen) {
       this.isLangDropdownOpen = false;
     }
@@ -115,14 +108,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
   }
 
-  switchLanguage(lang: string, event?: Event): void {
-    if (event) {
-      event.stopPropagation();
-    }
-
+  switchLanguage(lang: string): void {
     this.currentLang = lang;
-    // TODO: Re-enable translation when fixed
-    // this.translate.use(lang);
     this.storage.setItem('language', lang);
 
     // Close language dropdown after selection
@@ -137,8 +124,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleLangDropdown(event: Event): void {
-    event.stopPropagation();
+  toggleLangDropdown(): void {
     this.isLangDropdownOpen = !this.isLangDropdownOpen;
   }
 
@@ -155,6 +141,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   closeMenu(): void {
     this.isMenuOpen = false;
+    this.isLangDropdownOpen = false;
     document.body.classList.remove('menu-open');
   }
 
@@ -167,10 +154,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.closeMenu();
   }
 
-  toggleDarkMode(event?: Event): void {
-    if (event) {
-      event.stopPropagation();
-    }
+  toggleDarkMode(): void {
     this.isDarkMode = !this.isDarkMode;
     const theme = this.isDarkMode ? 'dark' : 'light';
     this.applyTheme(theme);

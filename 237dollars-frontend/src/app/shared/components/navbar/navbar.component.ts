@@ -16,6 +16,7 @@ import { filter, Subscription } from 'rxjs';
 export class NavbarComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
   currentLang = 'en';
+  isDarkMode = false;
   languages = [
     { code: 'en', name: 'English', flag: '🇺🇸' },
     { code: 'uz', name: 'O\'zbekcha', flag: '🇺🇿' },
@@ -40,6 +41,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     // Load saved language preference or use default
     const savedLang = this.storage.getItem<string>('language') || 'en';
     this.switchLanguage(savedLang);
+
+    // Load saved theme preference or use default
+    const savedTheme = this.storage.getItem<string>('theme') || 'light';
+    this.isDarkMode = savedTheme === 'dark';
+    this.applyTheme(savedTheme);
 
     // Close mobile menu on route change
     this.routerSubscription = this.router.events
@@ -140,5 +146,20 @@ export class NavbarComponent implements OnInit, OnDestroy {
   logout(): void {
     this.authService.logout();
     this.closeMenu();
+  }
+
+  toggleDarkMode(): void {
+    this.isDarkMode = !this.isDarkMode;
+    const theme = this.isDarkMode ? 'dark' : 'light';
+    this.applyTheme(theme);
+    this.storage.setItem('theme', theme);
+  }
+
+  private applyTheme(theme: string): void {
+    if (theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
   }
 }

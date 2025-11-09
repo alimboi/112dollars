@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,12 +10,22 @@ import { environment } from '../../../environments/environment';
 export class ApiService {
   private apiUrl = environment.apiUrl || 'http://localhost:3000/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private storageService: StorageService
+  ) {}
 
   private getHeaders(): HttpHeaders {
-    return new HttpHeaders({
+    const token = this.storageService.getItem<string>('accessToken');
+    let headers = new HttpHeaders({
       'Content-Type': 'application/json'
     });
+
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return headers;
   }
 
   get<T>(endpoint: string, params?: any): Observable<T> {

@@ -37,9 +37,23 @@ export class ApiService {
   }
 
   post<T>(endpoint: string, body: any): Observable<T> {
+    // Don't set Content-Type header for FormData (browser will set it with boundary)
+    const headers = body instanceof FormData ? this.getHeadersWithoutContentType() : this.getHeaders();
+
     return this.http.post<T>(`${this.apiUrl}/${endpoint}`, body, {
-      headers: this.getHeaders()
+      headers
     });
+  }
+
+  private getHeadersWithoutContentType(): HttpHeaders {
+    const token = this.storageService.getItem<string>('accessToken');
+    let headers = new HttpHeaders();
+
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return headers;
   }
 
   put<T>(endpoint: string, body: any): Observable<T> {

@@ -338,7 +338,7 @@ export class ReferenceEditorComponent implements OnInit {
 
   // ===== IMAGE UPLOAD =====
 
-  onImageSelect(event: any): void {
+  async onImageSelect(event: any): Promise<void> {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -347,19 +347,32 @@ export class ReferenceEditorComponent implements OnInit {
       return;
     }
 
-    if (file.size > 2 * 1024 * 1024) {
-      alert('Image size must be less than 2MB');
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image size must be less than 5MB');
       return;
     }
 
-    // Convert to base64 for preview (in production, upload to S3)
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
+    // Upload image to backend
+    const formData = new FormData();
+    formData.append('image', file);
+
+    this.loading = true;
+
+    try {
+      const response = await this.api.post<any>('upload/image', formData).toPromise();
+
       if (this.currentBlock && this.currentBlock.blockData) {
-        this.currentBlock.blockData.url = e.target.result;
+        // Store the URL returned from backend
+        this.currentBlock.blockData.url = 'http://localhost:3000' + response.url;
+        this.currentBlock.blockData.filename = response.filename;
       }
-    };
-    reader.readAsDataURL(file);
+
+      this.loading = false;
+    } catch (err) {
+      console.error('Error uploading image:', err);
+      alert('Failed to upload image');
+      this.loading = false;
+    }
   }
 
   // ===== VIDEO URL =====

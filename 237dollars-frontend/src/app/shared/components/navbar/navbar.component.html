@@ -28,7 +28,7 @@
         [class.active]="isMenuOpen"
         (click)="toggleMenu()"
         aria-label="Toggle navigation"
-        aria-expanded="{{isMenuOpen}}">
+        [attr.aria-expanded]="isMenuOpen">
         <span class="toggler-line"></span>
         <span class="toggler-line"></span>
         <span class="toggler-line"></span>

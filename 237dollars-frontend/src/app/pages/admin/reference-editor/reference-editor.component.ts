@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDropList, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SafeUrlPipe } from '../../../shared/pipes/safe-url.pipe';
 
 interface Major {
@@ -47,7 +47,7 @@ interface ContentBlock {
 @Component({
   selector: 'app-reference-editor',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, DragDropModule, SafeUrlPipe],
+  imports: [CommonModule, RouterModule, FormsModule, CdkDrag, CdkDropList, SafeUrlPipe],
   templateUrl: './reference-editor.component.html',
   styleUrls: ['./reference-editor.component.scss']
 })

@@ -14,7 +14,7 @@ import { gsap } from 'gsap';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  @ViewChild('canvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('canvas') canvasRef!: ElementRef<HTMLCanvasElement>;
 
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
@@ -34,12 +34,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.checkAnimationCooldown();
-    this.initThreeJS();
-    this.animate();
+
+    // Initialize Three.js after view is ready
+    setTimeout(() => {
+      this.initThreeJS();
+      this.animate();
+    }, 0);
 
     if (!this.showMatrixIntro) {
       this.showMainContent = true;
-      this.animateText();
+      setTimeout(() => this.animateText(), 100);
     }
   }
 
@@ -51,6 +55,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private initThreeJS(): void {
+    if (!this.canvasRef) {
+      console.error('Canvas not found!');
+      return;
+    }
     const canvas = this.canvasRef.nativeElement;
 
     // Scene

@@ -1,34 +1,61 @@
-<div class="reference-container">
-  <div class="container py-5">
-    <div class="loading" *ngIf="loading">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
+<div class="reference-page">
+  <div class="reference-container">
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="loading">
+      <div class="spinner-large"></div>
+      <p class="loading-text">Loading content...</p>
     </div>
 
-    <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+    <!-- Error State -->
+    <div class="alert alert-error" *ngIf="error && !loading">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <span>{{ error }}</span>
+    </div>
 
+    <!-- Reference Content -->
     <div *ngIf="!loading && !error && reference" class="reference-content">
-      <button routerLink="/references" class="btn btn-outline-light mb-4">
-        <i class="bi bi-arrow-left"></i> Back to References
+      <!-- Back Button -->
+      <button routerLink="/references" class="btn-back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Back to References</span>
       </button>
 
+      <!-- Reference Header -->
       <div class="reference-header">
-        <h1>{{ reference.title }}</h1>
-        <p class="description">{{ reference.description }}</p>
-        <div class="meta">
-          <span class="badge bg-primary me-2">
-            <i class="bi bi-clock"></i> {{ reference.readingTimeMinutes }} min read
-          </span>
-          <span class="badge bg-success" *ngIf="reference.isFree">
-            <i class="bi bi-unlock"></i> Free
-          </span>
-          <span class="badge bg-warning" *ngIf="!reference.isFree">
-            <i class="bi bi-lock"></i> Premium
-          </span>
+        <h1 class="reference-title">{{ reference.title }}</h1>
+        <p class="reference-description">{{ reference.description }}</p>
+
+        <div class="reference-meta">
+          <div class="meta-badge reading-time">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>{{ reference.readingTimeMinutes }} min read</span>
+          </div>
+
+          <div class="meta-badge" [ngClass]="reference.isFree ? 'badge-free' : 'badge-premium'">
+            <svg *ngIf="reference.isFree" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+            </svg>
+            <svg *ngIf="!reference.isFree" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <span>{{ reference.isFree ? 'Free' : 'Premium' }}</span>
+          </div>
         </div>
       </div>
 
+      <!-- Reference Body -->
       <div class="reference-body">
         <div class="content-block" *ngFor="let block of reference.contentBlocks" [ngSwitch]="block.blockType">
           <!-- Heading Block -->
@@ -62,42 +89,73 @@
 
           <!-- Image Block -->
           <div *ngSwitchCase="'image'" class="image-block" [ngStyle]="{'text-align': block.blockData?.alignment}">
-            <img [src]="block.blockData?.url"
-                 [alt]="block.blockData?.alt || 'Content image'"
-                 [ngStyle]="{
-                   'width': block.blockData?.width,
-                   'height': block.blockData?.height,
-                   'border-radius.px': block.blockData?.borderRadius
-                 }"
-                 [class]="'shadow-' + block.blockData?.boxShadow">
+            <div class="image-wrapper">
+              <img [src]="block.blockData?.url"
+                   [alt]="block.blockData?.alt || 'Content image'"
+                   [ngStyle]="{
+                     'width': block.blockData?.width,
+                     'height': block.blockData?.height,
+                     'border-radius.px': block.blockData?.borderRadius
+                   }"
+                   [class]="'shadow-' + block.blockData?.boxShadow">
+            </div>
           </div>
 
           <!-- Video Block (YouTube Embed) -->
           <div *ngSwitchCase="'video'" class="video-block" [ngStyle]="{'text-align': block.blockData?.alignment}">
-            <iframe *ngIf="block.blockData?.videoId"
-                    [src]="'https://www.youtube.com/embed/' + block.blockData?.videoId | safeUrl"
-                    [style.width]="block.blockData?.width"
-                    height="400"
-                    frameborder="0"
-                    allowfullscreen>
-            </iframe>
+            <div class="video-wrapper">
+              <iframe *ngIf="block.blockData?.videoId"
+                      [src]="'https://www.youtube.com/embed/' + block.blockData?.videoId | safeUrl"
+                      [style.width]="block.blockData?.width"
+                      height="400"
+                      frameborder="0"
+                      allowfullscreen>
+              </iframe>
+            </div>
           </div>
 
           <!-- Code Block -->
-          <pre *ngSwitchCase="'code_block'" class="code-block" [ngStyle]="{
+          <div *ngSwitchCase="'code_block'" class="code-block" [ngStyle]="{
             'background-color': block.styling?.backgroundColor,
             'color': block.styling?.color,
             'padding.px': block.styling?.padding,
             'margin-top.px': block.styling?.marginTop,
             'margin-bottom.px': block.styling?.marginBottom
-          }"><code>{{ block.content }}</code></pre>
+          }">
+            <div class="code-header">
+              <div class="code-dots">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+              </div>
+              <span class="code-label">Code</span>
+            </div>
+            <pre><code>{{ block.content }}</code></pre>
+          </div>
         </div>
       </div>
 
+      <!-- Reference Footer -->
       <div class="reference-footer">
-        <button routerLink="/quiz/{{ reference.id }}" class="btn btn-primary btn-lg">
-          Take Quiz <i class="bi bi-arrow-right"></i>
-        </button>
+        <div class="footer-card">
+          <div class="footer-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 11l3 3L22 4"></path>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+            </svg>
+          </div>
+          <h3 class="footer-title">Ready to Test Your Knowledge?</h3>
+          <p class="footer-description">
+            Take the quiz to earn points and reinforce what you've learned!
+          </p>
+          <button [routerLink]="['/quiz', reference.id]" class="btn-modern btn-primary">
+            <span>Take Quiz</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   </div>

@@ -539,7 +539,8 @@
   }
 }
 
-.language-switcher:hover .lang-dropdown {
+.language-switcher:hover .lang-dropdown,
+.lang-dropdown.active {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);

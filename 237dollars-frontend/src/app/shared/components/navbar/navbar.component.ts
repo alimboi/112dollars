@@ -15,6 +15,7 @@ import { filter, Subscription } from 'rxjs';
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
+  isLangDropdownOpen = false;
   currentLang = 'en';
   isDarkMode = false;
   languages = [
@@ -69,6 +70,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.isMenuOpen) {
       this.closeMenu();
     }
+    if (this.isLangDropdownOpen) {
+      this.isLangDropdownOpen = false;
+    }
+  }
+
+  // Close language dropdown when clicking outside
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    if (this.isLangDropdownOpen) {
+      this.isLangDropdownOpen = false;
+    }
   }
 
   // Handle scroll for navbar hide/show animation
@@ -103,11 +115,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
   }
 
-  switchLanguage(lang: string): void {
+  switchLanguage(lang: string, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+
     this.currentLang = lang;
     // TODO: Re-enable translation when fixed
     // this.translate.use(lang);
     this.storage.setItem('language', lang);
+
+    // Close language dropdown after selection
+    this.isLangDropdownOpen = false;
 
     // Sync with backend if user is authenticated
     if (this.authService.isAuthenticated()) {
@@ -116,6 +135,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
         error: (err) => console.error('Failed to sync language preference', err)
       });
     }
+  }
+
+  toggleLangDropdown(event: Event): void {
+    event.stopPropagation();
+    this.isLangDropdownOpen = !this.isLangDropdownOpen;
   }
 
   toggleMenu(): void {
@@ -143,7 +167,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.closeMenu();
   }
 
-  toggleDarkMode(): void {
+  toggleDarkMode(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
     this.isDarkMode = !this.isDarkMode;
     const theme = this.isDarkMode ? 'dark' : 'light';
     this.applyTheme(theme);

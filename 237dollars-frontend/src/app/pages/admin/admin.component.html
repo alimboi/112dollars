@@ -1,0 +1,176 @@
+<div class="admin-container">
+  <div class="container">
+    <!-- Header -->
+    <div class="admin-header">
+      <div class="header-content">
+        <h1 class="admin-title">
+          <span class="icon">🛡️</span>
+          Admin Dashboard
+        </h1>
+        <p class="admin-subtitle">Manage references and content</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-primary" routerLink="/admin/references/new">
+          <span class="icon">➕</span>
+          Create Reference
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-section">
+      <div class="filter-group">
+        <label for="publishedFilter">Status:</label>
+        <select
+          id="publishedFilter"
+          [(ngModel)]="publishedFilter"
+          (change)="onFilterChange()"
+          class="filter-select"
+        >
+          <option value="all">All References</option>
+          <option value="published">Published Only</option>
+          <option value="unpublished">Unpublished Only</option>
+        </select>
+      </div>
+
+      <div class="stats">
+        <span class="stat-item">
+          <strong>Total:</strong> {{ totalReferences }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading references...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="error-state">
+      <div class="error-icon">⚠️</div>
+      <h3>Error Loading References</h3>
+      <p>{{ error }}</p>
+      <button class="btn btn-outline" (click)="loadReferences()">Try Again</button>
+    </div>
+
+    <!-- References Table -->
+    <div *ngIf="!loading && !error" class="references-table">
+      <div *ngIf="references.length === 0" class="empty-state">
+        <div class="empty-icon">📄</div>
+        <h3>No References Found</h3>
+        <p>Start by creating your first reference</p>
+        <button class="btn btn-primary" routerLink="/admin/references/new">
+          Create Reference
+        </button>
+      </div>
+
+      <table *ngIf="references.length > 0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Major</th>
+            <th>Topic</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Creator</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reference of references" [class.unpublished]="!reference.isPublished">
+            <td class="id-cell">{{ reference.id }}</td>
+            <td class="title-cell">
+              <div class="title-content">
+                <strong>{{ reference.title }}</strong>
+                <p *ngIf="reference.description" class="description">
+                  {{ reference.description }}
+                </p>
+              </div>
+            </td>
+            <td class="major-cell">
+              {{ reference.topic?.major?.name || 'N/A' }}
+            </td>
+            <td class="topic-cell">
+              {{ reference.topic?.name || 'N/A' }}
+            </td>
+            <td class="status-cell">
+              <span class="status-badge" [class.published]="reference.isPublished">
+                {{ reference.isPublished ? '✓ Published' : '○ Draft' }}
+              </span>
+            </td>
+            <td class="date-cell">
+              {{ formatDate(reference.createdAt) }}
+            </td>
+            <td class="creator-cell">
+              {{ reference.creator?.email || 'Unknown' }}
+            </td>
+            <td class="actions-cell">
+              <div class="action-buttons">
+                <button
+                  class="btn-icon btn-view"
+                  [routerLink]="['/references', reference.id]"
+                  title="View"
+                >
+                  👁️
+                </button>
+                <button
+                  class="btn-icon btn-edit"
+                  [routerLink]="['/admin/references', reference.id, 'edit']"
+                  title="Edit"
+                >
+                  ✏️
+                </button>
+                <button
+                  class="btn-icon btn-toggle"
+                  (click)="togglePublish(reference)"
+                  [title]="reference.isPublished ? 'Unpublish' : 'Publish'"
+                >
+                  {{ reference.isPublished ? '🔽' : '🔼' }}
+                </button>
+                <button
+                  class="btn-icon btn-delete"
+                  (click)="deleteReference(reference)"
+                  title="Delete"
+                >
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="!loading && totalPages > 1" class="pagination">
+      <button
+        class="pagination-btn"
+        (click)="goToPage(currentPage - 1)"
+        [disabled]="currentPage === 1"
+      >
+        ← Previous
+      </button>
+
+      <div class="page-numbers">
+        <button
+          *ngFor="let page of getPageNumbers()"
+          class="page-btn"
+          [class.active]="page === currentPage"
+          (click)="goToPage(page)"
+        >
+          {{ page }}
+        </button>
+      </div>
+
+      <button
+        class="pagination-btn"
+        (click)="goToPage(currentPage + 1)"
+        [disabled]="currentPage === totalPages"
+      >
+        Next →
+      </button>
+    </div>
+  </div>
+</div>

@@ -42,6 +42,30 @@ export class ReferencesService {
     });
   }
 
+  // Admin - Get all references
+  async findAll(page: number = 1, limit: number = 20, isPublished?: boolean) {
+    const where: any = {};
+    if (isPublished !== undefined) {
+      where.isPublished = isPublished;
+    }
+
+    const [references, total] = await this.referenceRepository.findAndCount({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { createdAt: 'DESC' },
+      relations: ['topic', 'topic.major', 'creator'],
+    });
+
+    return {
+      references,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
   // References
   async create(createReferenceDto: CreateReferenceDto, createdBy: number) {
     // Calculate reading time if totalWords provided

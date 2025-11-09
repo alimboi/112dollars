@@ -88,6 +88,11 @@ export class AuthService {
     return this.storage.getItem<string>('accessToken');
   }
 
+  isAdmin(): boolean {
+    const user = this.getCurrentUser();
+    return user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'content_manager';
+  }
+
   private handleAuthResponse(response: AuthResponse): void {
     this.storage.setItem('user', response.user);
     this.storage.setItem('accessToken', response.accessToken);

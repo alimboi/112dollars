@@ -34,6 +34,18 @@ export class ReferencesController {
     return this.referencesService.getTopicsByMajor(+majorId);
   }
 
+  // Admin - Get all references
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
+  @Get('admin/all')
+  getAllReferences(
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '20',
+    @Query('published') published?: string,
+  ) {
+    const publishedFilter = published === 'true' ? true : published === 'false' ? false : undefined;
+    return this.referencesService.findAll(+page, +limit, publishedFilter);
+  }
+
   // References
   @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
   @Post()

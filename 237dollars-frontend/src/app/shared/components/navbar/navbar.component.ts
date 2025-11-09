@@ -28,6 +28,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private routerSubscription?: Subscription;
   private lastScrollTop = 0;
   private scrollThreshold = 100;
+  private zoomLevel = 1;
 
   constructor(
     public authService: AuthService,
@@ -55,6 +56,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.closeMenu();
       });
+
+    // Check navbar fit on init and resize
+    this.checkNavbarFit();
   }
 
   ngOnDestroy(): void {
@@ -74,6 +78,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.isLangDropdownOpen) {
       this.isLangDropdownOpen = false;
     }
+  }
+
+  // Check navbar fit on resize and zoom
+  @HostListener('window:resize')
+  onWindowResize(): void {
+    this.checkNavbarFit();
   }
 
   // Handle scroll for navbar hide/show animation
@@ -167,5 +177,46 @@ export class NavbarComponent implements OnInit, OnDestroy {
     } else {
       document.documentElement.removeAttribute('data-theme');
     }
+  }
+
+  private checkNavbarFit(): void {
+    // Detect zoom level
+    const devicePixelRatio = window.devicePixelRatio || 1;
+    const visualViewport = (window as any).visualViewport;
+
+    // Calculate effective viewport width accounting for zoom
+    let effectiveWidth = window.innerWidth;
+
+    if (visualViewport) {
+      // More accurate zoom detection
+      effectiveWidth = visualViewport.width;
+      this.zoomLevel = window.innerWidth / visualViewport.width;
+    } else {
+      // Fallback zoom detection
+      this.zoomLevel = devicePixelRatio;
+    }
+
+    // Get the navbar element
+    const navbar = this.el.nativeElement.querySelector('.navbar-modern');
+    if (!navbar) return;
+
+    // Calculate if navbar items will fit
+    // This checks actual available space vs needed space
+    const containerWidth = effectiveWidth;
+    const shouldShowMobileMenu = containerWidth < 1400 || this.zoomLevel > 1.1;
+
+    // Add/remove mobile class dynamically
+    if (shouldShowMobileMenu) {
+      this.renderer.addClass(navbar, 'force-mobile');
+    } else {
+      this.renderer.removeClass(navbar, 'force-mobile');
+    }
+
+    console.log('Navbar check:', {
+      windowWidth: window.innerWidth,
+      effectiveWidth,
+      zoomLevel: this.zoomLevel.toFixed(2),
+      shouldShowMobile: shouldShowMobileMenu
+    });
   }
 }

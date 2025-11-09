@@ -168,6 +168,15 @@
     justify-content: center;
     gap: 5px;
   }
+
+  // Show when zoom detected
+  .force-mobile & {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
 }
 
 .toggler-line {
@@ -226,6 +235,30 @@
   @media (max-width: 480px) {
     width: 280px;
   }
+
+  // Force mobile when zoom detected
+  .force-mobile & {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 320px;
+    max-width: 85%;
+    height: 100vh;
+    background: var(--white);
+    box-shadow: var(--shadow-2xl);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: var(--spacing-3xl) var(--spacing-lg);
+    margin-left: 0;
+    overflow-y: auto;
+    transition: right 0.3s ease;
+    z-index: var(--z-fixed);
+
+    &.active {
+      right: 0;
+    }
+  }
 }
 
 /* Mobile Brand Header */
@@ -237,6 +270,10 @@
   border-bottom: 1px solid var(--border-light);
 
   @media (max-width: 1280px) {
+    display: block;
+  }
+
+  .force-mobile & {
     display: block;
   }
 }
@@ -694,6 +731,11 @@
 
   @media (min-width: 1281px) {
     display: none;
+  }
+
+  // Show when zoom detected
+  .force-mobile & {
+    display: block;
   }
 }
 

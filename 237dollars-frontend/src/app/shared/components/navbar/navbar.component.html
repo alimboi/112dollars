@@ -62,7 +62,7 @@
           <!-- Language Switcher -->
           <div class="dropdown me-2">
             <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-              {{ languages.find(l => l.code === currentLang)?.flag }} {{ languages.find(l => l.code === currentLang)?.name }}
+              {{ getCurrentLanguage()?.flag }} {{ getCurrentLanguage()?.name }}
             </button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
               <li *ngFor="let lang of languages">

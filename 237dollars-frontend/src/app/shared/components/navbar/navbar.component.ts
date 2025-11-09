@@ -54,6 +54,10 @@ export class NavbarComponent implements OnInit {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
+  getCurrentLanguage() {
+    return this.languages.find(l => l.code === this.currentLang);
+  }
+
   logout(): void {
     this.authService.logout();
   }

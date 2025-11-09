@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { StorageService } from '../../../core/services/storage.service';
 import { ApiService } from '../../../core/services/api.service';
+import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -12,7 +13,7 @@ import { ApiService } from '../../../core/services/api.service';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
   currentLang = 'en';
   languages = [
@@ -22,16 +23,42 @@ export class NavbarComponent implements OnInit {
     { code: 'ko', name: '한국어', flag: '🇰🇷' }
   ];
 
+  private routerSubscription?: Subscription;
+
   constructor(
     public authService: AuthService,
     private storage: StorageService,
-    private api: ApiService
+    private api: ApiService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     // Load saved language preference or use default
     const savedLang = this.storage.getItem<string>('language') || 'en';
     this.switchLanguage(savedLang);
+
+    // Close mobile menu on route change
+    this.routerSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.closeMenu();
+      });
+  }
+
+  ngOnDestroy(): void {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+    // Ensure body scroll is re-enabled when component is destroyed
+    document.body.classList.remove('menu-open');
+  }
+
+  // Close menu on escape key press
+  @HostListener('document:keydown.escape')
+  onEscapePress(): void {
+    if (this.isMenuOpen) {
+      this.closeMenu();
+    }
   }
 
   switchLanguage(lang: string): void {
@@ -47,10 +74,27 @@ export class NavbarComponent implements OnInit {
         error: (err) => console.error('Failed to sync language preference', err)
       });
     }
+
+    // Close menu after language selection on mobile
+    if (window.innerWidth <= 991) {
+      this.closeMenu();
+    }
   }
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
+
+    // Prevent body scroll when menu is open on mobile
+    if (this.isMenuOpen) {
+      document.body.classList.add('menu-open');
+    } else {
+      document.body.classList.remove('menu-open');
+    }
+  }
+
+  closeMenu(): void {
+    this.isMenuOpen = false;
+    document.body.classList.remove('menu-open');
   }
 
   getCurrentLanguage() {
@@ -59,5 +103,6 @@ export class NavbarComponent implements OnInit {
 
   logout(): void {
     this.authService.logout();
+    this.closeMenu();
   }
 }

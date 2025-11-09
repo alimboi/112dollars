@@ -5,7 +5,7 @@
         <span class="brand-text">237</span><span class="brand-accent">DOLLARS</span>
       </a>
 
-      <button class="navbar-toggler d-md-none" (click)="toggleMenu()">
+      <button class="navbar-toggler" [class.active]="isMenuOpen" (click)="toggleMenu()" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 

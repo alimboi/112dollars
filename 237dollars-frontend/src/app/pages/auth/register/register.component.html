@@ -1,60 +1,143 @@
-<div class="auth-container">
-  <div class="auth-card">
-    <h2 class="text-center mb-4">Create Account</h2>
-
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input
-          type="email"
-          id="email"
-          formControlName="email"
-          class="form-control"
-          [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
-        />
-        <div class="invalid-feedback">Please enter a valid email</div>
+<div class="auth-page">
+  <div class="auth-container">
+    <div class="auth-card">
+      <!-- Logo and Header -->
+      <div class="auth-header">
+        <div class="auth-logo">
+          <svg width="48" height="48" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 0L25 15H40L28 24L33 39L20 30L7 39L12 24L0 15H15L20 0Z" fill="url(#registerGradient)"/>
+            <defs>
+              <linearGradient id="registerGradient" x1="0" y1="0" x2="40" y2="40">
+                <stop offset="0%" stop-color="#0052CC"/>
+                <stop offset="50%" stop-color="#2563EB"/>
+                <stop offset="100%" stop-color="#10B981"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <h1 class="auth-title">Create Your Account</h1>
+        <p class="auth-subtitle">Start your educational journey today</p>
       </div>
 
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input
-          type="password"
-          id="password"
-          formControlName="password"
-          class="form-control"
-          [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
-        />
-        <small class="form-text text-secondary">
-          Must be at least 8 characters with uppercase, lowercase, and number
-        </small>
+      <!-- Register Form -->
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+        <!-- Email Field -->
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              class="form-input"
+              placeholder="your@email.com"
+              [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+            />
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched">
+            Email is required
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('email')?.hasError('email') && registerForm.get('email')?.touched">
+            Please enter a valid email address
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <input
+              type="password"
+              id="password"
+              formControlName="password"
+              class="form-input"
+              placeholder="Create a strong password"
+              [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+            />
+          </div>
+          <div class="form-hint">
+            At least 8 characters with uppercase, lowercase, and number
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('password')?.hasError('required') && registerForm.get('password')?.touched">
+            Password is required
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('password')?.hasError('minlength') && registerForm.get('password')?.touched">
+            Password must be at least 8 characters
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('password')?.hasError('pattern') && registerForm.get('password')?.touched">
+            Password must contain uppercase, lowercase, and number
+          </div>
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">Confirm Password</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              <circle cx="12" cy="16" r="1"></circle>
+            </svg>
+            <input
+              type="password"
+              id="confirmPassword"
+              formControlName="confirmPassword"
+              class="form-input"
+              placeholder="Confirm your password"
+              [class.is-invalid]="(registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched) || (registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched)"
+            />
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('confirmPassword')?.hasError('required') && registerForm.get('confirmPassword')?.touched">
+            Please confirm your password
+          </div>
+          <div class="error-message" *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched">
+            Passwords do not match
+          </div>
+        </div>
+
+        <!-- Error Alert -->
+        <div class="alert alert-error" *ngIf="errorMessage">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-modern btn-primary btn-full" [disabled]="loading || registerForm.invalid">
+          <span *ngIf="loading" class="spinner"></span>
+          <span>{{ loading ? 'Creating Account...' : 'Create Account' }}</span>
+          <svg *ngIf="!loading" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </button>
+
+        <!-- Terms Note -->
+        <div class="terms-note">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span>By registering, you agree to our Terms of Service and Privacy Policy</span>
+        </div>
+      </form>
+
+      <!-- Login Link -->
+      <div class="auth-footer">
+        <p>Already have an account? <a routerLink="/auth/login" class="text-link-primary">Sign in</a></p>
       </div>
-
-      <div class="mb-3">
-        <label for="confirmPassword" class="form-label">Confirm Password</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          formControlName="confirmPassword"
-          class="form-control"
-          [class.is-invalid]="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched"
-        />
-        <div class="invalid-feedback">Passwords do not match</div>
-      </div>
-
-      <div class="alert alert-danger" *ngIf="errorMessage">
-        {{ errorMessage }}
-      </div>
-
-      <button type="submit" class="btn btn-primary w-100 mb-3" [disabled]="loading || registerForm.invalid">
-        <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
-        {{ loading ? 'Creating Account...' : 'Register' }}
-      </button>
-    </form>
-
-    <div class="text-center">
-      <p>
-        Already have an account? <a routerLink="/auth/login" class="text-accent">Login</a>
-      </p>
     </div>
   </div>
 </div>

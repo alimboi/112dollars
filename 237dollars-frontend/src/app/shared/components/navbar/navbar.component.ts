@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { StorageService } from '../../../core/services/storage.service';
 import { ApiService } from '../../../core/services/api.service';
@@ -9,7 +8,7 @@ import { ApiService } from '../../../core/services/api.service';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
@@ -25,7 +24,6 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
-    private translate: TranslateService,
     private storage: StorageService,
     private api: ApiService
   ) {}
@@ -38,7 +36,8 @@ export class NavbarComponent implements OnInit {
 
   switchLanguage(lang: string): void {
     this.currentLang = lang;
-    this.translate.use(lang);
+    // TODO: Re-enable translation when fixed
+    // this.translate.use(lang);
     this.storage.setItem('language', lang);
 
     // Sync with backend if user is authenticated

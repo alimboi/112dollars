@@ -1,50 +1,15 @@
 <div class="home-container">
-  <canvas #canvas class="matrix-canvas"></canvas>
-
-  <!-- Matrix Intro with Pills -->
-  <div *ngIf="showMatrixIntro" class="matrix-man-container">
-    <div class="matrix-man-silhouette">
-      <!-- Man silhouette using CSS -->
-      <div class="man-head"></div>
-      <div class="man-body"></div>
-      <div class="man-arms">
-        <!-- Blue Pill (Left Hand) -->
-        <div class="pill-container left-hand">
-          <div class="blue-pill" (click)="onBluePillClick()">
-            <div class="pill-shine"></div>
-          </div>
-        </div>
-        <!-- Red Pill (Right Hand) -->
-        <div class="pill-container right-hand">
-          <div class="red-pill" (click)="onRedPillClick()">
-            <div class="pill-shine"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Rejection Message -->
-    <div *ngIf="showRejectionMessage" class="rejection-message">
-      {{ rejectionText }}
-    </div>
-  </div>
-
-  <!-- Welcome Message -->
-  <div *ngIf="showWelcomeMessage" class="welcome-message">
-    <h1 class="typewriter-text">{{ welcomeText }}</h1>
-  </div>
-
   <!-- Main Content -->
   <div *ngIf="showMainContent" class="hero-content">
-    <h1 class="hero-title">{{ 'home.title' | translate }}</h1>
-    <p class="hero-subtitle">{{ 'home.subtitle' | translate }}</p>
+    <h1 class="hero-title">237DOLLARS</h1>
+    <p class="hero-subtitle">Your Gateway to Educational Excellence</p>
 
     <div class="cta-buttons">
       <button routerLink="/references" class="btn btn-primary btn-lg">
-        {{ 'home.learnMore' | translate }}
+        Learn More
       </button>
       <button routerLink="/auth/register" class="btn btn-outline-light btn-lg">
-        {{ 'home.getStarted' | translate }}
+        Get Started
       </button>
     </div>
 
@@ -52,20 +17,20 @@
       <div class="row g-4">
         <div class="col-md-4">
           <div class="feature-card">
-            <h3>{{ 'references.majors.korean' | translate }}</h3>
-            <p>{{ 'home.features.comprehensive.description' | translate }}</p>
+            <h3>Korean Language</h3>
+            <p>Comprehensive Korean language learning materials</p>
           </div>
         </div>
         <div class="col-md-4">
           <div class="feature-card">
-            <h3>{{ 'references.majors.english' | translate }}</h3>
-            <p>{{ 'home.features.interactive.description' | translate }}</p>
+            <h3>English Language</h3>
+            <p>Interactive English language courses</p>
           </div>
         </div>
         <div class="col-md-4">
           <div class="feature-card">
-            <h3>{{ 'references.majors.coding' | translate }}</h3>
-            <p>{{ 'home.features.progress.description' | translate }}</p>
+            <h3>Coding</h3>
+            <p>Track your progress with detailed analytics</p>
           </div>
         </div>
       </div>

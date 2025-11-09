@@ -308,8 +308,9 @@
       position: fixed;
       top: 0;
       right: 0;
-      bottom: 0;
       width: min(380px, 90vw);
+      height: 100vh;
+      max-height: 100vh;
       background: linear-gradient(
         180deg,
         rgba(18, 24, 39, 0.98) 0%,

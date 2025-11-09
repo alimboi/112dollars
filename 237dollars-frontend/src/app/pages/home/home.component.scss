@@ -14,13 +14,14 @@
 /* ===== HERO SECTION ===== */
 .hero-content {
   position: relative;
-  z-index: 2;
+  z-index: 1; /* Below navbar which is 9999 */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   padding: var(--spacing-3xl) var(--spacing-lg);
+  padding-top: 120px; /* Account for fixed navbar */
   text-align: center;
   width: 100%;
   max-width: 1400px;
@@ -28,6 +29,7 @@
 
   @media (max-width: 768px) {
     padding: var(--spacing-2xl) var(--spacing-md);
+    padding-top: 100px; /* Account for fixed navbar on mobile */
   }
 }
 

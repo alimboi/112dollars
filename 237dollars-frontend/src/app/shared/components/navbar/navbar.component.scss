@@ -24,19 +24,6 @@
   }
 }
 
-.container-modern {
-  max-width: 100%;
-  padding: 0 var(--spacing-lg);
-
-  @media (max-width: 1200px) {
-    padding: 0 var(--spacing-md);
-  }
-
-  @media (max-width: 768px) {
-    padding: 0 var(--spacing-sm);
-  }
-}
-
 /* ============================================
    NAVBAR CONTAINER
    ============================================ */

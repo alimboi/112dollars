@@ -2,13 +2,22 @@ import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { Observable } from 'rxjs';
 
-// Factory function for TranslateHttpLoader
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http);
+// Custom TranslateLoader implementation
+export class CustomTranslateLoader implements TranslateLoader {
+  constructor(private http: HttpClient) {}
+
+  getTranslation(lang: string): Observable<any> {
+    return this.http.get(`/assets/i18n/${lang}.json`);
+  }
+}
+
+// Factory function for custom loader
+export function createTranslateLoader(http: HttpClient) {
+  return new CustomTranslateLoader(http);
 }
 
 export const appConfig: ApplicationConfig = {
@@ -20,7 +29,7 @@ export const appConfig: ApplicationConfig = {
         defaultLanguage: 'en',
         loader: {
           provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
+          useFactory: createTranslateLoader,
           deps: [HttpClient]
         }
       })

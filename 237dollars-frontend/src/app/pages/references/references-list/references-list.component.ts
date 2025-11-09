@@ -43,4 +43,13 @@ export class ReferencesListComponent implements OnInit {
     };
     return icons[name] || 'bi bi-star';
   }
+
+  getMajorIconClass(name: string): string {
+    const classes: Record<string, string> = {
+      'Korean': 'icon-korean',
+      'English': 'icon-english',
+      'Coding': 'icon-coding'
+    };
+    return classes[name] || 'icon-default';
+  }
 }

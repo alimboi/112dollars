@@ -1,26 +1,95 @@
-<div class="references-container">
-  <div class="container py-5">
-    <h1 class="page-title text-center mb-5">Choose Your Learning Path</h1>
+<div class="references-page">
+  <div class="references-container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="header-badge">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+        </svg>
+        <span>Learning Resources</span>
+      </div>
+      <h1 class="page-title">Choose Your Learning Path</h1>
+      <p class="page-subtitle">
+        Explore our comprehensive learning materials organized by major. Each path is designed to guide you from basics to advanced topics.
+      </p>
+    </div>
 
-    <div class="loading" *ngIf="loading">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="loading">
+      <div class="spinner-large"></div>
+      <p class="loading-text">Loading learning paths...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="alert alert-error" *ngIf="error && !loading">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <span>{{ error }}</span>
+    </div>
+
+    <!-- Majors Grid -->
+    <div class="majors-grid" *ngIf="!loading && !error && majors.length > 0">
+      <div class="major-card" *ngFor="let major of majors; let i = index"
+           [routerLink]="['/references/major', major.id]"
+           [style.animation-delay]="(i * 0.1) + 's'">
+        <div class="card-decoration">
+          <div class="decoration-circle decoration-1"></div>
+          <div class="decoration-circle decoration-2"></div>
+        </div>
+
+        <div class="major-icon" [ngClass]="getMajorIconClass(major.name)">
+          <svg *ngIf="major.name === 'Korean'" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            <path d="M2 12h20"></path>
+          </svg>
+          <svg *ngIf="major.name === 'English'" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+          </svg>
+          <svg *ngIf="major.name === 'Coding'" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+          <svg *ngIf="major.name !== 'Korean' && major.name !== 'English' && major.name !== 'Coding'"
+               width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+        </div>
+
+        <div class="major-content">
+          <h3 class="major-title">{{ major.name }}</h3>
+          <p class="major-description">{{ major.description }}</p>
+
+          <div class="major-footer">
+            <span class="explore-link">
+              Explore Topics
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </div>
+        </div>
+
+        <div class="card-glow"></div>
       </div>
     </div>
 
-    <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
-
-    <div class="row g-4" *ngIf="!loading && !error">
-      <div class="col-md-4" *ngFor="let major of majors">
-        <div class="major-card" [routerLink]="['/references/major', major.id]">
-          <div class="major-icon">
-            <i [class]="getMajorIcon(major.name)"></i>
-          </div>
-          <h3>{{ major.name }}</h3>
-          <p>{{ major.description }}</p>
-          <button class="btn btn-primary mt-3">Explore Topics</button>
-        </div>
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!loading && !error && majors.length === 0">
+      <div class="empty-icon">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+        </svg>
       </div>
+      <h3 class="empty-title">No Learning Paths Available</h3>
+      <p class="empty-message">Check back soon for new learning materials and resources.</p>
     </div>
   </div>
 </div>

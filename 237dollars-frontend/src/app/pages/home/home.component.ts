@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { StorageService } from '../../core/services/storage.service';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 
@@ -21,10 +22,25 @@ export class HomeComponent implements OnInit, OnDestroy {
   private particles!: THREE.Points;
   private animationId: number = 0;
 
+  // Matrix animation state
+  showMatrixIntro = false;
+  showRejectionMessage = false;
+  showWelcomeMessage = false;
+  welcomeText = '';
+  rejectionText = '';
+  showMainContent = false;
+
+  constructor(private storage: StorageService) {}
+
   ngOnInit(): void {
+    this.checkAnimationCooldown();
     this.initThreeJS();
     this.animate();
-    this.animateText();
+
+    if (!this.showMatrixIntro) {
+      this.showMainContent = true;
+      this.animateText();
+    }
   }
 
   ngOnDestroy(): void {
@@ -133,5 +149,123 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  // Matrix Animation Methods
+  private checkAnimationCooldown(): void {
+    const lastViewed = this.storage.getItem<number>('matrixAnimationLastViewed');
+    const now = Date.now();
+    const twentyFourHours = 24 * 60 * 60 * 1000;
+
+    if (!lastViewed || (now - lastViewed) > twentyFourHours) {
+      this.showMatrixIntro = true;
+    }
+  }
+
+  onBluePillClick(): void {
+    this.rejectionText = 'Sorry, we serve only for people with big dreams';
+    this.showRejectionMessage = true;
+
+    // Hide rejection message after 3 seconds
+    setTimeout(() => {
+      this.showRejectionMessage = false;
+    }, 3000);
+  }
+
+  onRedPillClick(): void {
+    // Hide pills
+    gsap.to('.matrix-man-container', {
+      opacity: 0,
+      duration: 0.5,
+      onComplete: () => {
+        this.showMatrixIntro = false;
+      }
+    });
+
+    // Show welcome message with typewriter effect
+    setTimeout(() => {
+      this.showWelcomeMessage = true;
+      this.typewriterEffect('Welcome to the real world', 80);
+    }, 600);
+
+    // After welcome message, fly objects to navbar
+    setTimeout(() => {
+      this.flyObjectsToNavbar();
+    }, 3000);
+  }
+
+  private typewriterEffect(text: string, speed: number): void {
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < text.length) {
+        this.welcomeText += text.charAt(i);
+        i++;
+      } else {
+        clearInterval(interval);
+      }
+    }, speed);
+  }
+
+  private flyObjectsToNavbar(): void {
+    // Create flying objects
+    const flyingObjects = [
+      { text: '237DOLLARS', className: 'flying-logo' },
+      { text: 'References', className: 'flying-nav-1' },
+      { text: 'Blog', className: 'flying-nav-2' },
+      { text: 'About', className: 'flying-nav-3' }
+    ];
+
+    flyingObjects.forEach((obj, index) => {
+      const element = document.createElement('div');
+      element.className = `flying-object ${obj.className}`;
+      element.textContent = obj.text;
+      element.style.position = 'fixed';
+      element.style.left = '50%';
+      element.style.top = '50%';
+      element.style.transform = 'translate(-50%, -50%)';
+      element.style.color = 'var(--accent)';
+      element.style.fontSize = '1.5rem';
+      element.style.fontWeight = 'bold';
+      element.style.zIndex = '9999';
+      element.style.filter = 'blur(5px)';
+      document.body.appendChild(element);
+
+      // Calculate target position (navbar)
+      const targetX = index === 0 ? '10%' : `${30 + (index * 15)}%`;
+      const targetY = '5%';
+
+      // Zigzag animation with intermediate points
+      const timeline = gsap.timeline();
+
+      // Remove blur first
+      timeline.to(element, {
+        filter: 'blur(0px)',
+        duration: 0.3
+      });
+
+      // Zigzag path using keyframes
+      timeline.to(element, {
+        keyframes: [
+          { left: '55%', top: '45%', duration: 0.3 },
+          { left: '45%', top: '35%', duration: 0.3 },
+          { left: '60%', top: '25%', duration: 0.35 },
+          { left: targetX, top: targetY, duration: 0.75 }
+        ],
+        ease: 'power2.inOut',
+        onComplete: () => {
+          element.remove();
+        }
+      });
+    });
+
+    // Show main content after animation
+    setTimeout(() => {
+      this.showWelcomeMessage = false;
+      this.showMainContent = true;
+      this.animateText();
+
+      // Store timestamp
+      this.storage.setItem('matrixAnimationLastViewed', Date.now());
+    }, 2000);
   }
 }

@@ -1,7 +1,41 @@
 <div class="home-container">
   <canvas #canvas class="matrix-canvas"></canvas>
 
-  <div class="hero-content">
+  <!-- Matrix Intro with Pills -->
+  <div *ngIf="showMatrixIntro" class="matrix-man-container">
+    <div class="matrix-man-silhouette">
+      <!-- Man silhouette using CSS -->
+      <div class="man-head"></div>
+      <div class="man-body"></div>
+      <div class="man-arms">
+        <!-- Blue Pill (Left Hand) -->
+        <div class="pill-container left-hand">
+          <div class="blue-pill" (click)="onBluePillClick()">
+            <div class="pill-shine"></div>
+          </div>
+        </div>
+        <!-- Red Pill (Right Hand) -->
+        <div class="pill-container right-hand">
+          <div class="red-pill" (click)="onRedPillClick()">
+            <div class="pill-shine"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rejection Message -->
+    <div *ngIf="showRejectionMessage" class="rejection-message">
+      {{ rejectionText }}
+    </div>
+  </div>
+
+  <!-- Welcome Message -->
+  <div *ngIf="showWelcomeMessage" class="welcome-message">
+    <h1 class="typewriter-text">{{ welcomeText }}</h1>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="showMainContent" class="hero-content">
     <h1 class="hero-title">{{ 'home.title' | translate }}</h1>
     <p class="hero-subtitle">{{ 'home.subtitle' | translate }}</p>
 

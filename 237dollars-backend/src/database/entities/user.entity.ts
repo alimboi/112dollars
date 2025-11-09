@@ -26,8 +26,20 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
+
+  @Column({ name: 'google_id', nullable: true, unique: true })
+  googleId: string;
+
+  @Column({ name: 'first_name', nullable: true })
+  firstName: string;
+
+  @Column({ name: 'last_name', nullable: true })
+  lastName: string;
+
+  @Column({ name: 'profile_picture', nullable: true })
+  profilePicture: string;
 
   @Column({
     type: 'enum',

@@ -213,6 +213,66 @@ export class AuthService {
     return { message: 'Password reset successful' };
   }
 
+  async googleLogin(googleUser: any) {
+    const { googleId, email, firstName, lastName, picture } = googleUser;
+
+    // Check if user exists by Google ID
+    let user = await this.userRepository.findOne({
+      where: { googleId },
+    });
+
+    // If not found by Google ID, check by email
+    if (!user) {
+      user = await this.userRepository.findOne({
+        where: { email },
+      });
+
+      // If user exists with email but no Google ID, link Google account
+      if (user) {
+        user.googleId = googleId;
+        user.profilePicture = picture;
+        await this.userRepository.save(user);
+      }
+    }
+
+    // If user doesn't exist at all, create new user
+    if (!user) {
+      user = this.userRepository.create({
+        email,
+        googleId,
+        firstName,
+        lastName,
+        profilePicture: picture,
+        isActive: true,
+        // Google users don't have a password (they authenticate via OAuth)
+        password: null,
+      });
+
+      await this.userRepository.save(user);
+    }
+
+    // Update last login
+    user.lastLogin = new Date();
+    await this.userRepository.save(user);
+
+    // Generate tokens
+    const tokens = await this.generateTokens(user.id, user.role);
+
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        profilePicture: user.profilePicture,
+        language: user.language,
+        darkMode: user.darkMode,
+      },
+      ...tokens,
+    };
+  }
+
   async generateTokens(userId: number, role: string) {
     const payload = { sub: userId, role };
 

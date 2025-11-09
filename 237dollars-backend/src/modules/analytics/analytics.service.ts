@@ -128,7 +128,7 @@ export class AnalyticsService {
       .getRawMany();
 
     const studentsPassedTest = await this.userRepository.count({
-      where: { role: UserRole.STUDENT, realTestPassed: true },
+      where: { role: UserRole.ENROLLED_STUDENT, realTestPassed: true },
     });
 
     return {

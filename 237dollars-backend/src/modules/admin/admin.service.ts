@@ -146,7 +146,7 @@ export class AdminService {
       where: { isActive: true },
     });
     const studentsPassedTest = await this.userRepository.count({
-      where: { role: UserRole.STUDENT, realTestPassed: true },
+      where: { role: UserRole.ENROLLED_STUDENT, realTestPassed: true },
     });
 
     const recentActivity = await this.activityLogRepository.find({

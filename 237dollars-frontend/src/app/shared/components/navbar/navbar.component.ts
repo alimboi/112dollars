@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ElementRef, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -24,12 +24,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ];
 
   private routerSubscription?: Subscription;
+  private lastScrollTop = 0;
+  private scrollThreshold = 100;
 
   constructor(
     public authService: AuthService,
     private storage: StorageService,
     private api: ApiService,
-    private router: Router
+    private router: Router,
+    private el: ElementRef,
+    private renderer: Renderer2
   ) {}
 
   ngOnInit(): void {
@@ -59,6 +63,38 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.isMenuOpen) {
       this.closeMenu();
     }
+  }
+
+  // Handle scroll for navbar hide/show animation
+  @HostListener('window:scroll', ['$event'])
+  onWindowScroll(): void {
+    const navbar = this.el.nativeElement.querySelector('.navbar');
+    if (!navbar) return;
+
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    // Add scrolled class when scrolled down
+    if (scrollTop > 50) {
+      this.renderer.addClass(navbar, 'scrolled');
+    } else {
+      this.renderer.removeClass(navbar, 'scrolled');
+    }
+
+    // Hide/show navbar based on scroll direction
+    if (scrollTop > this.scrollThreshold) {
+      if (scrollTop > this.lastScrollTop && !this.isMenuOpen) {
+        // Scrolling down - hide navbar
+        this.renderer.addClass(navbar, 'navbar-hidden');
+      } else {
+        // Scrolling up - show navbar
+        this.renderer.removeClass(navbar, 'navbar-hidden');
+      }
+    } else {
+      // Always show navbar near top of page
+      this.renderer.removeClass(navbar, 'navbar-hidden');
+    }
+
+    this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
   }
 
   switchLanguage(lang: string): void {

@@ -144,11 +144,20 @@
 
   @media (max-width: 1200px) {
     grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+  }
+
+  @media (max-width: 768px) {
+    gap: var(--spacing-md);
   }
 
   @media (max-width: 640px) {
     grid-template-columns: 1fr;
     gap: var(--spacing-md);
+  }
+
+  @media (max-width: 480px) {
+    margin-bottom: var(--spacing-2xl);
   }
 }
 
@@ -361,8 +370,13 @@
   grid-template-columns: repeat(4, 1fr);
   gap: var(--spacing-lg);
 
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
   @media (max-width: 991px) {
     grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
   }
 
   @media (max-width: 640px) {
@@ -454,6 +468,11 @@
 
   @media (max-width: 991px) {
     grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+
+  @media (max-width: 768px) {
+    gap: var(--spacing-md);
   }
 }
 
@@ -590,6 +609,11 @@
 
   @media (max-width: 640px) {
     grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+  }
+
+  @media (max-width: 480px) {
+    margin-bottom: var(--spacing-md);
   }
 }
 
@@ -665,25 +689,53 @@
 /* ===== DARK THEME ===== */
 [data-theme="dark"] {
   .dashboard-page {
-    background: var(--white);
+    background: var(--neutral-900);
   }
 
-  .dashboard-container,
   .section-card,
   .stat-card {
-    background: var(--neutral-50);
+    background: var(--neutral-800);
     border-color: var(--border-light);
   }
 
   .action-card,
   .document-item,
   .breakdown-card {
-    background: var(--white);
+    background: var(--neutral-700);
     border-color: var(--border-light);
   }
 
   .progress-bar-wrapper {
-    background: var(--neutral-200);
+    background: var(--neutral-700);
+  }
+
+  .stat-card-icon {
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+  }
+
+  .section-header-icon,
+  .document-icon {
+    background: var(--primary-900);
+    color: var(--primary-300);
+  }
+
+  .breakdown-card {
+    &:hover {
+      background: var(--neutral-600);
+      border-color: var(--primary-500);
+    }
+  }
+
+  .action-card {
+    &:hover {
+      background: var(--neutral-600);
+    }
+  }
+
+  .document-item {
+    &:hover {
+      background: var(--neutral-600);
+    }
   }
 }
 

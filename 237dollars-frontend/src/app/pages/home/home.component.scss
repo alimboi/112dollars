@@ -127,6 +127,10 @@
   margin-bottom: var(--spacing-lg);
   font-family: 'Inter', sans-serif;
 
+  @media (max-width: 1200px) {
+    font-size: clamp(2.25rem, 7.5vw, 4rem);
+  }
+
   @media (max-width: 768px) {
     font-size: clamp(2rem, 7vw, 3.5rem);
     margin-bottom: var(--spacing-md);
@@ -418,6 +422,10 @@
   position: relative;
   z-index: 10;
 
+  @media (max-width: 1200px) {
+    padding: var(--spacing-2xl) 0;
+  }
+
   @media (max-width: 991px) {
     padding: var(--spacing-2xl) 0;
   }
@@ -435,6 +443,10 @@
   text-align: center;
   margin-bottom: var(--spacing-3xl);
 
+  @media (max-width: 1200px) {
+    margin-bottom: var(--spacing-2xl);
+  }
+
   @media (max-width: 768px) {
     margin-bottom: var(--spacing-2xl);
   }
@@ -450,6 +462,10 @@
   color: var(--text-primary);
   margin-bottom: var(--spacing-md);
   line-height: 1.2;
+
+  @media (max-width: 1200px) {
+    font-size: clamp(1.875rem, 4.8vw, 2.75rem);
+  }
 
   @media (max-width: 768px) {
     font-size: clamp(1.75rem, 4.5vw, 2.5rem);
@@ -474,6 +490,11 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-xl);
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+  }
 
   @media (max-width: 991px) {
     grid-template-columns: repeat(2, 1fr);
@@ -591,6 +612,10 @@
   position: relative;
   z-index: 10;
 
+  @media (max-width: 1200px) {
+    padding: var(--spacing-2xl) 0;
+  }
+
   @media (max-width: 991px) {
     padding: var(--spacing-2xl) 0;
   }
@@ -608,6 +633,11 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-xl);
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+  }
 
   @media (max-width: 991px) {
     grid-template-columns: 1fr;
@@ -800,6 +830,10 @@
   position: relative;
   z-index: 10;
 
+  @media (max-width: 1200px) {
+    padding: var(--spacing-2xl) 0;
+  }
+
   @media (max-width: 991px) {
     padding: var(--spacing-2xl) 0;
   }
@@ -819,6 +853,10 @@
   color: white;
   margin-bottom: var(--spacing-lg);
   line-height: 1.2;
+
+  @media (max-width: 1200px) {
+    font-size: clamp(1.875rem, 4.8vw, 2.75rem);
+  }
 
   @media (max-width: 768px) {
     font-size: clamp(1.75rem, 4.5vw, 2.5rem);

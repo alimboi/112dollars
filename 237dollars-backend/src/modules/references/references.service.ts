@@ -74,7 +74,12 @@ export class ReferencesService {
     };
   }
 
-  async findOne(id: number, userId?: number) {
+  async findOne(
+    id: number,
+    userId?: number,
+    fullAccess: boolean = true,
+    contentLimit: number = 1.0,
+  ) {
     const reference = await this.referenceRepository.findOne({
       where: { id },
       relations: ['topic', 'topic.major', 'contentBlocks'],
@@ -84,9 +89,36 @@ export class ReferencesService {
       throw new NotFoundException(ErrorMessages.REFERENCE_NOT_FOUND);
     }
 
-    // Check access for free users (8% limit logic would go here)
-    // For now, return full reference
-    return reference;
+    // Sort content blocks by order
+    if (reference.contentBlocks) {
+      reference.contentBlocks.sort((a, b) => a.blockOrder - b.blockOrder);
+    }
+
+    // Apply content limiting for users without full access
+    if (!fullAccess && contentLimit < 1.0) {
+      const totalBlocks = reference.contentBlocks.length;
+      const allowedBlocks = Math.ceil(totalBlocks * contentLimit);
+
+      // Truncate content blocks to allowed percentage
+      reference.contentBlocks = reference.contentBlocks.slice(0, allowedBlocks);
+
+      // Add metadata about access limitations
+      return {
+        ...reference,
+        isLimited: true,
+        accessPercentage: Math.round(contentLimit * 100),
+        totalBlocks,
+        accessibleBlocks: allowedBlocks,
+        unlockMessage: `You have access to ${Math.round(contentLimit * 100)}% of this content. Unlock full access by enrolling in this major or inviting 5 people to our Telegram group.`,
+      };
+    }
+
+    // Full access - return everything
+    return {
+      ...reference,
+      isLimited: false,
+      accessPercentage: 100,
+    };
   }
 
   async update(id: number, updateReferenceDto: UpdateReferenceDto) {

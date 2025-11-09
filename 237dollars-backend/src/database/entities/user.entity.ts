@@ -32,9 +32,15 @@ export class User {
   @Column({
     type: 'enum',
     enum: UserRole,
-    default: UserRole.STUDENT,
+    default: UserRole.FREE_USER, // Default to free user
   })
   role: UserRole;
+
+  @Column({ name: 'enrolled_major_id', nullable: true })
+  enrolledMajorId: number; // Which major they paid for (null for free users)
+
+  @Column({ name: 'telegram_unlocked_majors', type: 'jsonb', default: '[]' })
+  telegramUnlockedMajors: number[]; // Majors unlocked by Telegram (array of major IDs)
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

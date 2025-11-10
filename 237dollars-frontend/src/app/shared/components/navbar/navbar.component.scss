@@ -504,33 +504,28 @@
 }
 
 /* ============================================
-   MOBILE MENU TRIGGER
+   MOBILE MENU TRIGGER - ALWAYS VISIBLE FOR DEBUG
    ============================================ */
 .menu-trigger {
-  display: none;
+  display: flex !important;
   width: 40px;
   height: 40px;
-  background: transparent;
-  border: 1px solid var(--nav-border);
+  background: red !important;
+  border: 2px solid blue !important;
   border-radius: 8px;
   cursor: pointer;
   position: relative;
   transition: all 0.2s ease;
-
-  // Show at 1200px and below (catches zoom scenarios too)
-  @media (max-width: 1200px) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 4px;
-  }
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
 
   span {
     display: block;
     width: 18px;
     height: 2px;
-    background: var(--nav-text);
+    background: black !important;
     border-radius: 2px;
     transition: all 0.3s ease;
   }

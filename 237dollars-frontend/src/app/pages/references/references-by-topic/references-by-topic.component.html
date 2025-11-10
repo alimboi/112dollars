@@ -1,97 +1,145 @@
-<div class="references-page">
-  <div class="references-container">
-    <!-- Page Header -->
-    <div class="page-header">
-      <button routerLink="/references" class="btn-back">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-        <span>Back to Majors</span>
-      </button>
+<div class="tutorial-page">
+  <!-- Mobile Header with Sidebar Toggle -->
+  <div class="mobile-header" *ngIf="selectedTopic && !loading">
+    <button class="menu-toggle" (click)="toggleSidebar()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+      <span>{{ selectedTopic?.name || 'Topics' }}</span>
+    </button>
+  </div>
 
-      <div class="header-content">
+  <!-- Sidebar Backdrop (Mobile) -->
+  <div class="sidebar-backdrop" [class.active]="sidebarOpen" (click)="closeSidebar()"></div>
+
+  <div class="tutorial-container">
+    <!-- Left Sidebar - Topics -->
+    <aside class="sidebar" [class.open]="sidebarOpen">
+      <div class="sidebar-header">
+        <button routerLink="/references" class="btn-back-sidebar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>Back to Majors</span>
+        </button>
+      </div>
+
+      <div class="topics-list">
+        <div class="list-title">Topics</div>
+        <nav class="nav-topics">
+          <button *ngFor="let topic of topics"
+                  (click)="selectTopic(topic)"
+                  [class.active]="selectedTopic?.id === topic.id"
+                  class="topic-item">
+            <div class="topic-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+            </div>
+            <div class="topic-info">
+              <span class="topic-name">{{ topic.name }}</span>
+            </div>
+            <div class="topic-indicator">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+          </button>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="progress-info">
+          <p class="progress-label">Total Topics</p>
+          <p class="progress-count">{{ topics.length }} topics</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content-area">
+      <!-- Loading State -->
+      <div class="loading-state" *ngIf="loading">
+        <div class="spinner-large"></div>
+        <p class="loading-text">Loading content...</p>
+      </div>
+
+      <!-- Error State -->
+      <div class="alert alert-error" *ngIf="error && !loading">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>{{ error }}</span>
+      </div>
+
+      <!-- Content Header -->
+      <div class="content-header" *ngIf="selectedTopic && !loading">
         <div class="header-badge">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
           </svg>
           <span>Learning Materials</span>
         </div>
-        <h1 class="page-title">{{ topic?.name || 'References' }}</h1>
-        <p class="page-subtitle" *ngIf="topic?.description">{{ topic?.description }}</p>
+        <h1 class="content-title">{{ selectedTopic?.name }}</h1>
+        <p class="content-subtitle" *ngIf="selectedTopic?.description">{{ selectedTopic?.description }}</p>
       </div>
-    </div>
 
-    <!-- Loading State -->
-    <div class="loading-state" *ngIf="loading">
-      <div class="spinner-large"></div>
-      <p class="loading-text">Loading references...</p>
-    </div>
-
-    <!-- Error State -->
-    <div class="alert alert-error" *ngIf="error && !loading">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="10"></circle>
-        <line x1="12" y1="8" x2="12" y2="12"></line>
-        <line x1="12" y1="16" x2="12.01" y2="16"></line>
-      </svg>
-      <span>{{ error }}</span>
-    </div>
-
-    <!-- Empty State -->
-    <div class="empty-state" *ngIf="!loading && !error && references.length === 0">
-      <div class="empty-icon">
-        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-        </svg>
-      </div>
-      <h3 class="empty-title">No References Available</h3>
-      <p class="empty-message">
-        There are no learning materials published for this topic yet. Check back soon or explore other topics.
-      </p>
-      <button routerLink="/references" class="btn-modern btn-primary">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-        <span>Browse Other Topics</span>
-      </button>
-    </div>
-
-    <!-- References Grid -->
-    <div class="references-grid" *ngIf="!loading && !error && references.length > 0">
-      <div class="reference-card" *ngFor="let reference of references; let i = index"
-           [routerLink]="['/references', reference.id]"
-           [style.animation-delay]="(i * 0.1) + 's'">
-
-        <div class="card-badge" [ngClass]="reference.isFree ? 'badge-free' : 'badge-premium'">
-          <svg *ngIf="reference.isFree" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!loading && !error && references.length === 0">
+        <div class="empty-icon">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
           </svg>
-          <svg *ngIf="!reference.isFree" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-          </svg>
-          <span>{{ reference.isFree ? 'Free' : 'Premium' }}</span>
         </div>
+        <h3 class="empty-title">No References Available</h3>
+        <p class="empty-message">
+          There are no learning materials published for this topic yet. Check back soon!
+        </p>
+      </div>
 
-        <div class="card-content">
-          <h3 class="card-title">{{ reference.title }}</h3>
-          <p class="card-description">{{ reference.description }}</p>
+      <!-- References List (Tutorial Style) -->
+      <div class="references-tutorial-list" *ngIf="!loading && !error && references.length > 0">
+        <div class="reference-item" *ngFor="let reference of references; let i = index"
+             [routerLink]="['/references', reference.id]"
+             [style.animation-delay]="(i * 0.05) + 's'">
 
-          <div class="card-meta">
-            <div class="meta-item" *ngIf="reference.readingTimeMinutes">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <div class="item-header">
+            <h3 class="item-title">{{ reference.title }}</h3>
+            <div class="item-badges">
+              <span class="badge" [ngClass]="reference.isFree ? 'badge-free' : 'badge-premium'">
+                <svg *ngIf="reference.isFree" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+                </svg>
+                <svg *ngIf="!reference.isFree" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                <span>{{ reference.isFree ? 'Free' : 'Premium' }}</span>
+              </span>
+            </div>
+          </div>
+
+          <p class="item-description">{{ reference.description }}</p>
+
+          <div class="item-meta">
+            <div class="meta-badge" *ngIf="reference.readingTimeMinutes">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
               </svg>
-              <span>{{ reference.readingTimeMinutes }} min</span>
+              <span>{{ reference.readingTimeMinutes }} min read</span>
             </div>
 
-            <div class="meta-item" *ngIf="reference.totalWords">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <div class="meta-badge" *ngIf="reference.totalWords">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 <polyline points="14 2 14 8 20 8"></polyline>
                 <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -102,19 +150,13 @@
             </div>
           </div>
 
-          <div class="card-footer">
-            <span class="read-link">
-              Read Now
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </span>
+          <div class="item-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
           </div>
         </div>
-
-        <div class="card-glow"></div>
       </div>
-    </div>
+    </main>
   </div>
 </div>

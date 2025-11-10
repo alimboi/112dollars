@@ -499,14 +499,14 @@
   justify-content: center;
   flex-direction: column;
   gap: 4px;
-  background: transparent;
-  border: 1px solid var(--nav-border);
+  background: var(--nav-accent-light);
+  border: 2px solid var(--nav-accent);
   border-radius: 8px;
   cursor: pointer;
   position: relative;
   transition: all 0.2s ease;
   flex-shrink: 0;
-  margin-left: clamp(8px, 1vw, 12px);
+  margin-left: auto;  // Push to the RIGHT side
 
   @media (max-width: 1280px) {
     display: flex !important;
@@ -515,15 +515,20 @@
   span {
     display: block;
     width: 18px;
-    height: 2px;
-    background: var(--nav-text);
+    height: 2.5px;
+    background: var(--nav-accent);
     border-radius: 2px;
     transition: all 0.3s ease;
   }
 
   &:hover {
-    background: var(--nav-accent-light);
-    border-color: var(--nav-accent);
+    background: var(--nav-accent);
+    border-color: var(--nav-accent-hover);
+    transform: scale(1.05);
+
+    span {
+      background: white;
+    }
   }
 
   &.active {

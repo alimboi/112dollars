@@ -584,7 +584,7 @@
             <div *ngFor="let block of contentBlocks" class="preview-block">
 
               <!-- Heading Block Preview -->
-              <h3 *ngIf="block.blockType === 'heading'" [ngStyle]="{
+              <h3 *ngIf="block.blockType === 'heading'" [ngStyle]="getThemeAwareStyle({
                 'font-family': block.styling?.fontFamily,
                 'font-size.px': block.styling?.fontSize,
                 'color': block.styling?.color,
@@ -595,12 +595,12 @@
                 'margin-top.px': block.styling?.marginTop,
                 'margin-bottom.px': block.styling?.marginBottom,
                 'padding.px': block.styling?.padding
-              }" class="preview-heading">
+              })" class="preview-heading">
                 {{ block.content }}
               </h3>
 
               <!-- Text Block Preview -->
-              <p *ngIf="block.blockType === 'text'" [ngStyle]="{
+              <p *ngIf="block.blockType === 'text'" [ngStyle]="getThemeAwareStyle({
                 'font-family': block.styling?.fontFamily,
                 'font-size.px': block.styling?.fontSize,
                 'color': block.styling?.color,
@@ -614,7 +614,7 @@
                 'margin-top.px': block.styling?.marginTop,
                 'margin-bottom.px': block.styling?.marginBottom,
                 'padding.px': block.styling?.padding
-              }" class="preview-text">
+              })" class="preview-text">
                 {{ block.content }}
               </p>
 
@@ -648,7 +648,7 @@
               </div>
 
               <!-- Code Block Preview -->
-              <pre *ngIf="block.blockType === 'code_block'" [ngStyle]="{
+              <pre *ngIf="block.blockType === 'code_block'" [ngStyle]="getThemeAwareStyle({
                 'font-family': block.styling?.fontFamily,
                 'font-size.px': block.styling?.fontSize,
                 'color': block.styling?.color,
@@ -656,7 +656,7 @@
                 'padding.px': block.styling?.padding,
                 'margin-top.px': block.styling?.marginTop,
                 'margin-bottom.px': block.styling?.marginBottom
-              }" class="preview-code"><code>{{ block.content }}</code></pre>
+              })" class="preview-code"><code>{{ block.content }}</code></pre>
 
             </div>
           </div>

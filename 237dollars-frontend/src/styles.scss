@@ -25,19 +25,19 @@
 
 :root {
   /* ==========================================
-     PRIMARY COLORS - Professional Blue
+     PRIMARY COLORS - Premium Midnight Navy + Electric Cyan
      ========================================== */
   --primary-950: #001f3f;
-  --primary-900: #003366;
-  --primary-800: #004488;
-  --primary-700: #0052CC;  /* Main brand blue - Professional & trustworthy */
-  --primary-600: #0066FF;
-  --primary-500: #2563EB;
-  --primary-400: #3B82F6;
-  --primary-300: #60A5FA;
-  --primary-200: #93C5FD;
-  --primary-100: #DBEAFE;
-  --primary-50: #EFF6FF;
+  --primary-900: #082f49;  /* Very dark cyan */
+  --primary-800: #0c4a6e;  /* Midnight navy */
+  --primary-700: #0e7490;  /* Dark cyan - Professional & premium */
+  --primary-600: #0891b2;  /* Cyan */
+  --primary-500: #0ea5e9;  /* Electric cyan - Main brand color */
+  --primary-400: #06b6d4;  /* Bright cyan */
+  --primary-300: #38bdf8;  /* Light cyan */
+  --primary-200: #7dd3fc;  /* Lighter cyan */
+  --primary-100: #bae6fd;  /* Very light cyan */
+  --primary-50: #e0f2fe;   /* Lightest cyan */
 
   /* ==========================================
      SECONDARY COLORS - Learning Green
@@ -97,9 +97,9 @@
   --error-light: #FEE2E2;
   --error-dark: #DC2626;
 
-  --info: #3B82F6;
-  --info-light: #DBEAFE;
-  --info-dark: #2563EB;
+  --info: #0ea5e9;  /* Electric cyan */
+  --info-light: #e0f2fe;
+  --info-dark: #0891b2;
 
   /* ==========================================
      GRADIENTS - Modern Educational
@@ -110,7 +110,7 @@
 
   /* Hero gradients */
   --gradient-hero: linear-gradient(135deg, var(--primary-700) 0%, var(--primary-500) 50%, var(--secondary-500) 100%);
-  --gradient-hero-overlay: linear-gradient(135deg, rgba(5, 82, 204, 0.95) 0%, rgba(16, 185, 129, 0.85) 100%);
+  --gradient-hero-overlay: linear-gradient(135deg, rgba(12, 74, 110, 0.95) 0%, rgba(16, 185, 129, 0.85) 100%);
 
   /* Background gradients */
   --gradient-bg-light: linear-gradient(180deg, var(--neutral-50) 0%, var(--white) 100%);
@@ -218,7 +218,7 @@
   --border-light: #334155;
   --border-medium: #475569;
   --border-dark: #64748B;
-  --border-primary: #1E40AF;
+  --border-primary: #0e7490;  /* Dark cyan */
   --border-secondary: #065F46;
 
   /* Dark Shadows */
@@ -622,7 +622,7 @@ textarea.form-control-modern {
 
 select.form-control-modern {
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%232563EB' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230ea5e9' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 1rem center;
   background-size: 12px;

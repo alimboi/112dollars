@@ -505,7 +505,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(12, 74, 110, 0.1) 0%, transparent 70%);
   opacity: 0;
   transition: opacity var(--transition-slow);
   pointer-events: none;
@@ -743,9 +743,9 @@
 /* ===== DARK THEME ADJUSTMENTS ===== */
 [data-theme="dark"] {
   .header-badge {
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(37, 99, 235, 0.3) 100%);
+    background: linear-gradient(135deg, rgba(12, 74, 110, 0.2) 0%, rgba(12, 74, 110, 0.3) 100%);
     color: var(--primary-400);
-    border-color: rgba(37, 99, 235, 0.3);
+    border-color: rgba(12, 74, 110, 0.3);
 
     svg {
       stroke: var(--primary-400);

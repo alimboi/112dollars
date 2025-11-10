@@ -144,26 +144,43 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
 
   // THEME AWARENESS
   private detectTheme(): void {
-    // Check if user has a saved theme preference
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      this.currentTheme = savedTheme as 'light' | 'dark';
+    // Check data-theme attribute on document root (set by navbar)
+    const dataTheme = document.documentElement.getAttribute('data-theme');
+    if (dataTheme === 'dark') {
+      this.currentTheme = 'dark';
       return;
     }
 
-    // Check system preference
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    // Check if user has a saved theme preference in localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
       this.currentTheme = 'dark';
-    } else {
-      this.currentTheme = 'light';
+      return;
     }
+
+    // Default to light theme
+    this.currentTheme = 'light';
   }
 
   private listenForThemeChanges(): void {
-    // Listen for local storage changes (when theme is switched in app)
-    const handleStorageChange = () => {
+    // Use MutationObserver to watch for data-theme attribute changes on document root
+    const observer = new MutationObserver(() => {
       this.detectTheme();
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+
+    // Also listen for storage changes (in case theme changes in different tab)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'theme') {
+        this.detectTheme();
+      }
     };
+
+    window.addEventListener('storage', handleStorageChange);
 
     // Listen for system theme changes
     if (window.matchMedia) {
@@ -173,8 +190,9 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
       });
     }
 
-    window.addEventListener('storage', handleStorageChange);
+    // Cleanup
     this.subscriptions.add(() => {
+      observer.disconnect();
       window.removeEventListener('storage', handleStorageChange);
     });
   }

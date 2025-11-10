@@ -105,9 +105,9 @@ export class ColorThemeUtil {
   static adjustColorForTheme(color: string, theme: 'light' | 'dark'): string {
     const isLight = this.isLightColor(color);
 
-    // If theme is light and color is light -> make it dark
+    // If theme is light and color is light -> make it dark (aggressive darkening for better readability)
     if (theme === 'light' && isLight) {
-      return this.darkenColor(color, 0.7);
+      return this.darkenColor(color, 0.35);
     }
 
     // If theme is dark and color is dark -> make it light

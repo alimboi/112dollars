@@ -73,7 +73,7 @@
     gap: clamp(16px, 2.5vw, 32px);
   }
 
-  @media (max-width: 1280px) {
+  @media (max-width: 1024px) {
     gap: clamp(12px, 2vw, 24px);
   }
 }
@@ -106,7 +106,7 @@
     height: 100%;
   }
 
-  @media (max-width: 1280px) {
+  @media (max-width: 1024px) {
     width: 36px;
     height: 36px;
   }
@@ -132,7 +132,7 @@
     font-size: clamp(15px, 1.1vw, 17px);
   }
 
-  @media (max-width: 1280px) {
+  @media (max-width: 1024px) {
     font-size: clamp(14px, 1vw, 16px);
   }
 }
@@ -143,7 +143,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
 
-  @media (max-width: 1280px) {
+  @media (max-width: 1024px) {
     font-size: 10px;
   }
 }
@@ -164,7 +164,7 @@
     gap: clamp(6px, 1.2vw, 12px);
   }
 
-  @media (max-width: 1280px) {
+  @media (max-width: 1024px) {
     display: none !important;
   }
 }
@@ -186,7 +186,7 @@
     font-size: clamp(12px, 0.95vw, 14px);
   }
 
-  @media (max-width: 1280px) {
+  @media (max-width: 1024px) {
     padding: 8px clamp(8px, 1vw, 12px);
     font-size: clamp(11px, 0.9vw, 13px);
   }
@@ -226,7 +226,7 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 
-  @media (max-width: 1280px) {
+  @media (max-width: 1024px) {
     font-size: 8px;
     padding: 1px 4px;
   }
@@ -245,7 +245,7 @@
     gap: clamp(6px, 0.8vw, 10px);
   }
 
-  @media (max-width: 1280px) {
+  @media (max-width: 1024px) {
     display: none !important;
   }
 }
@@ -287,8 +287,8 @@
     }
   }
 
-  // Hide at 1280px - all in mobile menu
-  @media (max-width: 1280px) {
+  // Hide at 1024px - all in mobile menu
+  @media (max-width: 1024px) {
     display: none !important;
   }
 }
@@ -305,7 +305,7 @@
 .lang-selector {
   position: relative;
 
-  @media (max-width: 1280px) {
+  @media (max-width: 1024px) {
     display: none !important;
   }
 }
@@ -342,7 +342,7 @@
     }
   }
 
-  @media (max-width: 1280px) {
+  @media (max-width: 1024px) {
     padding: 0 8px;
 
     .lang-current {
@@ -435,7 +435,7 @@
     gap: 8px;
   }
 
-  @media (max-width: 1280px) {
+  @media (max-width: 1024px) {
     display: none !important;
   }
 }
@@ -457,7 +457,7 @@
     font-size: clamp(12px, 0.95vw, 13px);
   }
 
-  @media (max-width: 1280px) {
+  @media (max-width: 1024px) {
     padding: 6px clamp(8px, 1.5vw, 12px);
     font-size: clamp(11px, 0.9vw, 12px);
   }
@@ -493,47 +493,63 @@
    ============================================ */
 .menu-trigger {
   display: none;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   gap: 5px;
-  background: #6366f1;  // Solid blue background - ALWAYS VISIBLE
-  border: 2px solid #4f46e5;
-  border-radius: 8px;
+  background: rgba(99, 102, 241, 0.15);  // Semi-transparent blue
+  backdrop-filter: blur(12px) saturate(180%);  // Blurry glass effect
+  -webkit-backdrop-filter: blur(12px) saturate(180%);  // Safari support
+  border: 2px solid rgba(99, 102, 241, 0.3);
+  border-radius: 10px;
   cursor: pointer;
   position: relative;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
   margin-left: auto;  // Push to the RIGHT side
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
 
-  @media (max-width: 1280px) {
+  @media (max-width: 1024px) {
     display: flex !important;
   }
 
   span {
     display: block;
-    width: 20px;
+    width: 22px;
     height: 3px;
-    background: white;  // WHITE lines - ALWAYS VISIBLE
-    border-radius: 2px;
-    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);  // Gradient lines
+    border-radius: 3px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(99, 102, 241, 0.4);
   }
 
   &:hover {
-    background: #4f46e5;
-    border-color: #3730a3;
-    transform: scale(1.1);
+    background: rgba(99, 102, 241, 0.25);
+    border-color: rgba(99, 102, 241, 0.5);
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
+
+    span {
+      background: linear-gradient(135deg, #818cf8, #a78bfa);
+      box-shadow: 0 2px 6px rgba(99, 102, 241, 0.6);
+    }
   }
 
   &.active {
+    background: rgba(139, 92, 246, 0.2);
+    border-color: rgba(139, 92, 246, 0.5);
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
+
     span:first-child {
-      transform: rotate(45deg) translate(3px, 3px);
+      transform: rotate(45deg) translate(4px, 4px);
+      background: linear-gradient(135deg, #a78bfa, #c084fc);
     }
 
     span:last-child {
-      transform: rotate(-45deg) translate(3px, -3px);
+      transform: rotate(-45deg) translate(4px, -4px);
+      background: linear-gradient(135deg, #a78bfa, #c084fc);
     }
   }
 }
@@ -800,8 +816,8 @@ body.menu-open {
    ZOOM-SPECIFIC HANDLING
    Smart scaling that works at any zoom level
    ============================================ */
-@media (min-resolution: 120dpi) and (max-width: 1280px),
-(-webkit-min-device-pixel-ratio: 1.25) and (max-width: 1280px) {
+@media (min-resolution: 120dpi) and (max-width: 1024px),
+(-webkit-min-device-pixel-ratio: 1.25) and (max-width: 1024px) {
   .nav-container {
     gap: 16px;
   }

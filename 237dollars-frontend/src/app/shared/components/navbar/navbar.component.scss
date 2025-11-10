@@ -676,15 +676,25 @@
   }
 
   &:hover {
-    background: var(--nav-accent-light);
-    color: var(--nav-accent);
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #ffffff;
     transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+
+    svg {
+      stroke: #ffffff;
+    }
   }
 
   &.active {
-    background: var(--nav-accent-light);
-    color: var(--nav-accent);
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #ffffff;
     font-weight: 600;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+
+    svg {
+      stroke: #ffffff;
+    }
   }
 
   &.mobile-admin {
@@ -692,7 +702,13 @@
 
     &:hover,
     &.active {
-      background: rgba(139, 92, 246, 0.1);
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+
+      svg {
+        stroke: #ffffff;
+      }
     }
   }
 }
@@ -738,8 +754,15 @@
   }
 
   &:hover {
-    background: var(--nav-accent);
-    color: white;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #ffffff;
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+
+    svg {
+      stroke: #ffffff;
+    }
   }
 }
 
@@ -774,15 +797,19 @@
     transition: all 0.2s ease;
 
     &:hover {
-      background: var(--nav-accent-light);
-      border-color: var(--nav-accent);
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-color: transparent;
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
     }
 
     &.active {
-      background: var(--nav-accent);
-      border-color: var(--nav-accent);
-      color: white;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-color: transparent;
+      color: #ffffff;
       font-weight: 600;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
     }
   }
 }
@@ -818,9 +845,15 @@
     color: var(--nav-text);
 
     &:hover {
-      background: var(--nav-accent-light);
-      border-color: var(--nav-accent);
-      color: var(--nav-accent);
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border-color: transparent;
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+
+      svg {
+        stroke: #ffffff;
+      }
     }
   }
 

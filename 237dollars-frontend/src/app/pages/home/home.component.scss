@@ -239,8 +239,11 @@
     border: 2px solid var(--primary-700);
 
     &:hover {
-      background: var(--primary-700);
-      color: white;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #ffffff;
+      border-color: transparent;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
     }
   }
 }
@@ -788,7 +791,7 @@
   align-items: center;
   gap: var(--spacing-xs);
   padding: var(--spacing-sm) var(--spacing-lg);
-  background: var(--primary-700);
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: white;
   border-radius: var(--radius-md);
   font-weight: var(--font-semibold);
@@ -798,6 +801,7 @@
   cursor: pointer;
   position: relative;
   z-index: 10;
+  border: none;
 
   svg {
     width: 16px;
@@ -805,9 +809,9 @@
   }
 
   &:hover {
-    background: var(--primary-500);
+    background: linear-gradient(135deg, #818cf8, #a78bfa);
     transform: translateX(4px);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
     color: white;
   }
 

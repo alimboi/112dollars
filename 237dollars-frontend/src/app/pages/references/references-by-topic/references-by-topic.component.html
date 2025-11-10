@@ -7,8 +7,7 @@
         <line x1="3" y1="12" x2="21" y2="12"></line>
         <line x1="3" y1="18" x2="21" y2="18"></line>
       </svg>
-      <span *ngIf="navigationLevel === 'topics'">Topics</span>
-      <span *ngIf="navigationLevel === 'contents'">{{ selectedTopic?.name || 'Contents' }}</span>
+      <span>Contents</span>
     </button>
   </div>
 
@@ -18,52 +17,8 @@
   <div class="tutorial-container">
     <!-- Left Sidebar -->
     <aside class="sidebar" [class.open]="sidebarOpen">
-      <!-- LEVEL 1: Topics View -->
-      <div *ngIf="navigationLevel === 'topics'" class="sidebar-section">
-        <div class="sidebar-header">
-          <button routerLink="/references" class="btn-back-sidebar">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="19" y1="12" x2="5" y2="12"></line>
-              <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-            <span>Back to Majors</span>
-          </button>
-        </div>
-
-        <div class="topics-list">
-          <div class="list-title">Topics</div>
-          <nav class="nav-topics">
-            <button *ngFor="let topic of topics"
-                    (click)="selectTopic(topic)"
-                    class="topic-item">
-              <div class="topic-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-                </svg>
-              </div>
-              <div class="topic-info">
-                <span class="topic-name">{{ topic.name }}</span>
-              </div>
-              <div class="topic-indicator">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </div>
-            </button>
-          </nav>
-        </div>
-
-        <div class="sidebar-footer">
-          <div class="progress-info">
-            <p class="progress-label">Total Topics</p>
-            <p class="progress-count">{{ topics.length }} topics</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- LEVEL 2: Contents View (with Back button) -->
-      <div *ngIf="navigationLevel === 'contents'" class="sidebar-section">
+      <!-- Contents List -->
+      <div class="sidebar-section">
         <div class="sidebar-header">
           <button (click)="goBackToTopics()" class="btn-back-sidebar btn-back-to-topics">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -75,7 +30,7 @@
         </div>
 
         <div class="contents-list">
-          <div class="list-title">{{ selectedTopic?.name }}</div>
+          <div class="list-title">Contents</div>
           <nav class="nav-contents">
             <button *ngFor="let content of contents"
                     (click)="selectContent(content)"
@@ -129,30 +84,8 @@
         <span>{{ error }}</span>
       </div>
 
-      <!-- LEVEL 1: Topics View - Welcome/Intro -->
-      <div class="content-view welcome-view" *ngIf="navigationLevel === 'topics' && !loading && !error">
-        <div class="welcome-content">
-          <div class="welcome-icon">
-            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-            </svg>
-          </div>
-          <h2 class="welcome-title">Select a Topic</h2>
-          <p class="welcome-message">
-            Choose a topic from the left sidebar to view and explore the learning materials.
-          </p>
-          <div class="welcome-stats">
-            <div class="stat">
-              <span class="stat-number">{{ topics.length }}</span>
-              <span class="stat-label">Topics Available</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- LEVEL 2: Contents View - Selected Content Detail -->
-      <div class="content-view detail-view" *ngIf="navigationLevel === 'contents' && !loading && !error">
+      <!-- Contents View - Selected Content Detail -->
+      <div class="content-view detail-view" *ngIf="!loading && !error">
         <div *ngIf="selectedContent" class="content-detail">
           <!-- Content Header -->
           <div class="detail-header">

@@ -19,9 +19,8 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
   navigationLevel: NavigationLevel = 'topics';
 
   // Data
-  topics: Topic[] = [];
+  topic: Topic | null = null;
   contents: Reference[] = [];
-  selectedTopic: Topic | null = null;
   selectedContent: Reference | null = null;
 
   // UI state
@@ -30,7 +29,7 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
   sidebarOpen = false;
 
   private subscriptions = new Subscription();
-  private majorId: number = 0;
+  private topicId: number = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,8 +38,8 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const sub = this.route.params.subscribe(params => {
-      this.majorId = +params['id'];
-      this.loadTopics();
+      this.topicId = +params['id'];
+      this.loadTopic();
     });
     this.subscriptions.add(sub);
   }
@@ -49,49 +48,25 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  // LEVEL 1: Load main topics
-  loadTopics(): void {
+  // Load topic details and its contents
+  loadTopic(): void {
     this.loading = true;
-    this.navigationLevel = 'topics';
-    this.selectedTopic = null;
+    this.navigationLevel = 'contents';
     this.selectedContent = null;
     this.contents = [];
 
-    const sub = this.referencesService.getTopicsByMajor(this.majorId).subscribe({
-      next: (topics) => {
-        this.topics = topics;
-        this.loading = false;
-        if (topics.length === 0) {
-          this.error = 'No topics available for this major';
-        }
-      },
-      error: (err) => {
-        this.error = 'Failed to load topics';
-        this.loading = false;
-      }
-    });
-    this.subscriptions.add(sub);
-  }
-
-  // LEVEL 2: Select topic and load its contents
-  selectTopic(topic: Topic): void {
-    this.selectedTopic = topic;
-    this.selectedContent = null;
-    this.navigationLevel = 'contents';
-    this.sidebarOpen = false; // Close mobile sidebar
-    this.loadContents(topic.id);
-  }
-
-  loadContents(topicId: number): void {
-    this.loading = true;
-    const sub = this.referencesService.getReferencesByTopic(topicId).subscribe({
+    // Note: We load contents directly since we already have the topic ID from the URL
+    const sub = this.referencesService.getReferencesByTopic(this.topicId).subscribe({
       next: (contents) => {
         this.contents = contents;
+        this.loading = false;
+
         // Auto-select first content
         if (contents.length > 0) {
           this.selectContent(contents[0]);
+        } else {
+          this.error = 'No contents available for this topic';
         }
-        this.loading = false;
       },
       error: (err) => {
         this.error = 'Failed to load contents';
@@ -101,7 +76,7 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
     this.subscriptions.add(sub);
   }
 
-  // LEVEL 3: Select content to view details
+  // Select content to view details
   selectContent(content: Reference): void {
     this.selectedContent = content;
     this.sidebarOpen = false;
@@ -109,7 +84,17 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
 
   // NAVIGATION: Go back to topics
   goBackToTopics(): void {
-    this.loadTopics();
+    this.route.params.subscribe(params => {
+      const majorId = params['majorId'];
+      if (majorId) {
+        // If majorId is available in the route, navigate back to topics list
+        // This requires the route to be updated to include majorId
+        window.history.back();
+      } else {
+        // Fallback to browser back
+        window.history.back();
+      }
+    });
   }
 
   // SIDEBAR CONTROLS

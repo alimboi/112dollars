@@ -27,12 +27,24 @@
 }
 
 [data-theme="dark"] {
-  --nav-bg: #0f0f0f;
+  --nav-bg: rgba(15, 15, 15, 0.8);
   --nav-border: rgba(255, 255, 255, 0.1);
   --nav-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   --nav-text: #ffffff;
   --nav-text-muted: #9ca3af;
   --nav-accent-light: rgba(99, 102, 241, 0.2);
+
+  .navbar-elite {
+    background: rgba(15, 15, 15, 0.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+
+    &.scrolled {
+      background: rgba(15, 15, 15, 0.9);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+  }
 }
 
 /* ============================================
@@ -44,14 +56,18 @@
   left: 0;
   right: 0;
   height: var(--nav-height);
-  background: var(--nav-bg);
-  border-bottom: 1px solid var(--nav-border);
-  box-shadow: var(--nav-shadow);
+  background: rgba(255, 255, 255, 0.8);  // Semi-transparent white
+  backdrop-filter: blur(20px) saturate(180%);  // Blurry glass effect
+  -webkit-backdrop-filter: blur(20px) saturate(180%);  // Safari support
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   z-index: 1000;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 
   &.scrolled {
-    box-shadow: var(--nav-shadow-elevated);
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   }
 
   &.hidden {

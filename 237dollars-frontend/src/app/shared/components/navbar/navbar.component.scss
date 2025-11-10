@@ -492,7 +492,7 @@
    MOBILE MENU TRIGGER
    ============================================ */
 .menu-trigger {
-  display: flex !important;  // ALWAYS VISIBLE FOR DEBUG
+  display: none;
   width: 40px;
   height: 40px;
   align-items: center;
@@ -509,7 +509,7 @@
   margin-left: clamp(8px, 1vw, 12px);
 
   @media (max-width: 1280px) {
-    // Already visible
+    display: flex !important;
   }
 
   span {

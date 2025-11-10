@@ -154,14 +154,14 @@
 .nav-menu {
   display: flex;
   align-items: center;
-  gap: clamp(4px, 1vw, 8px);
+  gap: clamp(8px, 1.5vw, 16px);
   flex: 1;
-  margin: 0 auto;
-  justify-content: center;
+  margin-left: clamp(16px, 2vw, 32px);  // Space from logo
+  justify-content: flex-start;  // LEFT align with logo
 
   // Progressive gap reduction
   @media (max-width: 1400px) {
-    gap: clamp(3px, 0.8vw, 6px);
+    gap: clamp(6px, 1.2vw, 12px);
   }
 
   @media (max-width: 1280px) {
@@ -498,9 +498,9 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 4px;
-  background: var(--nav-accent-light);
-  border: 2px solid var(--nav-accent);
+  gap: 5px;
+  background: #6366f1;  // Solid blue background - ALWAYS VISIBLE
+  border: 2px solid #4f46e5;
   border-radius: 8px;
   cursor: pointer;
   position: relative;
@@ -514,21 +514,17 @@
 
   span {
     display: block;
-    width: 18px;
-    height: 2.5px;
-    background: var(--nav-accent);
+    width: 20px;
+    height: 3px;
+    background: white;  // WHITE lines - ALWAYS VISIBLE
     border-radius: 2px;
     transition: all 0.3s ease;
   }
 
   &:hover {
-    background: var(--nav-accent);
-    border-color: var(--nav-accent-hover);
-    transform: scale(1.05);
-
-    span {
-      background: white;
-    }
+    background: #4f46e5;
+    border-color: #3730a3;
+    transform: scale(1.1);
   }
 
   &.active {

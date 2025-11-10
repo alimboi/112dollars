@@ -20,6 +20,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isDarkMode = false;
   scrolled = false;
   navbarHidden = false;
+  showMobileMenu = false;  // Track if we should show mobile hamburger
 
   languages = [
     { code: 'en', name: 'English', flag: '🇺🇸' },
@@ -58,6 +59,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.closeMenu();
       });
+
+    // Check viewport width and log
+    this.checkViewportWidth();
+    console.log('[NAVBAR] Component initialized');
   }
 
   ngOnDestroy(): void {
@@ -77,6 +82,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.isLangDropdownOpen) {
       this.isLangDropdownOpen = false;
     }
+  }
+
+  // Handle window resize to check viewport width
+  @HostListener('window:resize')
+  onResize(): void {
+    this.checkViewportWidth();
   }
 
   // Handle scroll for navbar hide/show animation
@@ -102,6 +113,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
 
     this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+  }
+
+  // Check viewport width and set mobile menu flag
+  private checkViewportWidth(): void {
+    const viewportWidth = window.innerWidth;
+    this.showMobileMenu = viewportWidth <= 1280;
+    console.log(`[NAVBAR] Viewport width: ${viewportWidth}px, showMobileMenu: ${this.showMobileMenu}`);
   }
 
   switchLanguage(lang: string): void {

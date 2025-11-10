@@ -111,9 +111,14 @@
     </div>
 
     <!-- Mobile Menu Button - OUTSIDE nav-actions -->
-    <button class="menu-trigger" [class.active]="isMenuOpen" (click)="toggleMenu()" aria-label="Menu">
-      <span></span>
-      <span></span>
+    <button class="menu-trigger"
+            [class.active]="isMenuOpen"
+            [class.show-mobile]="showMobileMenu"
+            (click)="toggleMenu()"
+            aria-label="Menu"
+            style="border: 2px solid red !important; background: yellow !important; position: relative !important; z-index: 9999 !important;">
+      <span style="background: black !important;"></span>
+      <span style="background: black !important;"></span>
     </button>
   </div>
 

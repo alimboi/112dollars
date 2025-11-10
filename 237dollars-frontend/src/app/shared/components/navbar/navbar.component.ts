@@ -31,7 +31,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private routerSubscription?: Subscription;
   private lastScrollTop = 0;
   private scrollThreshold = 100;
-  private zoomLevel = 1;
 
   constructor(
     public authService: AuthService,
@@ -59,9 +58,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.closeMenu();
       });
-
-    // Check navbar fit on init and resize
-    this.checkNavbarFit();
   }
 
   ngOnDestroy(): void {
@@ -81,12 +77,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (this.isLangDropdownOpen) {
       this.isLangDropdownOpen = false;
     }
-  }
-
-  // Check navbar fit on resize and zoom
-  @HostListener('window:resize')
-  onWindowResize(): void {
-    this.checkNavbarFit();
   }
 
   // Handle scroll for navbar hide/show animation
@@ -172,55 +162,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
       document.documentElement.setAttribute('data-theme', 'dark');
     } else {
       document.documentElement.removeAttribute('data-theme');
-    }
-  }
-
-  private checkNavbarFit(): void {
-    // Detect zoom level
-    const devicePixelRatio = window.devicePixelRatio || 1;
-    const visualViewport = (window as any).visualViewport;
-
-    // Calculate effective viewport width accounting for zoom
-    let effectiveWidth = window.innerWidth;
-
-    if (visualViewport) {
-      // More accurate zoom detection
-      effectiveWidth = visualViewport.width;
-      this.zoomLevel = window.innerWidth / visualViewport.width;
-    } else {
-      // Fallback zoom detection
-      this.zoomLevel = devicePixelRatio;
-      effectiveWidth = window.innerWidth / devicePixelRatio;
-    }
-
-    // Get the navbar element
-    const navbar = this.el.nativeElement.querySelector('.navbar-elite');
-    if (!navbar) {
-      console.warn('Navbar element not found!');
-      return;
-    }
-
-    // Progressive zoom handling:
-    // - At 100% zoom: Show hamburger at 968px
-    // - At 110%+ zoom OR effective width < 1200px: Force mobile menu
-    const shouldShowMobileMenu = effectiveWidth < 1200 || this.zoomLevel > 1.1;
-
-    // DEBUG: Log values
-    console.log('Navbar Check:', {
-      windowWidth: window.innerWidth,
-      effectiveWidth: effectiveWidth,
-      zoomLevel: this.zoomLevel.toFixed(2),
-      shouldShowMobile: shouldShowMobileMenu,
-      hasForceClass: navbar.classList.contains('force-mobile')
-    });
-
-    // Add/remove mobile class dynamically
-    if (shouldShowMobileMenu) {
-      this.renderer.addClass(navbar, 'force-mobile');
-      console.log('Added force-mobile class');
-    } else {
-      this.renderer.removeClass(navbar, 'force-mobile');
-      console.log('Removed force-mobile class');
     }
   }
 }

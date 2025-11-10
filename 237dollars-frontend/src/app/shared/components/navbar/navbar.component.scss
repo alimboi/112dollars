@@ -165,10 +165,6 @@
   }
 
   @media (max-width: 1200px) {
-    gap: 2px;
-  }
-
-  @media (max-width: 968px) {
     display: none;
   }
 }
@@ -521,7 +517,8 @@
   position: relative;
   transition: all 0.2s ease;
 
-  @media (max-width: 968px) {
+  // Show at 1200px and below (catches zoom scenarios too)
+  @media (max-width: 1200px) {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -552,20 +549,6 @@
       transform: rotate(-45deg) translate(3px, -3px);
     }
   }
-}
-
-// Show hamburger when force-mobile class is applied (zoom detection)
-.navbar-elite.force-mobile .menu-trigger {
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 4px;
-}
-
-// Hide desktop nav when force-mobile
-.navbar-elite.force-mobile .nav-menu {
-  display: none !important;
 }
 
 /* ============================================

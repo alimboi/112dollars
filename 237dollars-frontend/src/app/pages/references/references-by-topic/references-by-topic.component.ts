@@ -5,6 +5,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { ReferencesService, Reference, Topic, Major } from '../../../core/services/references.service';
 
+type NavigationLevel = 'topics' | 'contents';
+
 @Component({
   selector: 'app-references-by-topic',
   standalone: true,
@@ -13,14 +15,20 @@ import { ReferencesService, Reference, Topic, Major } from '../../../core/servic
   styleUrls: ['./references-by-topic.component.scss']
 })
 export class ReferencesByTopicComponent implements OnInit, OnDestroy {
-  references: Reference[] = [];
+  // Navigation state
+  navigationLevel: NavigationLevel = 'topics';
+
+  // Data
   topics: Topic[] = [];
+  contents: Reference[] = [];
   selectedTopic: Topic | null = null;
-  selectedMajor: Major | null = null;
+  selectedContent: Reference | null = null;
+
+  // UI state
   loading = true;
-  loadingReferences = false;
   error = '';
   sidebarOpen = false;
+
   private subscriptions = new Subscription();
   private majorId: number = 0;
 
@@ -32,7 +40,7 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const sub = this.route.params.subscribe(params => {
       this.majorId = +params['id'];
-      this.loadTopicsAndInitialize();
+      this.loadTopics();
     });
     this.subscriptions.add(sub);
   }
@@ -41,16 +49,19 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  loadTopicsAndInitialize(): void {
+  // LEVEL 1: Load main topics
+  loadTopics(): void {
     this.loading = true;
+    this.navigationLevel = 'topics';
+    this.selectedTopic = null;
+    this.selectedContent = null;
+    this.contents = [];
+
     const sub = this.referencesService.getTopicsByMajor(this.majorId).subscribe({
       next: (topics) => {
         this.topics = topics;
-        if (topics.length > 0) {
-          // Select first topic by default
-          this.selectTopic(topics[0]);
-        } else {
-          this.loading = false;
+        this.loading = false;
+        if (topics.length === 0) {
           this.error = 'No topics available for this major';
         }
       },
@@ -62,29 +73,46 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
     this.subscriptions.add(sub);
   }
 
+  // LEVEL 2: Select topic and load its contents
   selectTopic(topic: Topic): void {
     this.selectedTopic = topic;
-    this.sidebarOpen = false; // Close sidebar on mobile after selection
-    this.loadReferences(topic.id);
+    this.selectedContent = null;
+    this.navigationLevel = 'contents';
+    this.sidebarOpen = false; // Close mobile sidebar
+    this.loadContents(topic.id);
   }
 
-  loadReferences(topicId: number): void {
-    this.loadingReferences = true;
+  loadContents(topicId: number): void {
+    this.loading = true;
     const sub = this.referencesService.getReferencesByTopic(topicId).subscribe({
-      next: (references) => {
-        this.references = references;
-        this.loadingReferences = false;
+      next: (contents) => {
+        this.contents = contents;
+        // Auto-select first content
+        if (contents.length > 0) {
+          this.selectContent(contents[0]);
+        }
         this.loading = false;
       },
       error: (err) => {
-        this.error = 'Failed to load references';
-        this.loadingReferences = false;
+        this.error = 'Failed to load contents';
         this.loading = false;
       }
     });
     this.subscriptions.add(sub);
   }
 
+  // LEVEL 3: Select content to view details
+  selectContent(content: Reference): void {
+    this.selectedContent = content;
+    this.sidebarOpen = false;
+  }
+
+  // NAVIGATION: Go back to topics
+  goBackToTopics(): void {
+    this.loadTopics();
+  }
+
+  // SIDEBAR CONTROLS
   toggleSidebar(): void {
     this.sidebarOpen = !this.sidebarOpen;
   }

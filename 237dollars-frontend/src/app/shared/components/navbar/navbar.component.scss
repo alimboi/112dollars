@@ -73,7 +73,7 @@
     gap: clamp(16px, 2.5vw, 32px);
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1280px) {
     gap: clamp(12px, 2vw, 24px);
   }
 }
@@ -106,7 +106,7 @@
     height: 100%;
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1280px) {
     width: 36px;
     height: 36px;
   }
@@ -132,7 +132,7 @@
     font-size: clamp(15px, 1.1vw, 17px);
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1280px) {
     font-size: clamp(14px, 1vw, 16px);
   }
 }
@@ -143,7 +143,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1280px) {
     font-size: 10px;
   }
 }
@@ -164,8 +164,8 @@
     gap: clamp(3px, 0.8vw, 6px);
   }
 
-  @media (max-width: 1200px) {
-    display: none;
+  @media (max-width: 1280px) {
+    display: none !important;
   }
 }
 
@@ -186,7 +186,7 @@
     font-size: clamp(12px, 0.95vw, 14px);
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1280px) {
     padding: 8px clamp(8px, 1vw, 12px);
     font-size: clamp(11px, 0.9vw, 13px);
   }
@@ -226,7 +226,7 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1280px) {
     font-size: 8px;
     padding: 1px 4px;
   }
@@ -245,7 +245,7 @@
     gap: clamp(6px, 0.8vw, 10px);
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1280px) {
     gap: 6px;
   }
 }
@@ -287,9 +287,9 @@
     }
   }
 
-  // Hide at 1200px - all in mobile menu
-  @media (max-width: 1200px) {
-    display: none;
+  // Hide at 1280px - all in mobile menu
+  @media (max-width: 1280px) {
+    display: none !important;
   }
 }
 
@@ -305,8 +305,8 @@
 .lang-selector {
   position: relative;
 
-  @media (max-width: 1200px) {
-    display: none;
+  @media (max-width: 1280px) {
+    display: none !important;
   }
 }
 
@@ -342,7 +342,7 @@
     }
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1280px) {
     padding: 0 8px;
 
     .lang-current {
@@ -435,8 +435,8 @@
     gap: 8px;
   }
 
-  @media (max-width: 1200px) {
-    display: none;
+  @media (max-width: 1280px) {
+    display: none !important;
   }
 }
 
@@ -457,7 +457,7 @@
     font-size: clamp(12px, 0.95vw, 13px);
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1280px) {
     padding: 6px clamp(8px, 1.5vw, 12px);
     font-size: clamp(11px, 0.9vw, 12px);
   }
@@ -502,12 +502,13 @@
   position: relative;
   transition: all 0.2s ease;
 
-  @media (max-width: 1200px) {
-    display: flex;
+  @media (max-width: 1280px) {
+    display: flex !important;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     gap: 4px;
+    z-index: 10;
   }
 
   span {
@@ -797,8 +798,8 @@ body.menu-open {
    ZOOM-SPECIFIC HANDLING
    Smart scaling that works at any zoom level
    ============================================ */
-@media (min-resolution: 120dpi) and (max-width: 1200px),
-(-webkit-min-device-pixel-ratio: 1.25) and (max-width: 1200px) {
+@media (min-resolution: 120dpi) and (max-width: 1280px),
+(-webkit-min-device-pixel-ratio: 1.25) and (max-width: 1280px) {
   .nav-container {
     gap: 16px;
   }

@@ -57,13 +57,14 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
 
     // Note: We load contents directly since we already have the topic ID from the URL
     const sub = this.referencesService.getReferencesByTopic(this.topicId).subscribe({
-      next: (contents) => {
-        this.contents = contents;
+      next: (response: any) => {
+        // Extract the references array from the paginated response
+        this.contents = response.references || response || [];
         this.loading = false;
 
         // Auto-select first content
-        if (contents.length > 0) {
-          this.selectContent(contents[0]);
+        if (this.contents.length > 0) {
+          this.selectContent(this.contents[0]);
         } else {
           this.error = 'No contents available for this topic';
         }

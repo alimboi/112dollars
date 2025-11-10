@@ -358,7 +358,7 @@
                 <!-- Live Preview -->
                 <div class="live-preview">
                   <h5>Live Preview:</h5>
-                  <div class="preview-box" [ngStyle]="{
+                  <div class="preview-box" [ngStyle]="getThemeAwareStyle({
                     'font-family': currentBlock.styling?.fontFamily,
                     'font-size.px': currentBlock.styling?.fontSize,
                     'color': currentBlock.styling?.color,
@@ -368,7 +368,7 @@
                     'line-height': currentBlock.styling?.lineHeight,
                     'letter-spacing.px': currentBlock.styling?.letterSpacing,
                     'padding.px': currentBlock.styling?.padding
-                  }">
+                  })">
                     {{ currentBlock.content || 'Your text will appear here...' }}
                   </div>
                 </div>

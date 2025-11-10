@@ -1,219 +1,229 @@
-<nav class="navbar-modern">
-  <div class="container-modern">
-    <div class="navbar-container">
-      <!-- Modern Logo/Brand -->
-      <a routerLink="/" class="brand-modern">
-        <div class="brand-icon">
-          <svg width="36" height="36" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 0L25 15H40L28 24L33 39L20 30L7 39L12 24L0 15H15L20 0Z" fill="url(#blueGradient)"/>
-            <defs>
-              <linearGradient id="blueGradient" x1="0" y1="0" x2="40" y2="40">
-                <stop offset="0%" stop-color="#0052CC"/>
-                <stop offset="50%" stop-color="#2563EB"/>
-                <stop offset="100%" stop-color="#10B981"/>
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-        <div class="brand-text-group">
-          <span class="brand-number">237</span>
-          <span class="brand-name">DOLLARS</span>
-          <span class="brand-tagline">Educational Platform</span>
-        </div>
+<nav class="navbar-elite" [class.scrolled]="scrolled" [class.hidden]="navbarHidden">
+  <div class="nav-container">
+    <!-- Logo Section -->
+    <a routerLink="/" class="nav-brand" (click)="closeMenu()">
+      <div class="brand-mark">
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#6366f1" />
+              <stop offset="100%" style="stop-color:#8b5cf6" />
+            </linearGradient>
+          </defs>
+          <circle cx="16" cy="16" r="14" fill="url(#brandGradient)" />
+          <text x="16" y="21" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white"
+            text-anchor="middle">237</text>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">237dollars</span>
+        <span class="brand-subtitle">Learn & Grow</span>
+      </div>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="nav-menu" role="navigation">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+        Home
       </a>
 
-      <!-- Mobile Menu Toggle Button -->
-      <button
-        class="navbar-toggler-modern"
-        [class.active]="isMenuOpen"
-        (click)="toggleMenu()"
-        aria-label="Toggle navigation"
-        [attr.aria-expanded]="isMenuOpen">
-        <span class="toggler-line"></span>
-        <span class="toggler-line"></span>
-        <span class="toggler-line"></span>
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link" *ngIf="authService.isAuthenticated()">
+        Dashboard
+      </a>
+
+      <a routerLink="/references" routerLinkActive="active" class="nav-link" *ngIf="authService.isAuthenticated()">
+        References
+      </a>
+
+      <a routerLink="/admin" routerLinkActive="active" class="nav-link nav-admin" *ngIf="authService.isAdmin()">
+        Admin
+        <span class="nav-badge">PRO</span>
+      </a>
+
+      <a routerLink="/blog" routerLinkActive="active" class="nav-link">
+        Blog
+      </a>
+
+      <a routerLink="/contact" routerLinkActive="active" class="nav-link">
+        Contact
+      </a>
+    </nav>
+
+    <!-- Actions Section -->
+    <div class="nav-actions">
+      <!-- Theme Toggle -->
+      <button class="action-btn theme-btn" (click)="toggleDarkMode()"
+        [attr.aria-label]="isDarkMode ? 'Light mode' : 'Dark mode'" title="Toggle theme">
+        <svg *ngIf="!isDarkMode" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+          <circle cx="10" cy="10" r="4" />
+          <path
+            d="M10 1v2M10 17v2M19 10h-2M3 10H1M16.5 3.5l-1.4 1.4M4.9 15.1l-1.4 1.4M16.5 16.5l-1.4-1.4M4.9 4.9L3.5 3.5" />
+        </svg>
+        <svg *ngIf="isDarkMode" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+        </svg>
       </button>
 
-      <!-- Navigation Menu -->
-      <div class="navbar-menu-modern" [class.active]="isMenuOpen">
-        <!-- Mobile Brand (shows only on mobile when menu is open) -->
-        <div class="mobile-brand">
-          <div class="mobile-brand-header">
-            <span class="brand-number">237</span>
-            <span class="brand-name">DOLLARS</span>
-          </div>
-          <p class="mobile-brand-tagline">Premium Educational Platform</p>
-        </div>
+      <!-- Language Selector -->
+      <div class="lang-selector" [class.open]="isLangDropdownOpen">
+        <button class="action-btn lang-btn" (click)="toggleLangDropdown()">
+          <span class="lang-current">{{ getCurrentLanguage()?.flag }}</span>
+          <svg class="lang-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor">
+            <path d="M3 4.5L6 7.5L9 4.5" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
 
-        <!-- Navigation Links -->
-        <ul class="navbar-nav-modern">
-          <li class="nav-item-modern">
-            <a
-              routerLink="/"
-              class="nav-link-modern"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{exact: true}">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-              </svg>
-              <span>Home</span>
-            </a>
-          </li>
-
-          <li class="nav-item-modern" *ngIf="authService.isAuthenticated()">
-            <a routerLink="/dashboard" class="nav-link-modern" routerLinkActive="active">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="9" y1="3" x2="9" y2="21"></line>
-                <line x1="15" y1="3" x2="15" y2="21"></line>
-                <line x1="3" y1="9" x2="21" y2="9"></line>
-                <line x1="3" y1="15" x2="21" y2="15"></line>
-              </svg>
-              <span>Dashboard</span>
-            </a>
-          </li>
-
-          <li class="nav-item-modern" *ngIf="authService.isAuthenticated()">
-            <a routerLink="/references" class="nav-link-modern" routerLinkActive="active">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-              </svg>
-              <span>References</span>
-            </a>
-          </li>
-
-          <li class="nav-item-modern" *ngIf="authService.isAdmin()">
-            <a routerLink="/admin" class="nav-link-modern nav-link-admin" routerLinkActive="active">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-              <span>Admin</span>
-              <span class="admin-badge">PRO</span>
-            </a>
-          </li>
-
-          <li class="nav-item-modern">
-            <a routerLink="/blog" class="nav-link-modern" routerLinkActive="active">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 20h9"></path>
-                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-              </svg>
-              <span>Blog</span>
-            </a>
-          </li>
-
-          <li class="nav-item-modern">
-            <a routerLink="/contact" class="nav-link-modern" routerLinkActive="active">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-              </svg>
-              <span>Contact</span>
-            </a>
-          </li>
-        </ul>
-
-        <!-- Actions Section -->
-        <div class="navbar-actions-modern">
-          <!-- Dark Mode Toggle -->
-          <button
-            class="theme-toggle"
-            (click)="toggleDarkMode()"
-            [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'"
-            type="button">
-            <svg *ngIf="!isDarkMode" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="5"></circle>
-              <line x1="12" y1="1" x2="12" y2="3"></line>
-              <line x1="12" y1="21" x2="12" y2="23"></line>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-              <line x1="1" y1="12" x2="3" y2="12"></line>
-              <line x1="21" y1="12" x2="23" y2="12"></line>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
-            <svg *ngIf="isDarkMode" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        <div class="lang-dropdown" *ngIf="isLangDropdownOpen">
+          <button *ngFor="let lang of languages" class="lang-option" [class.active]="currentLang === lang.code"
+            (click)="switchLanguage(lang.code)">
+            <span class="lang-flag">{{ lang.flag }}</span>
+            <span class="lang-name">{{ lang.name }}</span>
+            <svg *ngIf="currentLang === lang.code" class="lang-check" viewBox="0 0 16 16" fill="none"
+              stroke="currentColor">
+              <path d="M13 3L6 10L3 7" stroke-width="2" stroke-linecap="round" />
             </svg>
           </button>
-
-          <!-- Language Switcher -->
-          <div class="language-switcher">
-            <button class="lang-button" [class.active]="isLangDropdownOpen" (click)="toggleLangDropdown()" type="button">
-              <span class="lang-flag">{{ getCurrentLanguage()?.flag }}</span>
-              <span class="lang-name hide-mobile">{{ getCurrentLanguage()?.name }}</span>
-              <svg class="lang-arrow" width="12" height="12" viewBox="0 0 12 8" fill="none">
-                <path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </button>
-            <ul class="lang-dropdown" [class.active]="isLangDropdownOpen">
-              <li *ngFor="let lang of languages" class="lang-option">
-                <button
-                  (click)="switchLanguage(lang.code)"
-                  [class.active]="currentLang === lang.code"
-                  class="lang-option-button">
-                  <span class="lang-flag">{{ lang.flag }}</span>
-                  <span class="lang-name">{{ lang.name }}</span>
-                  <svg *ngIf="currentLang === lang.code" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M13.5 4L6 11.5L2.5 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Auth Buttons -->
-          <div class="auth-buttons">
-            <ng-container *ngIf="!authService.isAuthenticated(); else loggedIn">
-              <a routerLink="/auth/login" class="btn-modern btn-outline-primary btn-sm">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                  <polyline points="10 17 15 12 10 7"></polyline>
-                  <line x1="15" y1="12" x2="3" y2="12"></line>
-                </svg>
-                <span>Login</span>
-              </a>
-              <a routerLink="/auth/register" class="btn-modern btn-primary btn-sm">
-                <span>Get Started</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </a>
-            </ng-container>
-
-            <ng-template #loggedIn>
-              <a routerLink="/profile" class="btn-modern btn-ghost btn-sm">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-                <span>Profile</span>
-              </a>
-              <button (click)="logout()" class="btn-modern btn-outline-primary btn-sm">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                  <polyline points="16 17 21 12 16 7"></polyline>
-                  <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
-                <span>Logout</span>
-              </button>
-            </ng-template>
-          </div>
-        </div>
-
-        <!-- Mobile Menu Footer -->
-        <div class="mobile-menu-footer">
-          <div class="mobile-footer-content">
-            <p class="mobile-footer-text">© 2025 237DOLLARS</p>
-            <p class="mobile-footer-tagline">Elevate Your Learning</p>
-          </div>
         </div>
       </div>
 
-      <!-- Overlay for mobile menu -->
-      <div class="navbar-overlay" [class.active]="isMenuOpen" (click)="closeMenu()"></div>
+      <!-- Auth Section -->
+      <div class="auth-section">
+        <ng-container *ngIf="!authService.isAuthenticated()">
+          <a routerLink="/auth/login" class="nav-btn nav-btn-ghost">
+            Sign in
+          </a>
+          <a routerLink="/auth/register" class="nav-btn nav-btn-primary">
+            Get Started
+          </a>
+        </ng-container>
+
+        <ng-container *ngIf="authService.isAuthenticated()">
+          <a routerLink="/profile" class="action-btn profile-btn">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
+              <path d="M10 10a3 3 0 100-6 3 3 0 000 6zM3 18v-1a7 7 0 0114 0v1" />
+            </svg>
+          </a>
+          <button class="nav-btn nav-btn-ghost" (click)="logout()">
+            Sign out
+          </button>
+        </ng-container>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button class="menu-trigger" [class.active]="isMenuOpen" (click)="toggleMenu()" aria-label="Menu">
+        <span></span>
+        <span></span>
+      </button>
     </div>
   </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" [class.active]="isMenuOpen">
+    <div class="mobile-menu-content">
+      <div class="mobile-nav">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="mobile-link"
+          (click)="closeMenu()">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
+            <path d="M3 8l7-5 7 5v9a1 1 0 01-1 1H4a1 1 0 01-1-1V8z" />
+            <path d="M8 18v-7h4v7" />
+          </svg>
+          <span>Home</span>
+        </a>
+
+        <a routerLink="/dashboard" routerLinkActive="active" class="mobile-link" *ngIf="authService.isAuthenticated()"
+          (click)="closeMenu()">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
+            <rect x="3" y="3" width="14" height="14" rx="1" />
+            <path d="M3 8h14M8 3v14" />
+          </svg>
+          <span>Dashboard</span>
+        </a>
+
+        <a routerLink="/references" routerLinkActive="active" class="mobile-link" *ngIf="authService.isAuthenticated()"
+          (click)="closeMenu()">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
+            <path d="M4 5a1 1 0 011-1h10a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V5z" />
+            <path d="M8 4v14M12 8h4" />
+          </svg>
+          <span>References</span>
+        </a>
+
+        <a routerLink="/admin" routerLinkActive="active" class="mobile-link mobile-admin" *ngIf="authService.isAdmin()"
+          (click)="closeMenu()">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
+            <path d="M10 2l8 3v6c0 4-8 7-8 7s-8-3-8-7V5l8-3z" />
+          </svg>
+          <span>Admin Panel</span>
+          <span class="mobile-badge">PRO</span>
+        </a>
+
+        <a routerLink="/blog" routerLinkActive="active" class="mobile-link" (click)="closeMenu()">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
+            <path d="M13 2l5 5L8 17l-5 1 1-5L14 3z" />
+          </svg>
+          <span>Blog</span>
+        </a>
+
+        <a routerLink="/contact" routerLinkActive="active" class="mobile-link" (click)="closeMenu()">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
+            <path d="M2 4a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6l-4 3v-3a2 2 0 01-2-2V4z" />
+          </svg>
+          <span>Contact</span>
+        </a>
+      </div>
+
+      <div class="mobile-actions">
+        <!-- Mobile Theme Toggle -->
+        <button class="mobile-action-btn" (click)="toggleDarkMode()">
+          <svg *ngIf="!isDarkMode" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+            <circle cx="10" cy="10" r="4" />
+            <path d="M10 1v2M10 17v2M19 10h-2M3 10H1" />
+          </svg>
+          <svg *ngIf="isDarkMode" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+          </svg>
+          <span>{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
+        </button>
+
+        <!-- Mobile Language Options -->
+        <div class="mobile-lang">
+          <span class="mobile-lang-label">Language</span>
+          <div class="mobile-lang-grid">
+            <button *ngFor="let lang of languages" class="mobile-lang-btn" [class.active]="currentLang === lang.code"
+              (click)="switchLanguage(lang.code); closeMenu()">
+              <span>{{ lang.flag }}</span>
+              <span>{{ lang.name }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Auth -->
+        <div class="mobile-auth">
+          <ng-container *ngIf="!authService.isAuthenticated()">
+            <a routerLink="/auth/login" class="mobile-btn mobile-btn-ghost" (click)="closeMenu()">Sign in</a>
+            <a routerLink="/auth/register" class="mobile-btn mobile-btn-primary" (click)="closeMenu()">Get Started</a>
+          </ng-container>
+
+          <ng-container *ngIf="authService.isAuthenticated()">
+            <a routerLink="/profile" class="mobile-btn mobile-btn-ghost" (click)="closeMenu()">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor">
+                <circle cx="8" cy="5" r="3" />
+                <path d="M2 15v-1a6 6 0 0112 0v1" />
+              </svg>
+              Profile
+            </a>
+            <button class="mobile-btn mobile-btn-primary" (click)="logout()">Sign out</button>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="mobile-footer">
+        <p>© 2025 237dollars</p>
+        <p>Premium Education Platform</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backdrop -->
+  <div class="nav-backdrop" [class.active]="isMenuOpen" (click)="closeMenu()"></div>
 </nav>

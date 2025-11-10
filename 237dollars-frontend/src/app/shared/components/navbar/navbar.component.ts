@@ -18,6 +18,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isLangDropdownOpen = false;
   currentLang = 'en';
   isDarkMode = false;
+  scrolled = false;
+  navbarHidden = false;
+
   languages = [
     { code: 'en', name: 'English', flag: '🇺🇸' },
     { code: 'uz', name: 'O\'zbekcha', flag: '🇺🇿' },
@@ -87,32 +90,25 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   // Handle scroll for navbar hide/show animation
-  @HostListener('window:scroll', ['$event'])
+  @HostListener('window:scroll')
   onWindowScroll(): void {
-    const navbar = this.el.nativeElement.querySelector('.navbar');
-    if (!navbar) return;
-
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
     // Add scrolled class when scrolled down
-    if (scrollTop > 50) {
-      this.renderer.addClass(navbar, 'scrolled');
-    } else {
-      this.renderer.removeClass(navbar, 'scrolled');
-    }
+    this.scrolled = scrollTop > 50;
 
     // Hide/show navbar based on scroll direction
     if (scrollTop > this.scrollThreshold) {
       if (scrollTop > this.lastScrollTop && !this.isMenuOpen) {
         // Scrolling down - hide navbar
-        this.renderer.addClass(navbar, 'navbar-hidden');
+        this.navbarHidden = true;
       } else {
         // Scrolling up - show navbar
-        this.renderer.removeClass(navbar, 'navbar-hidden');
+        this.navbarHidden = false;
       }
     } else {
       // Always show navbar near top of page
-      this.renderer.removeClass(navbar, 'navbar-hidden');
+      this.navbarHidden = false;
     }
 
     this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
@@ -196,14 +192,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.zoomLevel = devicePixelRatio;
     }
 
-    // Get the navbar element
-    const navbar = this.el.nativeElement.querySelector('.navbar-modern');
+    // Get the navbar element - FIXED: using correct class name
+    const navbar = this.el.nativeElement.querySelector('.navbar-elite');
     if (!navbar) return;
 
-    // Calculate if navbar items will fit
-    // This checks actual available space vs needed space
-    const containerWidth = effectiveWidth;
-    const shouldShowMobileMenu = containerWidth < 1400 || this.zoomLevel > 1.1;
+    // Progressive zoom handling:
+    // - At 100% zoom: Show hamburger at 968px
+    // - At 110%+ zoom OR effective width < 1200px: Force mobile menu
+    const shouldShowMobileMenu = effectiveWidth < 1200 || this.zoomLevel > 1.1;
 
     // Add/remove mobile class dynamically
     if (shouldShowMobileMenu) {
@@ -211,12 +207,5 @@ export class NavbarComponent implements OnInit, OnDestroy {
     } else {
       this.renderer.removeClass(navbar, 'force-mobile');
     }
-
-    console.log('Navbar check:', {
-      windowWidth: window.innerWidth,
-      effectiveWidth,
-      zoomLevel: this.zoomLevel.toFixed(2),
-      shouldShowMobile: shouldShowMobileMenu
-    });
   }
 }

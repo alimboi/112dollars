@@ -55,19 +55,20 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
     this.navigationLevel = 'contents';
     this.selectedContent = null;
     this.contents = [];
+    this.error = '';
 
     // Note: We load contents directly since we already have the topic ID from the URL
     const sub = this.referencesService.getReferencesByTopic(this.topicId).subscribe({
       next: (response: any) => {
         // Extract the references array from the paginated response
         this.contents = response.references || response || [];
-        this.loading = false;
 
-        // Auto-select first content
+        // Auto-select and fetch full details of first content
         if (this.contents.length > 0) {
           this.selectContent(this.contents[0]);
         } else {
           this.error = 'No contents available for this topic';
+          this.loading = false;
         }
       },
       error: (err) => {
@@ -80,8 +81,23 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
 
   // Select content to view details
   selectContent(content: Reference): void {
-    this.selectedContent = content;
+    this.loading = true;
     this.sidebarOpen = false;
+
+    // Fetch full content details including contentBlocks from the API
+    const sub = this.referencesService.getReference(content.id).subscribe({
+      next: (fullContent: Reference) => {
+        this.selectedContent = fullContent;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load content details:', err);
+        // Fallback to the list item if API call fails
+        this.selectedContent = content;
+        this.loading = false;
+      }
+    });
+    this.subscriptions.add(sub);
   }
 
   // NAVIGATION: Go back to topics

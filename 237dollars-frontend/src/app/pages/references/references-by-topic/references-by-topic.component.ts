@@ -4,13 +4,14 @@ import { RouterModule, ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { ReferencesService, Reference, Topic, Major } from '../../../core/services/references.service';
+import { SafeUrlPipe } from '../../../shared/pipes/safe-url.pipe';
 
 type NavigationLevel = 'topics' | 'contents';
 
 @Component({
   selector: 'app-references-by-topic',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule],
+  imports: [CommonModule, RouterModule, TranslateModule, SafeUrlPipe],
   templateUrl: './references-by-topic.component.html',
   styleUrls: ['./references-by-topic.component.scss']
 })

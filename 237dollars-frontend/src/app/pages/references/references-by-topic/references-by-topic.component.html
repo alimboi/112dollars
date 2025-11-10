@@ -206,7 +206,7 @@
             </div>
 
             <!-- No Content Blocks -->
-            <div class="no-blocks" *ngIf="!selectedContent?.contentBlocks || selectedContent.contentBlocks.length === 0">
+            <div class="no-blocks" *ngIf="!selectedContent?.contentBlocks || selectedContent?.contentBlocks?.length === 0">
               <p>No content blocks available for this item.</p>
             </div>
           </div>

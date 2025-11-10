@@ -125,15 +125,90 @@
             </div>
           </div>
 
-          <!-- Content Body -->
+          <!-- Content Body - Show Full Content Inline -->
           <div class="detail-body">
-            <button [routerLink]="['/references', selectedContent.id]" class="btn-view-full">
-              <span>View Full Content</span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </button>
+            <!-- Content Blocks -->
+            <div class="content-blocks" *ngIf="selectedContent?.contentBlocks && selectedContent.contentBlocks.length > 0">
+              <div class="content-block" *ngFor="let block of selectedContent.contentBlocks" [ngSwitch]="block.blockType">
+                <!-- Heading Block -->
+                <h2 *ngSwitchCase="'heading'" class="heading-block" [ngStyle]="{
+                  'font-family': block.styling?.fontFamily,
+                  'font-size.px': block.styling?.fontSize,
+                  'color': block.styling?.color,
+                  'background-color': block.styling?.backgroundColor,
+                  'font-weight': block.styling?.fontWeight,
+                  'text-align': block.styling?.textAlign,
+                  'line-height': block.styling?.lineHeight,
+                  'margin-top.px': block.styling?.marginTop,
+                  'margin-bottom.px': block.styling?.marginBottom,
+                  'padding.px': block.styling?.padding
+                }">{{ block.content }}</h2>
+
+                <!-- Text Block -->
+                <p *ngSwitchCase="'text'" class="text-block" [ngStyle]="{
+                  'font-family': block.styling?.fontFamily,
+                  'font-size.px': block.styling?.fontSize,
+                  'color': block.styling?.color,
+                  'background-color': block.styling?.backgroundColor,
+                  'font-weight': block.styling?.fontWeight,
+                  'font-style': block.styling?.fontStyle,
+                  'text-decoration': block.styling?.textDecoration,
+                  'text-align': block.styling?.textAlign,
+                  'line-height': block.styling?.lineHeight,
+                  'letter-spacing.px': block.styling?.letterSpacing,
+                  'margin-top.px': block.styling?.marginTop,
+                  'margin-bottom.px': block.styling?.marginBottom,
+                  'padding.px': block.styling?.padding
+                }">{{ block.content }}</p>
+
+                <!-- Image Block -->
+                <div *ngSwitchCase="'image'" class="image-block" [ngStyle]="{'text-align': block.blockData?.alignment}">
+                  <img [src]="block.blockData?.url"
+                       [alt]="block.blockData?.alt || 'Content image'"
+                       [ngStyle]="{
+                         'width': block.blockData?.width,
+                         'height': block.blockData?.height,
+                         'border-radius.px': block.blockData?.borderRadius
+                       }"
+                       [class]="'shadow-' + block.blockData?.boxShadow">
+                </div>
+
+                <!-- Video Block -->
+                <div *ngSwitchCase="'video'" class="video-block" [ngStyle]="{'text-align': block.blockData?.alignment}">
+                  <iframe *ngIf="block.blockData?.videoId"
+                          [src]="'https://www.youtube.com/embed/' + block.blockData?.videoId | safeUrl"
+                          [style.width]="block.blockData?.width"
+                          height="400"
+                          frameborder="0"
+                          allowfullscreen>
+                  </iframe>
+                </div>
+
+                <!-- Code Block -->
+                <div *ngSwitchCase="'code_block'" class="code-block" [ngStyle]="{
+                  'background-color': block.styling?.backgroundColor,
+                  'color': block.styling?.color,
+                  'padding.px': block.styling?.padding,
+                  'margin-top.px': block.styling?.marginTop,
+                  'margin-bottom.px': block.styling?.marginBottom
+                }">
+                  <div class="code-header">
+                    <div class="code-dots">
+                      <span class="dot dot-red"></span>
+                      <span class="dot dot-yellow"></span>
+                      <span class="dot dot-green"></span>
+                    </div>
+                    <span class="code-label">Code</span>
+                  </div>
+                  <pre><code>{{ block.content }}</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- No Content Blocks -->
+            <div class="no-blocks" *ngIf="!selectedContent?.contentBlocks || selectedContent.contentBlocks.length === 0">
+              <p>No content blocks available for this item.</p>
+            </div>
           </div>
         </div>
 

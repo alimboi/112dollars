@@ -287,20 +287,9 @@
     }
   }
 
+  // Hide at 1200px - all in mobile menu
   @media (max-width: 1200px) {
-    width: 32px;
-    height: 32px;
-
-    svg {
-      width: 16px;
-      height: 16px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    &.theme-btn {
-      display: none;
-    }
+    display: none;
   }
 }
 
@@ -316,7 +305,7 @@
 .lang-selector {
   position: relative;
 
-  @media (max-width: 640px) {
+  @media (max-width: 1200px) {
     display: none;
   }
 }
@@ -447,11 +436,7 @@
   }
 
   @media (max-width: 1200px) {
-    gap: 6px;
-  }
-
-  @media (max-width: 768px) {
-    gap: 8px;
+    display: none;
   }
 }
 
@@ -516,13 +501,13 @@
   cursor: pointer;
   position: relative;
   transition: all 0.2s ease;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 4px;
 
   @media (max-width: 1200px) {
     display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
   }
 
   span {

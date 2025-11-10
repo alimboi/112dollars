@@ -363,14 +363,28 @@ export class ReferenceEditorComponent implements OnInit {
 
       if (this.currentBlock && this.currentBlock.blockData) {
         // Store the URL returned from backend
-        this.currentBlock.blockData.url = 'http://localhost:3000' + response.url;
-        this.currentBlock.blockData.filename = response.filename;
+        this.currentBlock.blockData.url = 'http://localhost:3000' + response?.url;
+        this.currentBlock.blockData.filename = response?.filename;
       }
 
       this.loading = false;
-    } catch (err) {
+      alert('Image uploaded successfully!');
+    } catch (err: any) {
       console.error('Error uploading image:', err);
-      alert('Failed to upload image');
+
+      // Handle different error types
+      let errorMessage = 'Failed to upload image';
+      if (err?.status === 401) {
+        errorMessage = 'Unauthorized: Your session may have expired. Please log in again and try again.';
+      } else if (err?.status === 403) {
+        errorMessage = 'Forbidden: You don\'t have permission to upload images. Please contact your administrator.';
+      } else if (err?.status === 413) {
+        errorMessage = 'File too large: Maximum file size is 5MB';
+      } else if (err?.error?.message) {
+        errorMessage = err.error.message;
+      }
+
+      alert(errorMessage);
       this.loading = false;
     }
   }

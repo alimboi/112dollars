@@ -325,10 +325,14 @@
 .date-cell {
   font-size: 0.85rem;
   white-space: nowrap;
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 .creator-cell {
   font-size: 0.85rem;
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 .actions-cell {
@@ -353,31 +357,35 @@
 
       &:hover {
         transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
+        box-shadow: var(--shadow-lg);
       }
 
       &.btn-view:hover {
-        border-color: var(--primary-500);
-        background: var(--primary-50);
-        color: var(--primary-700);
+        border-color: var(--primary-600);
+        background: var(--primary-100);
+        color: var(--primary-800);
+        font-weight: 600;
       }
 
       &.btn-edit:hover {
-        border-color: var(--accent-500);
-        background: var(--accent-50);
-        color: var(--accent-700);
+        border-color: var(--accent-600);
+        background: var(--accent-100);
+        color: var(--accent-800);
+        font-weight: 600;
       }
 
       &.btn-toggle:hover {
-        border-color: var(--secondary-500);
-        background: var(--secondary-50);
-        color: var(--secondary-700);
+        border-color: var(--secondary-600);
+        background: var(--secondary-100);
+        color: var(--secondary-800);
+        font-weight: 600;
       }
 
       &.btn-delete:hover {
-        border-color: var(--error);
+        border-color: var(--error-dark);
         background: var(--error-light);
         color: var(--error-dark);
+        font-weight: 600;
       }
     }
   }
@@ -404,10 +412,12 @@
     font-weight: 600;
 
     &:hover:not(:disabled) {
-      border-color: var(--primary-500);
-      background: var(--primary-50);
-      color: var(--primary-700);
+      border-color: var(--primary-600);
+      background: var(--primary-100);
+      color: var(--primary-800);
       transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      font-weight: 600;
     }
 
     &:disabled {
@@ -419,7 +429,8 @@
       background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
       border-color: var(--primary-600);
       color: white;
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-lg);
+      font-weight: 700;
     }
   }
 
@@ -585,26 +596,30 @@
 
       &.btn-view:hover {
         border-color: var(--primary-400);
-        background: rgba(8, 145, 178, 0.2);
-        color: var(--primary-400);
+        background: rgba(8, 145, 178, 0.3);
+        color: var(--primary-300);
+        font-weight: 600;
       }
 
       &.btn-edit:hover {
         border-color: var(--accent-400);
-        background: rgba(249, 115, 22, 0.2);
-        color: var(--accent-400);
+        background: rgba(249, 115, 22, 0.3);
+        color: var(--accent-300);
+        font-weight: 600;
       }
 
       &.btn-toggle:hover {
         border-color: var(--secondary-400);
-        background: rgba(16, 185, 129, 0.2);
-        color: var(--secondary-400);
+        background: rgba(16, 185, 129, 0.3);
+        color: var(--secondary-300);
+        font-weight: 600;
       }
 
       &.btn-delete:hover {
         border-color: var(--error);
-        background: rgba(239, 68, 68, 0.2);
-        color: var(--error);
+        background: rgba(239, 68, 68, 0.3);
+        color: var(--error-light);
+        font-weight: 600;
       }
     }
   }
@@ -618,8 +633,9 @@
 
       &:hover:not(:disabled) {
         border-color: var(--primary-400);
-        background: rgba(8, 145, 178, 0.1);
-        color: var(--primary-400);
+        background: rgba(8, 145, 178, 0.2);
+        color: var(--primary-300);
+        font-weight: 600;
       }
 
       &:disabled {
@@ -630,6 +646,7 @@
         background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-500) 100%);
         border-color: var(--primary-500);
         color: white;
+        font-weight: 700;
       }
     }
   }

@@ -41,7 +41,7 @@
         <div *ngFor="let block of contentBlocks" class="preview-block">
 
           <!-- Heading Block -->
-          <h2 *ngIf="block.blockType === 'heading'" [ngStyle]="{
+          <h2 *ngIf="block.blockType === 'heading'" [ngStyle]="getThemeAwareStyle({
             'font-family': block.styling?.fontFamily,
             'font-size.px': block.styling?.fontSize,
             'color': block.styling?.color,
@@ -52,12 +52,12 @@
             'margin-top.px': block.styling?.marginTop,
             'margin-bottom.px': block.styling?.marginBottom,
             'padding.px': block.styling?.padding
-          }">
+          })">
             {{ block.content }}
           </h2>
 
           <!-- Text Block -->
-          <p *ngIf="block.blockType === 'text'" [ngStyle]="{
+          <p *ngIf="block.blockType === 'text'" [ngStyle]="getThemeAwareStyle({
             'font-family': block.styling?.fontFamily,
             'font-size.px': block.styling?.fontSize,
             'color': block.styling?.color,
@@ -71,7 +71,7 @@
             'margin-top.px': block.styling?.marginTop,
             'margin-bottom.px': block.styling?.marginBottom,
             'padding.px': block.styling?.padding
-          }">
+          })">
             {{ block.content }}
           </p>
 
@@ -103,7 +103,7 @@
           </div>
 
           <!-- Code Block -->
-          <pre *ngIf="block.blockType === 'code_block'" [ngStyle]="{
+          <pre *ngIf="block.blockType === 'code_block'" [ngStyle]="getThemeAwareStyle({
             'font-family': block.styling?.fontFamily,
             'font-size.px': block.styling?.fontSize,
             'color': block.styling?.color,
@@ -111,7 +111,7 @@
             'padding.px': block.styling?.padding,
             'margin-top.px': block.styling?.marginTop,
             'margin-bottom.px': block.styling?.marginBottom
-          }"><code>{{ block.content }}</code></pre>
+          })"><code>{{ block.content }}</code></pre>
 
         </div>
       </div>

@@ -74,6 +74,7 @@ export class ReferenceEditorComponent implements OnInit {
   saving = false;
   previewMode = false;
   showBlockEditor = false;
+  currentTheme: 'light' | 'dark' = 'light';
 
   // Reference ID (for editing)
   referenceId: number | null = null;
@@ -86,6 +87,12 @@ export class ReferenceEditorComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Detect initial theme
+    this.detectTheme();
+
+    // Listen for theme changes
+    this.listenForThemeChanges();
+
     this.loadMajors();
 
     // Check if editing existing reference
@@ -153,17 +160,33 @@ export class ReferenceEditorComponent implements OnInit {
           }));
         }
 
-        this.loading = false;
-
-        // Load topics for selected major
+        // Load topics for selected major (this will also set loading to false when done)
         if (this.selectedMajorId) {
-          this.onMajorChange();
+          this.loadTopicsForMajor(this.selectedMajorId);
+        } else {
+          this.loading = false;
         }
       },
       error: (err) => {
         console.error('Error loading reference:', err);
         alert('Failed to load reference');
         this.router.navigate(['/admin']);
+        this.loading = false;
+      }
+    });
+  }
+
+  /**
+   * Load topics for a major
+   */
+  private loadTopicsForMajor(majorId: number): void {
+    this.api.get<Topic[]>(`references/majors/${majorId}/topics`).subscribe({
+      next: (topics) => {
+        this.topics = topics;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading topics:', err);
         this.loading = false;
       }
     });
@@ -573,5 +596,78 @@ export class ReferenceEditorComponent implements OnInit {
     if (!textColor || !bgColor) return true;
 
     return ColorThemeUtil.isAccessibleContrast(textColor, bgColor);
+  }
+
+  // ===== THEME AWARENESS =====
+
+  /**
+   * Detect current theme from document root attribute
+   */
+  private detectTheme(): void {
+    // Check data-theme attribute on document root (set by navbar)
+    const dataTheme = document.documentElement.getAttribute('data-theme');
+    if (dataTheme === 'dark') {
+      this.currentTheme = 'dark';
+      return;
+    }
+
+    // Check if user has a saved theme preference in localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      this.currentTheme = 'dark';
+      return;
+    }
+
+    // Default to light theme
+    this.currentTheme = 'light';
+  }
+
+  /**
+   * Listen for theme changes in real-time
+   */
+  private listenForThemeChanges(): void {
+    // Use MutationObserver to watch for data-theme attribute changes on document root
+    const observer = new MutationObserver(() => {
+      this.detectTheme();
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+
+    // Also listen for storage changes (in case theme changes in different tab)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'theme') {
+        this.detectTheme();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+  }
+
+  /**
+   * Get theme-aware style for a content block
+   * Automatically adjusts colors based on current theme
+   */
+  getThemeAwareStyle(styling: any): any {
+    if (!styling) return {};
+
+    const themeAwareStyle = { ...styling };
+
+    // Adjust color based on current theme
+    if (styling.color) {
+      themeAwareStyle.color = ColorThemeUtil.getThemeAwareColor(styling.color, this.currentTheme);
+    }
+
+    // Adjust background color based on current theme
+    if (styling.backgroundColor) {
+      themeAwareStyle.backgroundColor = ColorThemeUtil.getThemeAwareColor(
+        styling.backgroundColor,
+        this.currentTheme
+      );
+    }
+
+    return themeAwareStyle;
   }
 }

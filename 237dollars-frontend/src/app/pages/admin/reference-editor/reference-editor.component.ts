@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { CdkDrag, CdkDropList, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SafeUrlPipe } from '../../../shared/pipes/safe-url.pipe';
+import { ColorThemeUtil } from '../../../shared/utils/color-theme.util';
 
 interface Major {
   id: number;
@@ -66,6 +67,7 @@ export class ReferenceEditorComponent implements OnInit {
   contentBlocks: ContentBlock[] = [];
   currentBlock: ContentBlock | null = null;
   editingBlockIndex: number | null = null;
+  contrastWarning: string = '';
 
   // UI state
   loading = false;
@@ -523,5 +525,53 @@ export class ReferenceEditorComponent implements OnInit {
     } else {
       return block.content?.substring(0, 50) || 'Empty block';
     }
+  }
+
+  // ===== COLOR CONTRAST CHECKING =====
+
+  /**
+   * Check contrast when color changes
+   * Shows warning if colors have poor contrast
+   */
+  onColorChange(): void {
+    if (!this.currentBlock?.styling) {
+      this.contrastWarning = '';
+      return;
+    }
+
+    const textColor = this.currentBlock.styling.color;
+    const bgColor = this.currentBlock.styling.backgroundColor;
+
+    // Only check if both colors are set
+    if (!textColor || !bgColor) {
+      this.contrastWarning = '';
+      return;
+    }
+
+    const warning = ColorThemeUtil.getContrastWarning(textColor, bgColor);
+    this.contrastWarning = warning.hasWarning
+      ? `⚠️ ${warning.message}`
+      : `✓ ${warning.message}`;
+  }
+
+  /**
+   * Get color accessibility options for admin
+   */
+  getColorOptions(): Array<{ value: string; label: string }> {
+    return ColorThemeUtil.getColorOptions();
+  }
+
+  /**
+   * Check if colors are accessible
+   */
+  areColorsAccessible(): boolean {
+    if (!this.currentBlock?.styling) return true;
+
+    const textColor = this.currentBlock.styling.color;
+    const bgColor = this.currentBlock.styling.backgroundColor;
+
+    if (!textColor || !bgColor) return true;
+
+    return ColorThemeUtil.isAccessibleContrast(textColor, bgColor);
   }
 }

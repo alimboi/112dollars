@@ -131,7 +131,7 @@
             <div class="content-blocks" *ngIf="(selectedContent?.contentBlocks?.length ?? 0) > 0">
               <div class="content-block" *ngFor="let block of selectedContent.contentBlocks" [ngSwitch]="block.blockType">
                 <!-- Heading Block -->
-                <h2 *ngSwitchCase="'heading'" class="heading-block" [ngStyle]="{
+                <h2 *ngSwitchCase="'heading'" class="heading-block" [ngStyle]="getThemeAwareStyle({
                   'font-family': block.styling?.fontFamily,
                   'font-size.px': block.styling?.fontSize,
                   'color': block.styling?.color,
@@ -142,10 +142,10 @@
                   'margin-top.px': block.styling?.marginTop,
                   'margin-bottom.px': block.styling?.marginBottom,
                   'padding.px': block.styling?.padding
-                }">{{ block.content }}</h2>
+                })">{{ block.content }}</h2>
 
                 <!-- Text Block -->
-                <p *ngSwitchCase="'text'" class="text-block" [ngStyle]="{
+                <p *ngSwitchCase="'text'" class="text-block" [ngStyle]="getThemeAwareStyle({
                   'font-family': block.styling?.fontFamily,
                   'font-size.px': block.styling?.fontSize,
                   'color': block.styling?.color,
@@ -159,7 +159,7 @@
                   'margin-top.px': block.styling?.marginTop,
                   'margin-bottom.px': block.styling?.marginBottom,
                   'padding.px': block.styling?.padding
-                }">{{ block.content }}</p>
+                })">{{ block.content }}</p>
 
                 <!-- Image Block -->
                 <div *ngSwitchCase="'image'" class="image-block" [ngStyle]="{'text-align': block.blockData?.alignment}">
@@ -185,13 +185,13 @@
                 </div>
 
                 <!-- Code Block -->
-                <div *ngSwitchCase="'code_block'" class="code-block" [ngStyle]="{
+                <div *ngSwitchCase="'code_block'" class="code-block" [ngStyle]="getThemeAwareStyle({
                   'background-color': block.styling?.backgroundColor,
                   'color': block.styling?.color,
                   'padding.px': block.styling?.padding,
                   'margin-top.px': block.styling?.marginTop,
                   'margin-bottom.px': block.styling?.marginBottom
-                }">
+                })">
                   <div class="code-header">
                     <div class="code-dots">
                       <span class="dot dot-red"></span>

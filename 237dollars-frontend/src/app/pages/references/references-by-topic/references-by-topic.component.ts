@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { ReferencesService, Reference, Topic, Major } from '../../../core/services/references.service';
 import { SafeUrlPipe } from '../../../shared/pipes/safe-url.pipe';
+import { ColorThemeUtil } from '../../../shared/utils/color-theme.util';
 
 type NavigationLevel = 'topics' | 'contents';
 
@@ -28,6 +29,10 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
   loading = true;
   error = '';
   sidebarOpen = false;
+  currentTheme: 'light' | 'dark' = 'light';
+
+  // Utilities
+  readonly ColorThemeUtil = ColorThemeUtil;
 
   private subscriptions = new Subscription();
   private topicId: number = 0;
@@ -38,6 +43,12 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // Detect initial theme
+    this.detectTheme();
+
+    // Listen for theme changes
+    this.listenForThemeChanges();
+
     const sub = this.route.params.subscribe(params => {
       this.topicId = +params['id'];
       this.loadTopic();
@@ -129,5 +140,67 @@ export class ReferencesByTopicComponent implements OnInit, OnDestroy {
       return `${reference.readingTimeMinutes} min read`;
     }
     return '';
+  }
+
+  // THEME AWARENESS
+  private detectTheme(): void {
+    // Check if user has a saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      this.currentTheme = savedTheme as 'light' | 'dark';
+      return;
+    }
+
+    // Check system preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      this.currentTheme = 'dark';
+    } else {
+      this.currentTheme = 'light';
+    }
+  }
+
+  private listenForThemeChanges(): void {
+    // Listen for local storage changes (when theme is switched in app)
+    const handleStorageChange = () => {
+      this.detectTheme();
+    };
+
+    // Listen for system theme changes
+    if (window.matchMedia) {
+      const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      darkModeQuery.addEventListener('change', (e) => {
+        this.currentTheme = e.matches ? 'dark' : 'light';
+      });
+    }
+
+    window.addEventListener('storage', handleStorageChange);
+    this.subscriptions.add(() => {
+      window.removeEventListener('storage', handleStorageChange);
+    });
+  }
+
+  /**
+   * Get theme-aware style for a content block
+   * Automatically adjusts colors based on current theme
+   */
+  getThemeAwareStyle(styling: any): any {
+    if (!styling) return {};
+
+    const themeAwareStyle = { ...styling };
+
+    // Adjust color based on current theme
+    if (styling.color) {
+      themeAwareStyle.color = ColorThemeUtil.getThemeAwareColor(styling.color, this.currentTheme);
+    }
+
+    // Adjust background color based on current theme
+    if (styling.backgroundColor) {
+      themeAwareStyle.backgroundColor = ColorThemeUtil.getThemeAwareColor(
+        styling.backgroundColor,
+        this.currentTheme
+      );
+    }
+
+    return themeAwareStyle;
   }
 }

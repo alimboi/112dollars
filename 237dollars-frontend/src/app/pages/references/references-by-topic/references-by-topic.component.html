@@ -128,7 +128,7 @@
           <!-- Content Body - Show Full Content Inline -->
           <div class="detail-body">
             <!-- Content Blocks -->
-            <div class="content-blocks" *ngIf="selectedContent?.contentBlocks && selectedContent.contentBlocks.length > 0">
+            <div class="content-blocks" *ngIf="(selectedContent?.contentBlocks?.length ?? 0) > 0">
               <div class="content-block" *ngFor="let block of selectedContent.contentBlocks" [ngSwitch]="block.blockType">
                 <!-- Heading Block -->
                 <h2 *ngSwitchCase="'heading'" class="heading-block" [ngStyle]="{
@@ -206,7 +206,7 @@
             </div>
 
             <!-- No Content Blocks -->
-            <div class="no-blocks" *ngIf="!selectedContent?.contentBlocks || selectedContent?.contentBlocks?.length === 0">
+            <div class="no-blocks" *ngIf="(selectedContent?.contentBlocks?.length ?? 0) === 0">
               <p>No content blocks available for this item.</p>
             </div>
           </div>

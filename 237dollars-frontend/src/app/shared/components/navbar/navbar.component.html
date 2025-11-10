@@ -108,13 +108,13 @@
           </button>
         </ng-container>
       </div>
-
-      <!-- Mobile Menu Button -->
-      <button class="menu-trigger" [class.active]="isMenuOpen" (click)="toggleMenu()" aria-label="Menu">
-        <span></span>
-        <span></span>
-      </button>
     </div>
+
+    <!-- Mobile Menu Button - OUTSIDE nav-actions -->
+    <button class="menu-trigger" [class.active]="isMenuOpen" (click)="toggleMenu()" aria-label="Menu">
+      <span></span>
+      <span></span>
+    </button>
   </div>
 
   <!-- Mobile Menu -->

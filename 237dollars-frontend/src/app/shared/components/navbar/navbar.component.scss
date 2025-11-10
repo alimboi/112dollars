@@ -246,7 +246,7 @@
   }
 
   @media (max-width: 1280px) {
-    gap: 6px;
+    display: none !important;
   }
 }
 
@@ -501,6 +501,8 @@
   cursor: pointer;
   position: relative;
   transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: clamp(8px, 1vw, 12px);
 
   @media (max-width: 1280px) {
     display: flex !important;
@@ -508,7 +510,6 @@
     justify-content: center;
     flex-direction: column;
     gap: 4px;
-    z-index: 10;
   }
 
   span {

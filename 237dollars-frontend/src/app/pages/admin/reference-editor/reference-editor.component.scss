@@ -4,16 +4,17 @@
 
 .reference-editor-container {
   min-height: 100vh;
-  background: linear-gradient(
-    180deg,
-    rgba(10, 14, 26, 1) 0%,
-    rgba(18, 24, 39, 1) 100%
-  );
+  background: var(--gradient-bg-light);
   padding: 120px 0 var(--spacing-3xl);
 
   @media (max-width: 768px) {
     padding-top: 100px;
   }
+}
+
+/* Dark mode background */
+[data-theme="dark"] .reference-editor-container {
+  background: linear-gradient(180deg, #0f172a 0%, #1a2332 100%);
 }
 
 /* ===== EDITOR HEADER ===== */

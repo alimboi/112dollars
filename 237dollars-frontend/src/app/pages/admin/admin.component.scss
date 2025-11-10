@@ -96,13 +96,13 @@
   gap: var(--spacing-md);
 
   label {
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-weight: 600;
     font-size: 0.95rem;
   }
 
   .filter-select {
-    background: var(--neutral-50);
+    background: var(--white);
     border: 1px solid var(--border-light);
     border-radius: var(--radius-md);
     color: var(--text-primary);
@@ -129,12 +129,13 @@
   gap: var(--spacing-lg);
 
   .stat-item {
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-size: 0.95rem;
 
     strong {
-      color: var(--primary-700);
+      color: var(--primary-800);
       margin-right: var(--spacing-xs);
+      font-weight: 700;
     }
   }
 }
@@ -266,7 +267,7 @@
 
 .id-cell {
   font-family: 'Courier New', monospace;
-  color: var(--primary-700);
+  color: var(--primary-800);
   font-weight: 700;
   font-size: 0.9rem;
 }
@@ -279,10 +280,11 @@
       color: var(--text-primary);
       display: block;
       margin-bottom: var(--spacing-xs);
+      font-weight: 700;
     }
 
     .description {
-      color: var(--text-tertiary);
+      color: var(--text-secondary);
       font-size: 0.85rem;
       margin: 0;
       overflow: hidden;
@@ -297,6 +299,8 @@
 .major-cell,
 .topic-cell {
   font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 .status-badge {
@@ -308,12 +312,13 @@
   font-size: 0.85rem;
   font-weight: 600;
   background: var(--neutral-100);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--neutral-300);
+  color: var(--neutral-800);
 
   &.published {
     background: var(--secondary-100);
-    border-color: var(--secondary-300);
-    color: var(--secondary-800);
+    border-color: var(--secondary-400);
+    color: var(--secondary-900);
   }
 }
 
@@ -430,58 +435,202 @@
     background: var(--neutral-900);
   }
 
-  .filters-section,
+  .admin-header {
+    .admin-title {
+      color: var(--text-primary);
+    }
+
+    .admin-subtitle {
+      color: var(--text-secondary);
+    }
+  }
+
+  .filters-section {
+    background: var(--neutral-800);
+    border-color: var(--border-light);
+
+    .filter-group label {
+      color: var(--text-primary);
+    }
+
+    .filter-select {
+      background: var(--neutral-700);
+      color: var(--text-primary);
+      border-color: var(--border-light);
+
+      &:hover {
+        background: var(--neutral-600);
+        border-color: var(--primary-500);
+      }
+
+      &:focus {
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.2);
+      }
+    }
+
+    .stats .stat-item {
+      color: var(--text-secondary);
+
+      strong {
+        color: var(--primary-400);
+      }
+    }
+  }
+
   .loading-state,
   .error-state,
-  .empty-state,
-  .references-table {
+  .empty-state {
     background: var(--neutral-800);
     border-color: var(--border-light);
   }
 
-  .filter-select {
-    background: var(--neutral-700);
+  .loading-state {
+    .spinner {
+      border-color: rgba(8, 145, 178, 0.3);
+      border-top-color: var(--primary-400);
+    }
 
-    &:hover {
-      background: var(--neutral-600);
+    p {
+      color: var(--text-secondary);
     }
   }
 
-  thead {
-    background: var(--neutral-700) !important;
-    border-color: var(--border-light) !important;
+  .error-state {
+    h3 {
+      color: var(--text-primary);
+    }
 
-    th {
-      color: var(--text-primary) !important;
+    p {
+      color: var(--text-secondary);
+    }
+  }
+
+  .empty-state {
+    h3 {
+      color: var(--text-primary);
+    }
+
+    p {
+      color: var(--text-secondary);
+    }
+  }
+
+  .references-table {
+    background: var(--neutral-800);
+    border-color: var(--border-light);
+
+    table {
+      thead {
+        background: var(--neutral-700);
+        border-bottom-color: var(--border-light);
+
+        th {
+          color: var(--text-primary);
+        }
+      }
+
+      tbody {
+        tr {
+          border-bottom-color: var(--border-light);
+
+          &:hover {
+            background: rgba(8, 145, 178, 0.1);
+          }
+
+          td {
+            color: var(--text-secondary);
+          }
+        }
+      }
+    }
+  }
+
+  .id-cell {
+    color: var(--primary-400);
+  }
+
+  .title-cell {
+    .title-content {
+      strong {
+        color: var(--text-primary);
+      }
+
+      .description {
+        color: var(--text-tertiary);
+      }
     }
   }
 
   .status-badge {
     background: var(--neutral-700);
+    border-color: var(--border-light);
+    color: var(--text-secondary);
 
     &.published {
-      background: rgba(16, 185, 129, 0.2);
+      background: rgba(16, 185, 129, 0.15);
       border-color: var(--secondary-600);
       color: var(--secondary-400);
     }
   }
 
-  .action-buttons .btn-icon {
-    background: var(--neutral-700);
-    border-color: var(--border-light);
+  .action-buttons {
+    .btn-icon {
+      background: var(--neutral-700);
+      border-color: var(--border-light);
+
+      &:hover {
+        box-shadow: var(--shadow-md);
+      }
+
+      &.btn-view:hover {
+        border-color: var(--primary-400);
+        background: rgba(8, 145, 178, 0.2);
+        color: var(--primary-400);
+      }
+
+      &.btn-edit:hover {
+        border-color: var(--accent-400);
+        background: rgba(249, 115, 22, 0.2);
+        color: var(--accent-400);
+      }
+
+      &.btn-toggle:hover {
+        border-color: var(--secondary-400);
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--secondary-400);
+      }
+
+      &.btn-delete:hover {
+        border-color: var(--error);
+        background: rgba(239, 68, 68, 0.2);
+        color: var(--error);
+      }
+    }
   }
 
-  .pagination-btn,
-  .page-btn {
-    background: var(--neutral-800);
-    border-color: var(--border-light);
+  .pagination {
+    .pagination-btn,
+    .page-btn {
+      background: var(--neutral-800);
+      border-color: var(--border-light);
+      color: var(--text-primary);
 
-    &:hover:not(:disabled) {
-      background: var(--neutral-700);
-    }
+      &:hover:not(:disabled) {
+        border-color: var(--primary-400);
+        background: rgba(8, 145, 178, 0.1);
+        color: var(--primary-400);
+      }
 
-    &.active {
-      background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+      &:disabled {
+        color: var(--text-muted);
+      }
+
+      &.active {
+        background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-500) 100%);
+        border-color: var(--primary-500);
+        color: white;
+      }
     }
   }
 }

@@ -1,0 +1,232 @@
+<div class="gallery-editor" [ngClass]="currentTheme">
+  <!-- Header -->
+  <div class="editor-header">
+    <div class="header-content">
+      <button class="btn-back" (click)="goBack()" title="Go back">← Back</button>
+      <h1>{{ isEditMode ? 'Edit Gallery' : 'Create New Gallery' }}</h1>
+      <div class="header-actions">
+        <button
+          class="btn btn-secondary"
+          (click)="goBack()"
+          [disabled]="saving"
+        >
+          Cancel
+        </button>
+        <button
+          class="btn btn-primary"
+          (click)="saveGallery()"
+          [disabled]="saving || images.length === 0"
+        >
+          <span *ngIf="!saving">Save Gallery</span>
+          <span *ngIf="saving">Saving...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div class="alerts">
+    <div class="alert alert-success" *ngIf="successMessage">
+      ✓ {{ successMessage }}
+    </div>
+    <div class="alert alert-error" *ngIf="error">
+      ✕ {{ error }}
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-overlay" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading gallery...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div class="editor-content" *ngIf="!loading">
+    <div class="container">
+      <!-- Left Panel: Gallery Info -->
+      <div class="left-panel">
+        <div class="panel-section">
+          <h2>Gallery Information</h2>
+
+          <!-- Title -->
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input
+              type="text"
+              id="title"
+              [(ngModel)]="title"
+              class="form-input"
+              [disabled]="saving"
+              placeholder="Gallery title (optional)"
+              maxlength="255"
+            />
+            <small class="char-count">{{ title.length }}/255</small>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea
+              id="description"
+              [(ngModel)]="description"
+              class="form-textarea"
+              [disabled]="saving"
+              placeholder="Gallery description (optional)"
+              rows="6"
+            ></textarea>
+            <small class="char-count">{{ description.length }} characters</small>
+          </div>
+
+          <!-- Main Image Selection -->
+          <div class="form-group">
+            <label>Main Image (shown in gallery grid)</label>
+            <div class="main-image-preview" *ngIf="images.length > 0 && images[mainImageIndex]">
+              <img [src]="images[mainImageIndex].imageUrl" alt="Main image preview" />
+              <p class="preview-label">Image {{ mainImageIndex + 1 }} of {{ images.length }}</p>
+            </div>
+            <div class="no-images" *ngIf="images.length === 0">
+              <p>Add images to select a main image</p>
+            </div>
+          </div>
+
+          <!-- Publish Status -->
+          <div class="form-group" *ngIf="isEditMode">
+            <label>
+              <input
+                type="checkbox"
+                [(ngModel)]="isPublished"
+                [disabled]="saving"
+              />
+              Published
+            </label>
+            <div class="button-group" style="margin-top: 1rem;">
+              <button
+                class="btn btn-sm btn-outline"
+                (click)="publishGallery()"
+                [disabled]="saving || isPublished"
+              >
+                Publish
+              </button>
+              <button
+                class="btn btn-sm btn-outline"
+                (click)="unpublishGallery()"
+                [disabled]="saving || !isPublished"
+              >
+                Unpublish
+              </button>
+              <button
+                class="btn btn-sm btn-danger"
+                (click)="deleteGallery()"
+                [disabled]="saving"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Images Manager -->
+      <div class="right-panel">
+        <div class="panel-section">
+          <h2>Gallery Images ({{ images.length }})</h2>
+          <p class="section-hint">Select one as the main image. Drag or use buttons to reorder.</p>
+
+          <!-- Upload Options -->
+          <div class="upload-section">
+            <button
+              class="btn btn-primary btn-full"
+              (click)="triggerFileUpload()"
+              [disabled]="uploading || saving"
+            >
+              <span *ngIf="!uploading">📁 Upload Images from Device</span>
+              <span *ngIf="uploading">Uploading: {{ uploadProgress }}%</span>
+            </button>
+
+            <button
+              class="btn btn-secondary btn-full"
+              (click)="addImageUrl()"
+              [disabled]="saving"
+            >
+              🔗 Add Image URL
+            </button>
+          </div>
+
+          <!-- Upload Progress -->
+          <div class="progress-bar" *ngIf="uploading && uploadProgress > 0">
+            <div class="progress-fill" [style.width.%]="uploadProgress"></div>
+          </div>
+
+          <!-- Images List -->
+          <div class="images-container" *ngIf="images.length > 0">
+            <div
+              class="image-item"
+              *ngFor="let image of images; let i = index"
+              [class.active]="i === mainImageIndex"
+            >
+              <!-- Image Thumbnail -->
+              <div class="image-thumbnail">
+                <img [src]="image.imageUrl" [alt]="'Image ' + (i + 1)" />
+                <span class="image-number">{{ i + 1 }}</span>
+              </div>
+
+              <!-- Image Info -->
+              <div class="image-info">
+                <p class="image-url" [title]="image.imageUrl">{{ image.imageUrl }}</p>
+              </div>
+
+              <!-- Image Controls -->
+              <div class="image-controls">
+                <!-- Main Image Radio -->
+                <button
+                  class="btn-control"
+                  [class.active]="i === mainImageIndex"
+                  (click)="setMainImage(i)"
+                  [title]="i === mainImageIndex ? 'This is the main image' : 'Set as main image'"
+                >
+                  ★
+                </button>
+
+                <!-- Move Up -->
+                <button
+                  class="btn-control"
+                  (click)="moveImageUp(i)"
+                  [disabled]="i === 0"
+                  title="Move up"
+                >
+                  ↑
+                </button>
+
+                <!-- Move Down -->
+                <button
+                  class="btn-control"
+                  (click)="moveImageDown(i)"
+                  [disabled]="i === images.length - 1"
+                  title="Move down"
+                >
+                  ↓
+                </button>
+
+                <!-- Remove -->
+                <button
+                  class="btn-control btn-danger"
+                  (click)="removeImage(i)"
+                  title="Remove image"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div class="empty-state" *ngIf="images.length === 0">
+            <div class="empty-icon">🖼️</div>
+            <h3>No images yet</h3>
+            <p>Upload images from your device or add image URLs to get started</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

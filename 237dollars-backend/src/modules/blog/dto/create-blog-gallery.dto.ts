@@ -1,19 +1,19 @@
-import { IsString, IsArray, IsUrl, IsNotEmpty, MinLength, MaxLength } from 'class-validator';
+import { IsString, IsArray, IsUrl, IsOptional, MinLength, MaxLength } from 'class-validator';
 
 export class CreateBlogGalleryDto {
   @IsString()
-  @IsNotEmpty()
-  @MinLength(3)
+  @IsOptional()
+  @MinLength(1)
   @MaxLength(255)
-  title: string;
+  title?: string;
 
   @IsString()
-  @IsNotEmpty()
-  @MinLength(10)
-  description: string;
+  @IsOptional()
+  @MinLength(1)
+  description?: string;
 
   @IsArray()
   @IsUrl({}, { each: true })
-  @IsNotEmpty()
-  images: string[]; // Array of image URLs
+  @IsOptional()
+  images?: string[]; // Array of image URLs
 }

@@ -48,6 +48,7 @@ export class AdminComponent implements OnInit {
 
   // References data
   references: Reference[] = [];
+  galleries: any[] = [];
   loading = false;
   error: string | null = null;
 
@@ -67,6 +68,18 @@ export class AdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadReferences();
+    this.loadGalleries();
+  }
+
+  loadGalleries(): void {
+    this.api.get<any>('blog/galleries?page=1&limit=100').subscribe({
+      next: (response) => {
+        this.galleries = response.galleries || [];
+      },
+      error: (err) => {
+        console.error('Error loading galleries:', err);
+      }
+    });
   }
 
   loadReferences(): void {
@@ -171,5 +184,32 @@ export class AdminComponent implements OnInit {
 
   switchTab(tab: 'references' | 'blog'): void {
     this.activeTab = tab;
+  }
+
+  getMainGalleryImage(gallery: any): string {
+    if (!gallery.images || gallery.images.length === 0) {
+      return 'https://via.placeholder.com/300x200?text=No+Image';
+    }
+    const mainIndex = gallery.mainImageIndex || 0;
+    return gallery.images[mainIndex]?.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image';
+  }
+
+  getGalleryImageCount(gallery: any): number {
+    return gallery.images?.length || 0;
+  }
+
+  deleteGallery(id: number): void {
+    if (!confirm('Delete this gallery permanently? This action cannot be undone.')) {
+      return;
+    }
+
+    this.api.delete(`blog/galleries/${id}`).subscribe({
+      next: () => {
+        this.galleries = this.galleries.filter(g => g.id !== id);
+      },
+      error: (err) => {
+        alert(`Failed to delete gallery: ${err.error?.message || 'Unknown error'}`);
+      }
+    });
   }
 }

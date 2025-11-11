@@ -26,6 +26,8 @@ export const routes: Routes = [
   { path: 'admin', canActivate: [authGuard], loadComponent: () => import('./pages/admin/admin.component').then(m => m.AdminComponent) },
   { path: 'admin/references/new', canActivate: [authGuard], loadComponent: () => import('./pages/admin/reference-editor/reference-editor.component').then(m => m.ReferenceEditorComponent) },
   { path: 'admin/references/:id/edit', canActivate: [authGuard], loadComponent: () => import('./pages/admin/reference-editor/reference-editor.component').then(m => m.ReferenceEditorComponent) },
+  { path: 'admin/galleries/new', canActivate: [authGuard], loadComponent: () => import('./pages/admin/blog-gallery-editor/blog-gallery-editor.component').then(m => m.BlogGalleryEditorComponent) },
+  { path: 'admin/galleries/:id/edit', canActivate: [authGuard], loadComponent: () => import('./pages/admin/blog-gallery-editor/blog-gallery-editor.component').then(m => m.BlogGalleryEditorComponent) },
   { path: '404', loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent) },
   { path: '**', loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent) }
 ];

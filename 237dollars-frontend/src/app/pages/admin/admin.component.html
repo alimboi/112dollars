@@ -199,7 +199,58 @@
 
     <!-- Tab Content: Blog Galleries -->
     <div class="tab-content" *ngIf="activeTab === 'blog'">
-      <app-blog-gallery-manager></app-blog-gallery-manager>
+      <div class="header-actions">
+        <button class="btn btn-primary" routerLink="/admin/galleries/new">
+          <span class="icon">➕</span>
+          Create New Gallery
+        </button>
+      </div>
+
+      <!-- Galleries Grid -->
+      <div class="galleries-grid">
+        <div class="gallery-card" *ngFor="let gallery of galleries">
+          <div class="gallery-thumbnail">
+            <img [src]="getMainGalleryImage(gallery)" [alt]="gallery.title" />
+            <span class="image-count" *ngIf="getGalleryImageCount(gallery) > 1">
+              {{ getGalleryImageCount(gallery) }} images
+            </span>
+          </div>
+          <div class="gallery-info">
+            <h3>{{ gallery.title || 'Untitled' }}</h3>
+            <p class="description">{{ gallery.description | slice: 0:100 }}{{ gallery.description.length > 100 ? '...' : '' }}</p>
+            <span class="status-badge" [ngClass]="gallery.isPublished ? 'published' : 'draft'">
+              {{ gallery.isPublished ? 'Published' : 'Draft' }}
+            </span>
+          </div>
+          <div class="gallery-actions">
+            <button
+              class="btn-icon"
+              [routerLink]="['/admin/galleries', gallery.id, 'edit']"
+              title="Edit"
+            >
+              ✏️
+            </button>
+            <button
+              class="btn-icon btn-danger"
+              (click)="deleteGallery(gallery.id)"
+              [disabled]="false"
+              title="Delete"
+            >
+              🗑️
+            </button>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="galleries.length === 0">
+          <div class="empty-icon">🖼️</div>
+          <h3>No galleries yet</h3>
+          <p>Create your first gallery to get started</p>
+          <button class="btn btn-primary" routerLink="/admin/galleries/new">
+            Create Gallery
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -171,21 +171,25 @@ export class BlogGalleryManagerComponent implements OnInit, OnDestroy {
     this.error = '';
 
     try {
-      const payload = {
-        title: this.formData.title,
-        description: this.formData.description,
-        mainImageIndex: this.formData.mainImageIndex,
-        images: validImages.map(img => img.imageUrl),
-        isPublished: this.formData.isPublished
-      };
-
       if (this.isEditMode && this.editingId) {
-        // Update
-        await this.api.put<any>(`blog/galleries/${this.editingId}`, payload).toPromise();
+        // Update - can include all fields
+        const updatePayload = {
+          title: this.formData.title,
+          description: this.formData.description,
+          mainImageIndex: this.formData.mainImageIndex,
+          images: validImages.map(img => img.imageUrl),
+          isPublished: this.formData.isPublished
+        };
+        await this.api.put<any>(`blog/galleries/${this.editingId}`, updatePayload).toPromise();
         this.successMessage = 'Gallery updated successfully!';
       } else {
-        // Create
-        await this.api.post<any>('blog/galleries', payload).toPromise();
+        // Create - only title, description, and images
+        const createPayload = {
+          title: this.formData.title,
+          description: this.formData.description,
+          images: validImages.map(img => img.imageUrl)
+        };
+        await this.api.post<any>('blog/galleries', createPayload).toPromise();
         this.successMessage = 'Gallery created successfully!';
       }
 

@@ -44,6 +44,10 @@
         Blog
       </a>
 
+      <a routerLink="/about" routerLinkActive="active" class="nav-link">
+        About
+      </a>
+
       <a routerLink="/contact" routerLinkActive="active" class="nav-link">
         Contact
       </a>
@@ -165,6 +169,14 @@
             <path d="M13 2l5 5L8 17l-5 1 1-5L14 3z" />
           </svg>
           <span>Blog</span>
+        </a>
+
+        <a routerLink="/about" routerLinkActive="active" class="mobile-link" (click)="closeMenu()">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
+            <circle cx="10" cy="10" r="8" />
+            <path d="M10 7v4M10 14v1" />
+          </svg>
+          <span>About</span>
         </a>
 
         <a routerLink="/contact" routerLinkActive="active" class="mobile-link" (click)="closeMenu()">

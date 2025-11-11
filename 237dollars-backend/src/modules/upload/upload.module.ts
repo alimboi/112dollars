@@ -4,6 +4,7 @@ import { UploadController } from './upload.controller';
 import { UploadService } from './upload.service';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
+import { existsSync, mkdirSync } from 'fs';
 
 @Module({
   imports: [
@@ -11,6 +12,10 @@ import { extname, join } from 'path';
       storage: diskStorage({
         destination: (req, file, callback) => {
           const uploadDir = join(process.cwd(), 'uploads', 'images');
+          // Create directory if it doesn't exist
+          if (!existsSync(uploadDir)) {
+            mkdirSync(uploadDir, { recursive: true });
+          }
           callback(null, uploadDir);
         },
         filename: (req, file, callback) => {
@@ -23,8 +28,8 @@ import { extname, join } from 'path';
         fileSize: 5 * 1024 * 1024, // 5MB limit per file
       },
       fileFilter: (req, file, callback) => {
-        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
-          return callback(new Error('Only image files are allowed!'), false);
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp|svg\+xml)$/)) {
+          return callback(new Error('Only image files are allowed (jpg, jpeg, png, gif, webp, svg)!'), false);
         }
         callback(null, true);
       },

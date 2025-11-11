@@ -27,7 +27,7 @@ export class BlogListComponent implements OnInit {
   }
 
   loadPosts(): void {
-    this.blogService.getAllPosts(this.page, this.limit).subscribe({
+    this.blogService.getAllPosts(this.page, this.limit, true).subscribe({
       next: (data) => {
         this.posts = data.posts;
         this.total = data.total;

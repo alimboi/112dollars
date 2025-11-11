@@ -117,7 +117,7 @@ export class BlogGalleryEditorComponent implements OnInit {
     for (let i = 0; i < totalFiles; i++) {
       const file = files[i];
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('image', file);
 
       this.api.post<any>('upload/image', formData).subscribe({
         next: (response) => {

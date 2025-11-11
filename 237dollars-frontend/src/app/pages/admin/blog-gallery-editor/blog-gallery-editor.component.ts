@@ -119,7 +119,7 @@ export class BlogGalleryEditorComponent implements OnInit {
       const formData = new FormData();
       formData.append('file', file);
 
-      this.api.post<any>('upload', formData).subscribe({
+      this.api.post<any>('upload/image', formData).subscribe({
         next: (response) => {
           // Add the returned URL to images
           if (response.url) {

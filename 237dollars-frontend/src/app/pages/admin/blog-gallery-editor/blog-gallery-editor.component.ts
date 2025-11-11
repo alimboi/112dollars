@@ -297,7 +297,7 @@ export class BlogGalleryEditorComponent implements OnInit {
 
   /**
    * Get absolute image URL for display
-   * Converts relative URLs to absolute by prepending the API base URL
+   * Converts relative URLs to absolute by prepending the appropriate base URL
    */
   getAbsoluteImageUrl(imageUrl: string): string {
     if (!imageUrl) return '';
@@ -305,7 +305,12 @@ export class BlogGalleryEditorComponent implements OnInit {
     if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
       return imageUrl;
     }
-    // Otherwise, prepend the API base URL
+    // For upload URLs, use the base URL (without /api prefix)
+    // because static assets bypass the global API prefix
+    if (imageUrl.startsWith('/uploads/')) {
+      return environment.baseUrl + imageUrl;
+    }
+    // For other relative URLs, prepend the API base URL
     return environment.apiUrl + imageUrl;
   }
 

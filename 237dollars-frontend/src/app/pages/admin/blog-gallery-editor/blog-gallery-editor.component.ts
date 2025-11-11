@@ -4,7 +4,7 @@ import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { GALLERY_VALIDATION } from './gallery-validation.constants';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 
 interface BlogGalleryImage {
   id?: number;

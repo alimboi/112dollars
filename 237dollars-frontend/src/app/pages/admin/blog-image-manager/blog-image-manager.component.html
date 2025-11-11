@@ -1,0 +1,233 @@
+<div class="blog-image-manager" [ngClass]="currentTheme">
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>{{ 'admin.blogImages' | translate }}</h1>
+      <button class="btn-primary" (click)="openForm()" [disabled]="saving">
+        <span class="icon">+</span>
+        {{ 'admin.addNewImage' | translate }}
+      </button>
+    </div>
+
+    <!-- Success Message -->
+    <div class="message success-message" *ngIf="successMessage" [@fadeIn]>
+      {{ successMessage }}
+    </div>
+
+    <!-- Error Message -->
+    <div class="message error-message" *ngIf="error" [@fadeIn]>
+      {{ error }}
+    </div>
+
+    <!-- Form Modal -->
+    <div class="modal-overlay" *ngIf="isFormOpen" [@fadeIn] (click)="closeForm()">
+      <div class="modal-content" [@slideUp] (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ isEditMode ? ('admin.editImage' | translate) : ('admin.addNewImage' | translate) }}</h2>
+          <button class="btn-close" (click)="closeForm()">×</button>
+        </div>
+
+        <form (ngSubmit)="saveImage()" #imageForm="ngForm" class="image-form">
+          <!-- Title Field -->
+          <div class="form-group">
+            <label for="title">{{ 'admin.title' | translate }} <span class="required">*</span></label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              [(ngModel)]="formData.title"
+              class="form-input"
+              [disabled]="saving"
+              placeholder="Enter image title"
+            />
+          </div>
+
+          <!-- Description Field -->
+          <div class="form-group">
+            <label for="description">{{ 'admin.description' | translate }} <span class="required">*</span></label>
+            <textarea
+              id="description"
+              name="description"
+              [(ngModel)]="formData.description"
+              class="form-textarea"
+              [disabled]="saving"
+              placeholder="Enter image description"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <!-- Image URL Field -->
+          <div class="form-group">
+            <label for="imageUrl">{{ 'admin.imageUrl' | translate }} <span class="required">*</span></label>
+            <input
+              type="text"
+              id="imageUrl"
+              name="imageUrl"
+              [(ngModel)]="formData.imageUrl"
+              class="form-input"
+              [disabled]="saving"
+              placeholder="https://example.com/image.jpg"
+            />
+          </div>
+
+          <!-- Image Preview -->
+          <div class="image-preview" *ngIf="formData.imageUrl">
+            <p class="preview-label">{{ 'admin.preview' | translate }}</p>
+            <img [src]="formData.imageUrl" alt="Preview" class="preview-image" />
+          </div>
+
+          <!-- Publish Status -->
+          <div class="form-group checkbox-group">
+            <label for="isPublished">
+              <input
+                type="checkbox"
+                id="isPublished"
+                name="isPublished"
+                [(ngModel)]="formData.isPublished"
+                [disabled]="saving"
+              />
+              {{ 'admin.publishImage' | translate }}
+            </label>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="closeForm()" [disabled]="saving">
+              {{ 'common.cancel' | translate }}
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="saving">
+              <span *ngIf="!saving">
+                {{ isEditMode ? ('admin.update' | translate) : ('admin.create' | translate) }}
+              </span>
+              <span *ngIf="saving" class="spinner"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading && blogImages.length === 0">
+      <div class="spinner-large"></div>
+      <p>{{ 'common.loading' | translate }}</p>
+    </div>
+
+    <!-- Images Table -->
+    <div class="images-table" *ngIf="!loading || blogImages.length > 0">
+      <div class="table-responsive">
+        <table class="images-list">
+          <thead>
+            <tr>
+              <th>{{ 'admin.image' | translate }}</th>
+              <th>{{ 'admin.title' | translate }}</th>
+              <th>{{ 'admin.description' | translate }}</th>
+              <th>{{ 'admin.status' | translate }}</th>
+              <th>{{ 'admin.createdAt' | translate }}</th>
+              <th>{{ 'admin.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let image of blogImages" class="image-row" [@fadeIn]>
+              <!-- Thumbnail -->
+              <td class="cell-image">
+                <img [src]="image.imageUrl" alt="{{ image.title }}" class="thumbnail" />
+              </td>
+
+              <!-- Title -->
+              <td class="cell-title">
+                <span class="title-text">{{ image.title }}</span>
+              </td>
+
+              <!-- Description -->
+              <td class="cell-description">
+                <span class="description-text" [title]="image.description">
+                  {{ (image.description | slice: 0:50) + (image.description.length > 50 ? '...' : '') }}
+                </span>
+              </td>
+
+              <!-- Status -->
+              <td class="cell-status">
+                <span class="status-badge" [ngClass]="image.isPublished ? 'published' : 'draft'">
+                  {{ image.isPublished ? ('admin.published' | translate) : ('admin.draft' | translate) }}
+                </span>
+              </td>
+
+              <!-- Created Date -->
+              <td class="cell-date">
+                <span class="date-text">{{ image.createdAt | date: 'short' }}</span>
+              </td>
+
+              <!-- Actions -->
+              <td class="cell-actions">
+                <div class="action-buttons">
+                  <!-- Toggle Publish Button -->
+                  <button
+                    class="btn-icon btn-publish"
+                    [title]="image.isPublished ? ('admin.unpublish' | translate) : ('admin.publish' | translate)"
+                    (click)="togglePublish(image, !image.isPublished)"
+                    [disabled]="saving"
+                  >
+                    <span class="icon">{{ image.isPublished ? '👁️' : '🔒' }}</span>
+                  </button>
+
+                  <!-- Edit Button -->
+                  <button
+                    class="btn-icon btn-edit"
+                    [title]="'admin.edit' | translate"
+                    (click)="openForm(image)"
+                    [disabled]="saving"
+                  >
+                    <span class="icon">✏️</span>
+                  </button>
+
+                  <!-- Delete Button -->
+                  <button
+                    class="btn-icon btn-delete"
+                    [title]="'admin.delete' | translate"
+                    (click)="deleteImage(image.id!)"
+                    [disabled]="saving"
+                  >
+                    <span class="icon">🗑️</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="blogImages.length === 0 && !loading">
+        <div class="empty-icon">📸</div>
+        <h3>{{ 'admin.noImages' | translate }}</h3>
+        <p>{{ 'admin.noImagesDescription' | translate }}</p>
+        <button class="btn-primary" (click)="openForm()">
+          {{ 'admin.addFirstImage' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button
+        class="pagination-btn"
+        (click)="goToPage(currentPage - 1)"
+        [disabled]="currentPage === 1 || loading"
+      >
+        ← {{ 'common.previous' | translate }}
+      </button>
+
+      <div class="page-info">
+        {{ 'common.page' | translate }}: <strong>{{ currentPage }}</strong> / <strong>{{ totalPages }}</strong>
+      </div>
+
+      <button
+        class="pagination-btn"
+        (click)="goToPage(currentPage + 1)"
+        [disabled]="currentPage === totalPages || loading"
+      >
+        {{ 'common.next' | translate }} →
+      </button>
+    </div>
+  </div>
+</div>

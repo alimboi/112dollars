@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
+import { BlogImageManagerComponent } from './blog-image-manager/blog-image-manager.component';
 
 interface Reference {
   id: number;
@@ -37,11 +38,15 @@ interface ReferenceResponse {
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, BlogImageManagerComponent],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit {
+  // Tab navigation
+  activeTab: 'references' | 'blog' = 'references';
+
+  // References data
   references: Reference[] = [];
   loading = false;
   error: string | null = null;
@@ -162,5 +167,9 @@ export class AdminComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  switchTab(tab: 'references' | 'blog'): void {
+    this.activeTab = tab;
   }
 }

@@ -1,0 +1,120 @@
+<div class="blog-gallery-page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Featured Collections</h1>
+      <p>Explore our curated collection of course materials and resources</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="gallery-container">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading gallery...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !loading" class="error-state">
+      <p class="error-message">{{ error }}</p>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div *ngIf="!loading && blogImages.length > 0" class="gallery-grid">
+      <div class="gallery-item" *ngFor="let image of blogImages" (click)="openModal(image)">
+        <div class="item-image-wrapper">
+          <img [src]="image.imageUrl" [alt]="image.title" class="item-image">
+          <div class="item-overlay">
+            <button class="btn-view-full">View Full</button>
+          </div>
+        </div>
+
+        <div class="item-content">
+          <h3 class="item-title">{{ image.title }}</h3>
+          <p class="item-description">{{ getTruncatedDescription(image.description) }}</p>
+          <div class="item-meta">
+            <span class="meta-date">{{ image.createdAt | date: 'short' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && blogImages.length === 0 && !error" class="empty-state">
+      <p>No images available yet</p>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="!loading && totalPages > 1" class="pagination">
+      <button
+        class="pagination-btn"
+        (click)="goToPage(currentPage - 1)"
+        [disabled]="currentPage === 1">
+        ← Previous
+      </button>
+
+      <div class="page-numbers">
+        <button
+          *ngFor="let page of ([] | slice: 0: totalPages)"
+          class="page-btn"
+          [class.active]="page + 1 === currentPage"
+          (click)="goToPage(page + 1)">
+          {{ page + 1 }}
+        </button>
+      </div>
+
+      <button
+        class="pagination-btn"
+        (click)="goToPage(currentPage + 1)"
+        [disabled]="currentPage === totalPages">
+        Next →
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal Overlay -->
+  <div *ngIf="isModalOpen" class="modal-overlay" (click)="closeModal()">
+    <!-- Modal Content -->
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <!-- Close Button -->
+      <button class="modal-close" (click)="closeModal()">×</button>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <!-- Image Section -->
+        <div class="modal-image-section">
+          <img
+            *ngIf="selectedImage"
+            [src]="selectedImage.imageUrl"
+            [alt]="selectedImage.title"
+            class="modal-image">
+        </div>
+
+        <!-- Content Section -->
+        <div class="modal-content-section">
+          <h2 class="modal-title" *ngIf="selectedImage">{{ selectedImage.title }}</h2>
+
+          <div class="modal-description" *ngIf="selectedImage">
+            <p>{{ selectedImage.description }}</p>
+          </div>
+
+          <div class="modal-meta" *ngIf="selectedImage">
+            <div class="meta-item">
+              <span class="meta-label">Published:</span>
+              <span class="meta-value">{{ selectedImage.createdAt | date: 'fullDate' }}</span>
+            </div>
+            <div class="meta-item" *ngIf="selectedImage.creator">
+              <span class="meta-label">Created by:</span>
+              <span class="meta-value">{{ selectedImage.creator.email }}</span>
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button class="btn-primary" (click)="closeModal()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

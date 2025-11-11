@@ -13,6 +13,8 @@ export const routes: Routes = [
   { path: 'references/topic/:id', canActivate: [authGuard], loadComponent: () => import('./pages/references/references-by-topic/references-by-topic.component').then(m => m.ReferencesByTopicComponent) },
   { path: 'references/:id', canActivate: [authGuard], loadComponent: () => import('./pages/references/reference-detail/reference-detail.component').then(m => m.ReferenceDetailComponent) },
   { path: 'quiz/:referenceId', canActivate: [authGuard], loadComponent: () => import('./pages/quiz/quiz.component').then(m => m.QuizComponent) },
+  { path: 'about', loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent) },
+  { path: 'blog-gallery', loadComponent: () => import('./pages/blog/blog-gallery/blog-gallery.component').then(m => m.BlogGalleryComponent) },
   { path: 'blog', loadComponent: () => import('./pages/blog/blog-list/blog-list.component').then(m => m.BlogListComponent) },
   { path: 'blog/:id', loadComponent: () => import('./pages/blog/blog-detail/blog-detail.component').then(m => m.BlogDetailComponent) },
   { path: 'contact', loadComponent: () => import('./pages/contact/contact.component').then(m => m.ContactComponent) },

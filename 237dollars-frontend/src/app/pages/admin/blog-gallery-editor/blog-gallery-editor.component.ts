@@ -4,6 +4,7 @@ import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { GALLERY_VALIDATION } from './gallery-validation.constants';
+import { environment } from '../../../environments/environment';
 
 interface BlogGalleryImage {
   id?: number;
@@ -292,6 +293,20 @@ export class BlogGalleryEditorComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/admin']);
+  }
+
+  /**
+   * Get absolute image URL for display
+   * Converts relative URLs to absolute by prepending the API base URL
+   */
+  getAbsoluteImageUrl(imageUrl: string): string {
+    if (!imageUrl) return '';
+    // If it's already an absolute URL (http:// or https://), return as is
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+    // Otherwise, prepend the API base URL
+    return environment.apiUrl + imageUrl;
   }
 
   private isValidUrl(url: string): boolean {

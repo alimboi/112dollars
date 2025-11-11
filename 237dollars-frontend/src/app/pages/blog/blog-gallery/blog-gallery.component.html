@@ -105,7 +105,7 @@
       <!-- Main Image Container -->
       <div class="modal-image-container">
         <img
-          [src]="selectedGallery?.images[currentImageIndex]?.imageUrl"
+          [src]="selectedGallery?.images?.[currentImageIndex]?.imageUrl || 'https://via.placeholder.com/800x600?text=Image+Not+Found'"
           [alt]="selectedGallery?.title"
           class="modal-main-image"
         />
@@ -134,8 +134,8 @@
       <div class="modal-content-section">
         <div class="content-header">
           <h2 class="modal-title">{{ selectedGallery?.title }}</h2>
-          <p class="image-counter" *ngIf="selectedGallery && selectedGallery.images.length > 1">
-            {{ currentImageIndex + 1 }} / {{ selectedGallery?.images.length }}
+          <p class="image-counter" *ngIf="getImageCount() > 1">
+            {{ currentImageIndex + 1 }} / {{ getImageCount() }}
           </p>
         </div>
 

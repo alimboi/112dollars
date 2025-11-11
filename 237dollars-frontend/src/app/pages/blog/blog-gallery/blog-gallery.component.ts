@@ -167,6 +167,13 @@ export class BlogGalleryComponent implements OnInit, OnDestroy {
     return null;
   }
 
+  getImageCount(): number {
+    if (this.selectedGallery?.images) {
+      return this.selectedGallery.images.length;
+    }
+    return 0;
+  }
+
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;

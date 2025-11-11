@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
-import { BlogImageManagerComponent } from './blog-image-manager/blog-image-manager.component';
+import { BlogGalleryManagerComponent } from './blog-gallery-manager/blog-gallery-manager.component';
 
 interface Reference {
   id: number;
@@ -38,7 +38,7 @@ interface ReferenceResponse {
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, BlogImageManagerComponent],
+  imports: [CommonModule, RouterModule, FormsModule, BlogGalleryManagerComponent],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })

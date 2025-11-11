@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsOptional, IsInt, IsArray, IsUrl, IsString, MinLength, MaxLength } from 'class-validator';
+import { IsOptional, IsInt, IsArray, IsUrl, IsString, MinLength, MaxLength, IsBoolean } from 'class-validator';
 import { CreateBlogGalleryDto } from './create-blog-gallery.dto';
 import { GALLERY_VALIDATION } from '../constants/gallery-validation.constants';
 
@@ -32,4 +32,8 @@ export class UpdateBlogGalleryDto extends PartialType(CreateBlogGalleryDto) {
   @IsOptional()
   @IsInt()
   mainImageIndex?: number; // Index of the main image to display
+
+  @IsOptional()
+  @IsBoolean()
+  isPublished?: boolean; // Gallery publish status
 }

@@ -3,13 +3,16 @@ import { MulterModule } from '@nestjs/platform-express';
 import { UploadController } from './upload.controller';
 import { UploadService } from './upload.service';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { extname, join } from 'path';
 
 @Module({
   imports: [
     MulterModule.register({
       storage: diskStorage({
-        destination: './uploads/images',
+        destination: (req, file, callback) => {
+          const uploadDir = join(process.cwd(), 'uploads', 'images');
+          callback(null, uploadDir);
+        },
         filename: (req, file, callback) => {
           const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
           const ext = extname(file.originalname);

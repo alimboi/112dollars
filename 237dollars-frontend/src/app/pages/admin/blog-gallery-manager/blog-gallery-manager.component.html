@@ -166,7 +166,7 @@
     <div class="galleries-grid" *ngIf="!loading || galleries.length > 0">
       <div class="gallery-card" *ngFor="let gallery of galleries" [@fadeIn]>
         <div class="gallery-image-wrapper">
-          <img [src]="getAbsoluteImageUrl(gallery.images?.[gallery.mainImageIndex || 0]?.imageUrl)" alt="{{ gallery.title }}" class="gallery-image" />
+          <img [src]="getAbsoluteImageUrl(gallery.images[gallery.mainImageIndex || 0]?.imageUrl)" alt="{{ gallery.title }}" class="gallery-image" />
           <div class="image-count" *ngIf="getImageCount(gallery) > 1">
             <span class="count-text">{{ getImageCount(gallery) }} {{ 'admin.images' | translate }}</span>
           </div>

@@ -79,6 +79,19 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Close menu when clicking outside
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    const mobileMenu = target.closest('.mobile-menu');
+    const menuTrigger = target.closest('.menu-trigger');
+
+    // If click is outside menu and trigger, close it
+    if (this.isMenuOpen && !mobileMenu && !menuTrigger) {
+      this.closeMenu();
+    }
+  }
+
   // Handle scroll for navbar hide/show animation
   @HostListener('window:scroll')
   onWindowScroll(): void {

@@ -367,33 +367,23 @@ export class BlogGalleryEditorComponent implements OnInit {
    */
   getAbsoluteImageUrl(imageUrl: string): string {
     if (!imageUrl) {
-      console.warn('getAbsoluteImageUrl: Empty imageUrl');
       return '';
     }
     // If it's already an absolute URL (http:// or https://), return as is
     if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-      console.log('getAbsoluteImageUrl: Using absolute URL:', imageUrl);
       return imageUrl;
     }
     // For upload URLs, use the base URL (without /api prefix)
     // because static assets bypass the global API prefix
     if (imageUrl.startsWith('/uploads/')) {
-      const fullUrl = environment.baseUrl + imageUrl;
-      console.log('getAbsoluteImageUrl: Converted upload URL:', imageUrl, '->', fullUrl);
-      return fullUrl;
+      return environment.baseUrl + imageUrl;
     }
     // For other relative URLs, prepend the API base URL
-    const fullUrl = environment.apiUrl + imageUrl;
-    console.log('getAbsoluteImageUrl: Converted relative URL:', imageUrl, '->', fullUrl);
-    return fullUrl;
+    return environment.apiUrl + imageUrl;
   }
 
   onImageError(event: any, image: BlogGalleryImage): void {
-    console.error('Image failed to load:', {
-      originalUrl: image.imageUrl,
-      attemptedSrc: event.target?.src,
-      image: image
-    });
+    console.error('Image failed to load:', image.imageUrl);
   }
 
   private detectTheme(): void {

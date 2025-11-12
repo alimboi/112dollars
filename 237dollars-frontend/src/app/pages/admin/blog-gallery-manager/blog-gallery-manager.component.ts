@@ -74,8 +74,6 @@ export class BlogGalleryManagerComponent implements OnInit, OnDestroy {
   constructor(private api: ApiService) {}
 
   ngOnInit(): void {
-    console.log('[MANAGER] ============ COMPONENT LOADED - VERSION 2.0 ============');
-    console.log('[MANAGER] environment.baseUrl:', environment.baseUrl);
     this.detectTheme();
     this.listenForThemeChanges();
     this.loadGalleries();
@@ -90,17 +88,7 @@ export class BlogGalleryManagerComponent implements OnInit, OnDestroy {
     const sub = this.api.get<any>(`blog/galleries?page=${this.currentPage}&limit=${this.pageSize}`)
       .subscribe({
         next: (response) => {
-          console.log('[MANAGER] Loaded galleries response:', response);
           this.galleries = response.galleries || [];
-          console.log('[MANAGER] Galleries array:', this.galleries);
-          this.galleries.forEach((g, i) => {
-            console.log(`[MANAGER] Gallery ${i}:`, {
-              id: g.id,
-              title: g.title,
-              images: g.images,
-              mainImageIndex: g.mainImageIndex
-            });
-          });
           this.totalPages = response.totalPages || 1;
           this.loading = false;
         },
@@ -257,15 +245,7 @@ export class BlogGalleryManagerComponent implements OnInit, OnDestroy {
     const images = gallery.images || [];
     const index = gallery.mainImageIndex || 0;
     const imageUrl = images[index]?.imageUrl;
-    console.log('[MANAGER] getMainImage called:', {
-      galleryId: gallery.id,
-      imageUrl,
-      index,
-      totalImages: images.length
-    });
-    const result = this.getAbsoluteImageUrl(imageUrl);
-    console.log('[MANAGER] getMainImage result:', result);
-    return result;
+    return this.getAbsoluteImageUrl(imageUrl);
   }
 
   getImageCount(gallery: BlogGallery): number {
@@ -273,23 +253,16 @@ export class BlogGalleryManagerComponent implements OnInit, OnDestroy {
   }
 
   getAbsoluteImageUrl(imageUrl: string | undefined): string {
-    console.log('[MANAGER] getAbsoluteImageUrl input:', imageUrl);
     if (!imageUrl) {
-      console.log('[MANAGER] No imageUrl, returning placeholder');
       return 'https://via.placeholder.com/300x200?text=No+Image';
     }
     if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-      console.log('[MANAGER] Already absolute URL:', imageUrl);
       return imageUrl;
     }
     if (imageUrl.startsWith('/uploads/')) {
-      const result = environment.baseUrl + imageUrl;
-      console.log('[MANAGER] Converted upload URL:', imageUrl, '->', result);
-      return result;
+      return environment.baseUrl + imageUrl;
     }
-    const result = environment.apiUrl + imageUrl;
-    console.log('[MANAGER] Converted relative URL:', imageUrl, '->', result);
-    return result;
+    return environment.apiUrl + imageUrl;
   }
 
   private detectTheme(): void {

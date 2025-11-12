@@ -65,8 +65,8 @@
               (change)="onMajorFilterChange()"
               class="filter-select"
             >
-              <option value="all">All Majors</option>
-              <option *ngFor="let major of majors" [value]="major.id">
+              <option [ngValue]="'all'">All Majors</option>
+              <option *ngFor="let major of majors" [ngValue]="major.id">
                 {{ major.name }}
               </option>
             </select>
@@ -81,8 +81,8 @@
               class="filter-select"
               [disabled]="majorFilter !== 'all' && filteredTopics.length === 0"
             >
-              <option value="all">All Topics</option>
-              <option *ngFor="let topic of filteredTopics" [value]="topic.id">
+              <option [ngValue]="'all'">All Topics</option>
+              <option *ngFor="let topic of filteredTopics" [ngValue]="topic.id">
                 {{ topic.name }}
               </option>
             </select>

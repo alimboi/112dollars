@@ -191,7 +191,7 @@ export class AdminComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading references:', err);
-        this.error = err.error?.message || 'Failed to load references';
+        this.error = err?.error?.message || err?.message || 'Failed to load references';
         this.loading = false;
       }
     });

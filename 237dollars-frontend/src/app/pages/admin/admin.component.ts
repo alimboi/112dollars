@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
 import { BlogGalleryManagerComponent } from './blog-gallery-manager/blog-gallery-manager.component';
+import { environment } from '../../../environments/environment';
 
 interface Reference {
   id: number;
@@ -191,7 +192,23 @@ export class AdminComponent implements OnInit {
       return 'https://via.placeholder.com/300x200?text=No+Image';
     }
     const mainIndex = gallery.mainImageIndex || 0;
-    return gallery.images[mainIndex]?.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image';
+    const imageUrl = gallery.images[mainIndex]?.imageUrl;
+
+    if (!imageUrl) {
+      return 'https://via.placeholder.com/300x200?text=No+Image';
+    }
+
+    // If already absolute URL, return as is
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+
+    // For uploads, prepend backend base URL
+    if (imageUrl.startsWith('/uploads/')) {
+      return environment.baseUrl + imageUrl;
+    }
+
+    return environment.apiUrl + imageUrl;
   }
 
   getGalleryImageCount(gallery: any): number {

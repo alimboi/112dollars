@@ -79,7 +79,11 @@
           <div class="form-group">
             <label>Main Image (shown in gallery grid)</label>
             <div class="main-image-preview" *ngIf="images.length > 0 && images[mainImageIndex]">
-              <img [src]="getAbsoluteImageUrl(images[mainImageIndex].imageUrl)" alt="Main image preview" />
+              <img
+                [src]="getAbsoluteImageUrl(images[mainImageIndex].imageUrl)"
+                alt="Main image preview"
+                (error)="onImageError($event, images[mainImageIndex])"
+              />
               <p class="preview-label">Image {{ mainImageIndex + 1 }} of {{ images.length }}</p>
             </div>
             <div class="no-images" *ngIf="images.length === 0">
@@ -157,7 +161,11 @@
             >
               <!-- Image Thumbnail -->
               <div class="image-thumbnail">
-                <img [src]="getAbsoluteImageUrl(image.imageUrl)" [alt]="'Image ' + (i + 1)" />
+                <img
+                  [src]="getAbsoluteImageUrl(image.imageUrl)"
+                  [alt]="'Image ' + (i + 1)"
+                  (error)="onImageError($event, image)"
+                />
                 <span class="image-number">{{ i + 1 }}</span>
               </div>
 

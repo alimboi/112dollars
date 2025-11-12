@@ -307,18 +307,34 @@ export class BlogGalleryEditorComponent implements OnInit {
    * Converts relative URLs to absolute by prepending the appropriate base URL
    */
   getAbsoluteImageUrl(imageUrl: string): string {
-    if (!imageUrl) return '';
+    if (!imageUrl) {
+      console.warn('getAbsoluteImageUrl: Empty imageUrl');
+      return '';
+    }
     // If it's already an absolute URL (http:// or https://), return as is
     if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      console.log('getAbsoluteImageUrl: Using absolute URL:', imageUrl);
       return imageUrl;
     }
     // For upload URLs, use the base URL (without /api prefix)
     // because static assets bypass the global API prefix
     if (imageUrl.startsWith('/uploads/')) {
-      return environment.baseUrl + imageUrl;
+      const fullUrl = environment.baseUrl + imageUrl;
+      console.log('getAbsoluteImageUrl: Converted upload URL:', imageUrl, '->', fullUrl);
+      return fullUrl;
     }
     // For other relative URLs, prepend the API base URL
-    return environment.apiUrl + imageUrl;
+    const fullUrl = environment.apiUrl + imageUrl;
+    console.log('getAbsoluteImageUrl: Converted relative URL:', imageUrl, '->', fullUrl);
+    return fullUrl;
+  }
+
+  onImageError(event: any, image: BlogGalleryImage): void {
+    console.error('Image failed to load:', {
+      originalUrl: image.imageUrl,
+      attemptedSrc: event.target?.src,
+      image: image
+    });
   }
 
   private detectTheme(): void {

@@ -269,10 +269,12 @@ export class AdminComponent implements OnInit {
     this.galleries.splice(dropIndex, 0, draggedGallery);
 
     // Save new order to backend
-    const orderData = this.galleries.map((g, index) => ({
-      id: g.id,
-      order: index
-    }));
+    const orderData = {
+      galleries: this.galleries.map((g, index) => ({
+        id: g.id,
+        order: index
+      }))
+    };
 
     this.api.put('blog/galleries/reorder', orderData).subscribe({
       next: () => {

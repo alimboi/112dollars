@@ -74,6 +74,8 @@ export class BlogGalleryManagerComponent implements OnInit, OnDestroy {
   constructor(private api: ApiService) {}
 
   ngOnInit(): void {
+    console.log('[MANAGER] ============ COMPONENT LOADED - VERSION 2.0 ============');
+    console.log('[MANAGER] environment.baseUrl:', environment.baseUrl);
     this.detectTheme();
     this.listenForThemeChanges();
     this.loadGalleries();

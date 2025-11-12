@@ -317,6 +317,7 @@
       tr {
         border-bottom: 1px solid var(--border-light);
         transition: all var(--transition-base);
+        cursor: move;
 
         &:hover {
           background: var(--primary-50);
@@ -324,6 +325,17 @@
 
         &.unpublished {
           opacity: 0.6;
+        }
+
+        &.dragging {
+          opacity: 0.4;
+          background-color: var(--neutral-100);
+        }
+
+        &.drag-over {
+          border-top: 3px solid var(--primary-600);
+          transform: scale(1.01);
+          background-color: rgba(12, 74, 110, 0.05);
         }
 
         td {
@@ -618,6 +630,16 @@
 
           &:hover {
             background: rgba(8, 145, 178, 0.1);
+          }
+
+          &.dragging {
+            opacity: 0.4;
+            background-color: var(--neutral-800);
+          }
+
+          &.drag-over {
+            border-top-color: var(--primary-400);
+            background-color: rgba(8, 145, 178, 0.15);
           }
 
           td {

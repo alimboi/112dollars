@@ -66,6 +66,10 @@ export class AdminComponent implements OnInit {
   draggedGalleryIndex: number | null = null;
   dragOverGalleryIndex: number | null = null;
 
+  // Drag and drop for references
+  draggedReferenceIndex: number | null = null;
+  dragOverReferenceIndex: number | null = null;
+
   constructor(
     private api: ApiService,
     public authService: AuthService
@@ -293,5 +297,66 @@ export class AdminComponent implements OnInit {
   onGalleryDragEnd(): void {
     this.draggedGalleryIndex = null;
     this.dragOverGalleryIndex = null;
+  }
+
+  // Reference drag and drop handlers
+  onReferenceDragStart(event: DragEvent, index: number): void {
+    this.draggedReferenceIndex = index;
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+    }
+  }
+
+  onReferenceDragOver(event: DragEvent, index: number): void {
+    event.preventDefault();
+    this.dragOverReferenceIndex = index;
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+  }
+
+  onReferenceDragLeave(event: DragEvent): void {
+    this.dragOverReferenceIndex = null;
+  }
+
+  onReferenceDrop(event: DragEvent, dropIndex: number): void {
+    event.preventDefault();
+
+    if (this.draggedReferenceIndex === null || this.draggedReferenceIndex === dropIndex) {
+      this.draggedReferenceIndex = null;
+      this.dragOverReferenceIndex = null;
+      return;
+    }
+
+    // Reorder references array
+    const draggedReference = this.references[this.draggedReferenceIndex];
+    this.references.splice(this.draggedReferenceIndex, 1);
+    this.references.splice(dropIndex, 0, draggedReference);
+
+    // Save new order to backend
+    const orderData = {
+      references: this.references.map((r, index) => ({
+        id: r.id,
+        order: index
+      }))
+    };
+
+    this.api.put('references/reorder', orderData).subscribe({
+      next: () => {
+        console.log('Reference order saved successfully');
+      },
+      error: (err) => {
+        console.error('Failed to save reference order:', err);
+        alert('Failed to save reference order');
+      }
+    });
+
+    this.draggedReferenceIndex = null;
+    this.dragOverReferenceIndex = null;
+  }
+
+  onReferenceDragEnd(): void {
+    this.draggedReferenceIndex = null;
+    this.dragOverReferenceIndex = null;
   }
 }

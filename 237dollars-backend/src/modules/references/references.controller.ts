@@ -12,6 +12,7 @@ import {
 import { ReferencesService } from './references.service';
 import { CreateReferenceDto } from './dto/create-reference.dto';
 import { UpdateReferenceDto } from './dto/update-reference.dto';
+import { ReorderReferencesDto } from './dto/reorder-references.dto';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { Public } from '../../common/decorators/public.decorator';
 import { UserRole } from '../../types/user-role.enum';
@@ -61,6 +62,12 @@ export class ReferencesController {
     @Query('limit') limit: string = '10',
   ) {
     return this.referencesService.findByTopic(+topicId, +page, +limit);
+  }
+
+  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Put('reorder')
+  updateReferenceOrder(@Body() dto: ReorderReferencesDto) {
+    return this.referencesService.updateOrder(dto.references);
   }
 
   @Public()

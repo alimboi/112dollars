@@ -151,6 +151,12 @@ export class BlogController {
   }
 
   @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Put('galleries/reorder')
+  updateGalleryOrder(@Body() dto: ReorderGalleriesDto) {
+    return this.blogGalleryService.updateOrder(dto.galleries);
+  }
+
+  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
   @Put('galleries/:id')
   updateGallery(@Param('id') id: string, @Body() updateGalleryDto: UpdateBlogGalleryDto) {
     return this.blogGalleryService.update(+id, updateGalleryDto);
@@ -172,11 +178,5 @@ export class BlogController {
   @Delete('galleries/:id')
   removeGallery(@Param('id') id: string) {
     return this.blogGalleryService.remove(+id);
-  }
-
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
-  @Put('galleries/reorder')
-  updateGalleryOrder(@Body() dto: ReorderGalleriesDto) {
-    return this.blogGalleryService.updateOrder(dto.galleries);
   }
 }

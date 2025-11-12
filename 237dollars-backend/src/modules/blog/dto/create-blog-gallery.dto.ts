@@ -1,4 +1,4 @@
-import { IsString, IsArray, IsOptional, MinLength, MaxLength, IsEnum, IsInt, ValidateNested, IsNumber } from 'class-validator';
+import { IsString, IsArray, IsOptional, MinLength, MaxLength, IsEnum, IsInt, ValidateNested, IsNumber, ValidateIf } from 'class-validator';
 import { Type } from 'class-transformer';
 import { GALLERY_VALIDATION } from '../constants/gallery-validation.constants';
 
@@ -39,8 +39,9 @@ export class GalleryMediaItemDto {
 }
 
 export class CreateBlogGalleryDto {
-  @IsString()
   @IsOptional()
+  @ValidateIf((o) => o.title && o.title.trim().length > 0)
+  @IsString()
   @MinLength(GALLERY_VALIDATION.title.minLength, {
     message: GALLERY_VALIDATION.title.errorMessages.minLength,
   })
@@ -49,8 +50,9 @@ export class CreateBlogGalleryDto {
   })
   title?: string;
 
-  @IsString()
   @IsOptional()
+  @ValidateIf((o) => o.description && o.description.trim().length > 0)
+  @IsString()
   @MinLength(GALLERY_VALIDATION.description.minLength, {
     message: GALLERY_VALIDATION.description.errorMessages.minLength,
   })
@@ -60,13 +62,14 @@ export class CreateBlogGalleryDto {
   description?: string;
 
   // Support both old format (array of strings) and new format (array of media objects)
-  @IsArray()
   @IsOptional()
+  @ValidateIf((o) => !o.mediaItems) // Only validate images if mediaItems is not provided
+  @IsArray()
   images?: string[] | GalleryMediaItemDto[]; // Array of image/video URLs or media objects
 
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => GalleryMediaItemDto)
-  @IsOptional()
   mediaItems?: GalleryMediaItemDto[]; // New structured format for media items
 }

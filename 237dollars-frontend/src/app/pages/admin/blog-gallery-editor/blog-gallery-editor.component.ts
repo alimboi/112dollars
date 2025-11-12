@@ -317,38 +317,52 @@ export class BlogGalleryEditorComponent implements OnInit {
     try {
       if (this.isEditMode && this.galleryId) {
         // Update - use new mediaItems format
-        const payload = {
-          title: this.title || 'Untitled Gallery',
-          description: this.description || '',
+        const payload: any = {
           mainImageIndex: this.mainImageIndex,
           mediaItems: this.images.map(img => ({
             mediaType: img.mediaType || GalleryMediaType.IMAGE,
             mediaUrl: img.mediaUrl || img.imageUrl,
-            title: img.title,
-            description: img.description,
-            thumbnail: img.thumbnail,
-            duration: img.duration,
+            title: img.title || undefined,
+            description: img.description || undefined,
+            thumbnail: img.thumbnail || undefined,
+            duration: img.duration || undefined,
             order: img.order
           })),
           isPublished: this.isPublished
         };
+
+        // Only include title and description if they have values
+        if (this.title && this.title.trim()) {
+          payload.title = this.title.trim();
+        }
+        if (this.description && this.description.trim()) {
+          payload.description = this.description.trim();
+        }
+
         await this.api.put<any>(`blog/galleries/${this.galleryId}`, payload).toPromise();
         this.successMessage = 'Gallery updated successfully!';
       } else {
         // Create - use new mediaItems format
-        const payload = {
-          title: this.title || 'Untitled Gallery',
-          description: this.description || '',
+        const payload: any = {
           mediaItems: this.images.map(img => ({
             mediaType: img.mediaType || GalleryMediaType.IMAGE,
             mediaUrl: img.mediaUrl || img.imageUrl,
-            title: img.title,
-            description: img.description,
-            thumbnail: img.thumbnail,
-            duration: img.duration,
+            title: img.title || undefined,
+            description: img.description || undefined,
+            thumbnail: img.thumbnail || undefined,
+            duration: img.duration || undefined,
             order: img.order
           }))
         };
+
+        // Only include title and description if they have values
+        if (this.title && this.title.trim()) {
+          payload.title = this.title.trim();
+        }
+        if (this.description && this.description.trim()) {
+          payload.description = this.description.trim();
+        }
+
         const response = await this.api.post<any>('blog/galleries', payload).toPromise();
         this.successMessage = 'Gallery created successfully!';
 
@@ -366,7 +380,25 @@ export class BlogGalleryEditorComponent implements OnInit {
         this.router.navigate(['/admin']);
       }, 2000);
     } catch (err: any) {
-      this.error = err?.error?.message || 'Failed to save gallery';
+      console.error('Save gallery error:', err);
+
+      // Extract error message from various possible error structures
+      let errorMessage = 'Failed to save gallery';
+
+      if (err?.error?.message) {
+        // NestJS validation error
+        if (Array.isArray(err.error.message)) {
+          errorMessage = err.error.message.join(', ');
+        } else {
+          errorMessage = err.error.message;
+        }
+      } else if (err?.message) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      }
+
+      this.error = errorMessage;
       this.saving = false;
     }
   }

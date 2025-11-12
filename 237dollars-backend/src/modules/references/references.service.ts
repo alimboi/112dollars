@@ -86,7 +86,7 @@ export class ReferencesService {
       where: { topicId, isPublished: true },
       skip: (page - 1) * limit,
       take: limit,
-      order: { createdAt: 'DESC' },
+      order: { displayOrder: 'ASC', createdAt: 'DESC' },
       relations: ['topic', 'topic.major'],
     });
 

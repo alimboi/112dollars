@@ -981,12 +981,16 @@
 body.menu-open {
   overflow: hidden;
 
-  // Block all pointer events on main content (prevents clicks through backdrop)
-  > *:not(.navbar-elite) {
+  // Block pointer events on main content and footer
+  main,
+  app-footer,
+  footer {
     pointer-events: none;
+    user-select: none;
   }
 
-  // Keep navbar and its children interactive
+  // Explicitly keep navbar interactive
+  app-navbar,
   .navbar-elite {
     pointer-events: auto;
   }

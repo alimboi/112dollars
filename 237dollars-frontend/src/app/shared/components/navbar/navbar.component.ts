@@ -58,6 +58,27 @@ export class NavbarComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.closeMenu();
       });
+
+    // Add click handler in CAPTURE phase to prevent clicks on page content
+    document.addEventListener('click', this.handleCaptureClick.bind(this), true);
+  }
+
+  // Capture phase click handler - fires BEFORE page elements receive clicks
+  private handleCaptureClick(event: MouseEvent): void {
+    if (!this.isMenuOpen) return;
+
+    const target = event.target as HTMLElement;
+    const mobileMenu = target.closest('.mobile-menu');
+    const menuTrigger = target.closest('.menu-trigger');
+    const navbar = target.closest('.navbar-elite');
+
+    // If clicking outside navbar/menu, prevent the click and close menu
+    if (!mobileMenu && !menuTrigger && !navbar) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      this.closeMenu();
+    }
   }
 
   ngOnDestroy(): void {
@@ -85,9 +106,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
     const target = event.target as HTMLElement;
     const mobileMenu = target.closest('.mobile-menu');
     const menuTrigger = target.closest('.menu-trigger');
+    const backdrop = target.closest('.nav-backdrop');
 
-    // If click is outside menu and trigger, close it
+    // If click is outside menu and trigger, close it and prevent event propagation
     if (this.isMenuOpen && !mobileMenu && !menuTrigger) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
       this.closeMenu();
     }
   }

@@ -2,8 +2,8 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BlogImageGallery } from '../../database/entities/blog-image-gallery.entity';
-import { BlogGalleryImage, GalleryMediaType } from '../../database/entities/blog-gallery-image.entity';
-import { CreateBlogGalleryDto, GalleryMediaItemDto } from './dto/create-blog-gallery.dto';
+import { BlogGalleryImage } from '../../database/entities/blog-gallery-image.entity';
+import { CreateBlogGalleryDto } from './dto/create-blog-gallery.dto';
 import { UpdateBlogGalleryDto } from './dto/update-blog-gallery.dto';
 
 @Injectable()
@@ -16,13 +16,10 @@ export class BlogGalleryService {
   ) {}
 
   async create(createGalleryDto: CreateBlogGalleryDto, userId: number) {
-    const { title, description, images, mediaItems } = createGalleryDto;
+    const { title, description, images } = createGalleryDto;
 
-    // Use mediaItems if provided, otherwise fallback to images (old format)
-    const items = mediaItems || images;
-
-    if (!items || items.length === 0) {
-      throw new BadRequestException('At least one media item is required');
+    if (!images || images.length === 0) {
+      throw new BadRequestException('At least one image is required');
     }
 
     // Create the gallery
@@ -30,39 +27,20 @@ export class BlogGalleryService {
       title,
       description,
       createdBy: userId,
-      mainImageIndex: 0, // First item is main by default
+      mainImageIndex: 0, // First image is main by default
       isPublished: false,
     });
 
     const savedGallery = await this.galleryRepository.save(gallery);
 
-    // Create media items
-    const galleryImages = items.map((item, index) => {
-      if (typeof item === 'string') {
-        // Old format: just a URL string
-        return this.imageRepository.create({
-          galleryId: savedGallery.id,
-          imageUrl: item,
-          mediaUrl: item,
-          mediaType: GalleryMediaType.IMAGE,
-          order: index,
-        });
-      } else {
-        // New format: media object
-        const mediaItem = item as GalleryMediaItemDto;
-        return this.imageRepository.create({
-          galleryId: savedGallery.id,
-          imageUrl: mediaItem.mediaUrl, // For backward compatibility
-          mediaUrl: mediaItem.mediaUrl,
-          mediaType: mediaItem.mediaType,
-          title: mediaItem.title,
-          description: mediaItem.description,
-          thumbnail: mediaItem.thumbnail,
-          duration: mediaItem.duration,
-          order: mediaItem.order !== undefined ? mediaItem.order : index,
-        });
-      }
-    });
+    // Create images
+    const galleryImages = images.map((imageUrl, index) =>
+      this.imageRepository.create({
+        galleryId: savedGallery.id,
+        imageUrl,
+        order: index,
+      }),
+    );
 
     await this.imageRepository.save(galleryImages);
 
@@ -117,7 +95,7 @@ export class BlogGalleryService {
   }
 
   async update(id: number, updateGalleryDto: UpdateBlogGalleryDto) {
-    const { title, description, images, mediaItems, mainImageIndex } = updateGalleryDto;
+    const { title, description, images, mainImageIndex } = updateGalleryDto;
 
     const gallery = await this.findOne(id);
 
@@ -132,39 +110,19 @@ export class BlogGalleryService {
 
     await this.galleryRepository.save(gallery);
 
-    // Update media items if provided
-    const items = mediaItems || images;
-    if (items && items.length > 0) {
+    // Update images if provided
+    if (images && images.length > 0) {
       // Delete old images
       await this.imageRepository.delete({ galleryId: id });
 
-      // Create new media items
-      const galleryImages = items.map((item, index) => {
-        if (typeof item === 'string') {
-          // Old format: just a URL string
-          return this.imageRepository.create({
-            galleryId: id,
-            imageUrl: item,
-            mediaUrl: item,
-            mediaType: GalleryMediaType.IMAGE,
-            order: index,
-          });
-        } else {
-          // New format: media object
-          const mediaItem = item as GalleryMediaItemDto;
-          return this.imageRepository.create({
-            galleryId: id,
-            imageUrl: mediaItem.mediaUrl, // For backward compatibility
-            mediaUrl: mediaItem.mediaUrl,
-            mediaType: mediaItem.mediaType,
-            title: mediaItem.title,
-            description: mediaItem.description,
-            thumbnail: mediaItem.thumbnail,
-            duration: mediaItem.duration,
-            order: mediaItem.order !== undefined ? mediaItem.order : index,
-          });
-        }
-      });
+      // Create new images
+      const galleryImages = images.map((imageUrl, index) =>
+        this.imageRepository.create({
+          galleryId: id,
+          imageUrl,
+          order: index,
+        }),
+      );
       await this.imageRepository.save(galleryImages);
     }
 

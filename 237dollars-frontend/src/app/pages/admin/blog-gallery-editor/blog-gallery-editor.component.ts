@@ -6,23 +6,9 @@ import { ApiService } from '../../../core/services/api.service';
 import { GALLERY_VALIDATION } from './gallery-validation.constants';
 import { environment } from '../../../../environments/environment';
 
-enum GalleryMediaType {
-  IMAGE = 'IMAGE',
-  VIDEO = 'VIDEO',
-  YOUTUBE = 'YOUTUBE',
-  INSTAGRAM = 'INSTAGRAM',
-  TELEGRAM = 'TELEGRAM',
-}
-
 interface BlogGalleryImage {
   id?: number;
-  imageUrl: string; // Kept for backward compatibility
-  mediaType?: GalleryMediaType;
-  mediaUrl?: string;
-  title?: string;
-  description?: string;
-  thumbnail?: string;
-  duration?: number;
+  imageUrl: string;
   order?: number;
 }
 
@@ -70,14 +56,6 @@ export class BlogGalleryEditorComponent implements OnInit {
   // UI
   currentTheme: 'light' | 'dark' = 'light';
 
-  // Media types
-  GalleryMediaType = GalleryMediaType;
-  showAddMediaModal = false;
-  selectedMediaType: GalleryMediaType = GalleryMediaType.IMAGE;
-  newMediaUrl = '';
-  newMediaTitle = '';
-  newMediaDescription = '';
-
   constructor(
     private api: ApiService,
     private route: ActivatedRoute,
@@ -107,15 +85,7 @@ export class BlogGalleryEditorComponent implements OnInit {
         this.description = gallery.description || '';
         this.mainImageIndex = gallery.mainImageIndex || 0;
         this.isPublished = gallery.isPublished || false;
-
-        // Map the images to ensure mediaUrl is set
-        this.images = (gallery.images || []).map((img: any) => ({
-          ...img,
-          imageUrl: img.imageUrl || img.mediaUrl, // Backward compatibility
-          mediaUrl: img.mediaUrl || img.imageUrl,
-          mediaType: img.mediaType || GalleryMediaType.IMAGE
-        }));
-
+        this.images = gallery.images || [];
         this.loading = false;
       },
       error: (err) => {
@@ -156,8 +126,6 @@ export class BlogGalleryEditorComponent implements OnInit {
           if (response.url) {
             this.images.push({
               imageUrl: response.url,
-              mediaUrl: response.url,
-              mediaType: GalleryMediaType.IMAGE,
               order: this.images.length
             });
           }
@@ -180,96 +148,6 @@ export class BlogGalleryEditorComponent implements OnInit {
           }
         }
       });
-    }
-  }
-
-  addImageUrl(): void {
-    const urlInput = prompt('Enter image URL:');
-    if (urlInput && this.isValidUrl(urlInput)) {
-      this.images.push({
-        imageUrl: urlInput,
-        mediaUrl: urlInput,
-        mediaType: GalleryMediaType.IMAGE,
-        order: this.images.length
-      });
-      this.successMessage = 'Image URL added!';
-      setTimeout(() => this.successMessage = '', 3000);
-    } else if (urlInput) {
-      this.error = 'Invalid URL format';
-    }
-  }
-
-  openAddMediaModal(mediaType?: GalleryMediaType): void {
-    this.selectedMediaType = mediaType || GalleryMediaType.IMAGE;
-    this.newMediaUrl = '';
-    this.newMediaTitle = '';
-    this.newMediaDescription = '';
-    this.showAddMediaModal = true;
-  }
-
-  closeAddMediaModal(): void {
-    this.showAddMediaModal = false;
-  }
-
-  addMediaItem(): void {
-    if (!this.newMediaUrl || !this.isValidUrl(this.newMediaUrl)) {
-      this.error = 'Please enter a valid URL';
-      return;
-    }
-
-    const mediaItem: BlogGalleryImage = {
-      imageUrl: this.newMediaUrl, // For backward compatibility
-      mediaUrl: this.newMediaUrl,
-      mediaType: this.selectedMediaType,
-      title: this.newMediaTitle || undefined,
-      description: this.newMediaDescription || undefined,
-      order: this.images.length
-    };
-
-    // For YouTube, extract thumbnail and video ID
-    if (this.selectedMediaType === GalleryMediaType.YOUTUBE) {
-      const videoId = this.extractYouTubeId(this.newMediaUrl);
-      if (videoId) {
-        mediaItem.thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-      }
-    }
-
-    this.images.push(mediaItem);
-    this.closeAddMediaModal();
-    this.successMessage = `${this.selectedMediaType} added successfully!`;
-    setTimeout(() => this.successMessage = '', 3000);
-  }
-
-  extractYouTubeId(url: string): string | null {
-    const patterns = [
-      /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/,
-      /youtube\.com\/embed\/([^&\n?#]+)/,
-      /youtube\.com\/v\/([^&\n?#]+)/
-    ];
-
-    for (const pattern of patterns) {
-      const match = url.match(pattern);
-      if (match && match[1]) {
-        return match[1];
-      }
-    }
-
-    return null;
-  }
-
-  getMediaTypeLabel(type?: GalleryMediaType): string {
-    switch (type) {
-      case GalleryMediaType.VIDEO:
-        return 'Video';
-      case GalleryMediaType.YOUTUBE:
-        return 'YouTube';
-      case GalleryMediaType.INSTAGRAM:
-        return 'Instagram';
-      case GalleryMediaType.TELEGRAM:
-        return 'Telegram';
-      case GalleryMediaType.IMAGE:
-      default:
-        return 'Image';
     }
   }
 
@@ -315,54 +193,27 @@ export class BlogGalleryEditorComponent implements OnInit {
     this.error = '';
 
     try {
-      if (this.isEditMode && this.galleryId) {
-        // Update - use new mediaItems format
-        const payload: any = {
-          mainImageIndex: this.mainImageIndex,
-          mediaItems: this.images.map(img => ({
-            mediaType: img.mediaType || GalleryMediaType.IMAGE,
-            mediaUrl: img.mediaUrl || img.imageUrl,
-            title: img.title || undefined,
-            description: img.description || undefined,
-            thumbnail: img.thumbnail || undefined,
-            duration: img.duration || undefined,
-            order: img.order
-          })),
-          isPublished: this.isPublished
-        };
+      const payload: any = {
+        images: this.images.map(img => img.imageUrl)
+      };
 
-        // Only include title and description if they have values
-        if (this.title && this.title.trim()) {
-          payload.title = this.title.trim();
-        }
-        if (this.description && this.description.trim()) {
-          payload.description = this.description.trim();
-        }
+      // Only include title and description if they have values
+      if (this.title && this.title.trim()) {
+        payload.title = this.title.trim();
+      }
+      if (this.description && this.description.trim()) {
+        payload.description = this.description.trim();
+      }
+
+      if (this.isEditMode && this.galleryId) {
+        // Update
+        payload.mainImageIndex = this.mainImageIndex;
+        payload.isPublished = this.isPublished;
 
         await this.api.put<any>(`blog/galleries/${this.galleryId}`, payload).toPromise();
         this.successMessage = 'Gallery updated successfully!';
       } else {
-        // Create - use new mediaItems format
-        const payload: any = {
-          mediaItems: this.images.map(img => ({
-            mediaType: img.mediaType || GalleryMediaType.IMAGE,
-            mediaUrl: img.mediaUrl || img.imageUrl,
-            title: img.title || undefined,
-            description: img.description || undefined,
-            thumbnail: img.thumbnail || undefined,
-            duration: img.duration || undefined,
-            order: img.order
-          }))
-        };
-
-        // Only include title and description if they have values
-        if (this.title && this.title.trim()) {
-          payload.title = this.title.trim();
-        }
-        if (this.description && this.description.trim()) {
-          payload.description = this.description.trim();
-        }
-
+        // Create
         const response = await this.api.post<any>('blog/galleries', payload).toPromise();
         this.successMessage = 'Gallery created successfully!';
 
@@ -470,21 +321,6 @@ export class BlogGalleryEditorComponent implements OnInit {
     return environment.apiUrl + imageUrl;
   }
 
-  private isValidUrl(url: string): boolean {
-    if (!url || typeof url !== 'string') return false;
-
-    // Accept relative URLs starting with /
-    if (url.startsWith('/')) return true;
-
-    // Accept absolute URLs
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
   private detectTheme(): void {
     const dataTheme = document.documentElement.getAttribute('data-theme');
     if (dataTheme === 'dark') {
@@ -518,24 +354,6 @@ export class BlogGalleryEditorComponent implements OnInit {
   private validateForm(): boolean {
     let isValid = true;
 
-    // Validate title if provided
-    if (this.title.trim()) {
-      const titleError = this.validateField('title', this.title);
-      if (titleError) {
-        this.validationErrors['title'] = titleError;
-        isValid = false;
-      }
-    }
-
-    // Validate description if provided
-    if (this.description.trim()) {
-      const descError = this.validateField('description', this.description);
-      if (descError) {
-        this.validationErrors['description'] = descError;
-        isValid = false;
-      }
-    }
-
     // Validate images
     const imagesError = this.validateImages();
     if (imagesError) {
@@ -551,32 +369,6 @@ export class BlogGalleryEditorComponent implements OnInit {
   }
 
   /**
-   * Validate a single field
-   */
-  private validateField(fieldName: string, value: string): string | null {
-    const config = GALLERY_VALIDATION[fieldName as keyof typeof GALLERY_VALIDATION];
-
-    if (!config) return null;
-
-    // Type guard for fields with minLength/maxLength
-    if ('minLength' in config && 'maxLength' in config) {
-      const typedConfig = config as any;
-
-      // Check minLength
-      if (value.length < typedConfig.minLength) {
-        return typedConfig.errorMessages.minLength;
-      }
-
-      // Check maxLength
-      if (value.length > typedConfig.maxLength) {
-        return typedConfig.errorMessages.maxLength;
-      }
-    }
-
-    return null;
-  }
-
-  /**
    * Validate images array
    */
   private validateImages(): string | null {
@@ -586,35 +378,7 @@ export class BlogGalleryEditorComponent implements OnInit {
       return config.errorMessages.minItems;
     }
 
-    // Validate each image URL
-    for (const image of this.images) {
-      if (!this.isValidUrl(image.imageUrl)) {
-        return config.errorMessages.invalidUrl;
-      }
-    }
-
     return null;
-  }
-
-  /**
-   * Validate a field in real-time and update error display
-   */
-  validateFieldOnChange(fieldName: string): void {
-    if (fieldName === 'title' && this.title.trim()) {
-      const error = this.validateField('title', this.title);
-      if (error) {
-        this.validationErrors['title'] = error;
-      } else {
-        delete this.validationErrors['title'];
-      }
-    } else if (fieldName === 'description' && this.description.trim()) {
-      const error = this.validateField('description', this.description);
-      if (error) {
-        this.validationErrors['description'] = error;
-      } else {
-        delete this.validationErrors['description'];
-      }
-    }
   }
 
   /**

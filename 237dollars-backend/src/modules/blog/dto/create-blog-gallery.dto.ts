@@ -40,32 +40,17 @@ export class GalleryMediaItemDto {
 
 export class CreateBlogGalleryDto {
   @IsOptional()
-  @ValidateIf((o) => o.title && o.title.trim().length > 0)
   @IsString()
-  @MinLength(GALLERY_VALIDATION.title.minLength, {
-    message: GALLERY_VALIDATION.title.errorMessages.minLength,
-  })
-  @MaxLength(GALLERY_VALIDATION.title.maxLength, {
-    message: GALLERY_VALIDATION.title.errorMessages.maxLength,
-  })
   title?: string;
 
   @IsOptional()
-  @ValidateIf((o) => o.description && o.description.trim().length > 0)
   @IsString()
-  @MinLength(GALLERY_VALIDATION.description.minLength, {
-    message: GALLERY_VALIDATION.description.errorMessages.minLength,
-  })
-  @MaxLength(GALLERY_VALIDATION.description.maxLength, {
-    message: GALLERY_VALIDATION.description.errorMessages.maxLength,
-  })
   description?: string;
 
   // Support both old format (array of strings) and new format (array of media objects)
   @IsOptional()
-  @ValidateIf((o) => !o.mediaItems) // Only validate images if mediaItems is not provided
   @IsArray()
-  images?: string[] | GalleryMediaItemDto[]; // Array of image/video URLs or media objects
+  images?: string[]; // Array of image/video URLs (old format, kept for backwards compatibility)
 
   @IsOptional()
   @IsArray()

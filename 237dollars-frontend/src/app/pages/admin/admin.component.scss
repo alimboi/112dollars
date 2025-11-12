@@ -741,10 +741,24 @@
   transition: all var(--transition-base);
   display: flex;
   flex-direction: column;
+  cursor: move;
 
   &:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-md);
+  }
+
+  &.dragging {
+    opacity: 0.4;
+    transform: scale(0.95);
+  }
+
+  &.drag-over {
+    border-color: #667eea;
+    border-width: 3px;
+    border-style: dashed;
+    background-color: rgba(102, 126, 234, 0.05);
+    transform: scale(1.05);
   }
 
   .gallery-thumbnail {

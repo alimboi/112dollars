@@ -62,6 +62,10 @@ export class AdminComponent implements OnInit {
   // Filters
   publishedFilter: 'all' | 'published' | 'unpublished' = 'all';
 
+  // Drag and drop for galleries
+  draggedGalleryIndex: number | null = null;
+  dragOverGalleryIndex: number | null = null;
+
   constructor(
     private api: ApiService,
     public authService: AuthService
@@ -228,5 +232,51 @@ export class AdminComponent implements OnInit {
         alert(`Failed to delete gallery: ${err.error?.message || 'Unknown error'}`);
       }
     });
+  }
+
+  // Gallery drag and drop handlers
+  onGalleryDragStart(event: DragEvent, index: number): void {
+    this.draggedGalleryIndex = index;
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+    }
+  }
+
+  onGalleryDragOver(event: DragEvent, index: number): void {
+    event.preventDefault();
+    this.dragOverGalleryIndex = index;
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+  }
+
+  onGalleryDragLeave(event: DragEvent): void {
+    this.dragOverGalleryIndex = null;
+  }
+
+  onGalleryDrop(event: DragEvent, dropIndex: number): void {
+    event.preventDefault();
+
+    if (this.draggedGalleryIndex === null || this.draggedGalleryIndex === dropIndex) {
+      this.draggedGalleryIndex = null;
+      this.dragOverGalleryIndex = null;
+      return;
+    }
+
+    // Reorder galleries array
+    const draggedGallery = this.galleries[this.draggedGalleryIndex];
+    this.galleries.splice(this.draggedGalleryIndex, 1);
+    this.galleries.splice(dropIndex, 0, draggedGallery);
+
+    // TODO: Save new order to backend if needed
+    console.log('Gallery order changed:', this.galleries.map(g => ({ id: g.id, title: g.title })));
+
+    this.draggedGalleryIndex = null;
+    this.dragOverGalleryIndex = null;
+  }
+
+  onGalleryDragEnd(): void {
+    this.draggedGalleryIndex = null;
+    this.dragOverGalleryIndex = null;
   }
 }

@@ -208,7 +208,18 @@
 
       <!-- Galleries Grid -->
       <div class="galleries-grid">
-        <div class="gallery-card" *ngFor="let gallery of galleries">
+        <div
+          class="gallery-card"
+          *ngFor="let gallery of galleries; let i = index"
+          [class.dragging]="i === draggedGalleryIndex"
+          [class.drag-over]="i === dragOverGalleryIndex"
+          draggable="true"
+          (dragstart)="onGalleryDragStart($event, i)"
+          (dragover)="onGalleryDragOver($event, i)"
+          (dragleave)="onGalleryDragLeave($event)"
+          (drop)="onGalleryDrop($event, i)"
+          (dragend)="onGalleryDragEnd()"
+        >
           <div class="gallery-thumbnail">
             <img [src]="getMainGalleryImage(gallery)" [alt]="gallery.title" />
             <span class="image-count" *ngIf="getGalleryImageCount(gallery) > 1">

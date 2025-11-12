@@ -158,6 +158,14 @@
               class="image-item"
               *ngFor="let image of images; let i = index"
               [class.active]="i === mainImageIndex"
+              [class.dragging]="i === draggedIndex"
+              [class.drag-over]="i === dragOverIndex"
+              draggable="true"
+              (dragstart)="onDragStart($event, i)"
+              (dragover)="onDragOver($event, i)"
+              (dragleave)="onDragLeave($event)"
+              (drop)="onDrop($event, i)"
+              (dragend)="onDragEnd()"
             >
               <!-- Image Thumbnail -->
               <div class="image-thumbnail">

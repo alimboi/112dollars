@@ -488,9 +488,23 @@
   border: 1px solid;
   border-radius: 6px;
   transition: all 0.3s ease;
+  cursor: move;
 
   &.active {
     background-color: rgba(102, 126, 234, 0.05);
+  }
+
+  &.dragging {
+    opacity: 0.4;
+    transform: scale(0.95);
+  }
+
+  &.drag-over {
+    border-color: #667eea;
+    border-width: 2px;
+    border-style: dashed;
+    background-color: rgba(102, 126, 234, 0.1);
+    transform: scale(1.02);
   }
 }
 

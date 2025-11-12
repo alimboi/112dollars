@@ -55,6 +55,8 @@ export class BlogGalleryEditorComponent implements OnInit {
 
   // UI
   currentTheme: 'light' | 'dark' = 'light';
+  draggedIndex: number | null = null;
+  dragOverIndex: number | null = null;
 
   constructor(
     private api: ApiService,
@@ -296,6 +298,63 @@ export class BlogGalleryEditorComponent implements OnInit {
     } catch (err: any) {
       this.error = 'Failed to delete gallery';
     }
+  }
+
+  // Drag and drop methods
+  onDragStart(event: DragEvent, index: number): void {
+    this.draggedIndex = index;
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+    }
+  }
+
+  onDragOver(event: DragEvent, index: number): void {
+    event.preventDefault();
+    this.dragOverIndex = index;
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+  }
+
+  onDragLeave(event: DragEvent): void {
+    this.dragOverIndex = null;
+  }
+
+  onDrop(event: DragEvent, dropIndex: number): void {
+    event.preventDefault();
+
+    if (this.draggedIndex === null || this.draggedIndex === dropIndex) {
+      this.draggedIndex = null;
+      this.dragOverIndex = null;
+      return;
+    }
+
+    // Reorder the images array
+    const draggedImage = this.images[this.draggedIndex];
+    this.images.splice(this.draggedIndex, 1);
+    this.images.splice(dropIndex, 0, draggedImage);
+
+    // Update order property for all images
+    this.images.forEach((img, i) => {
+      img.order = i;
+    });
+
+    // Adjust mainImageIndex if needed
+    if (this.mainImageIndex === this.draggedIndex) {
+      this.mainImageIndex = dropIndex;
+    } else if (this.draggedIndex < this.mainImageIndex && dropIndex >= this.mainImageIndex) {
+      this.mainImageIndex--;
+    } else if (this.draggedIndex > this.mainImageIndex && dropIndex <= this.mainImageIndex) {
+      this.mainImageIndex++;
+    }
+
+    this.draggedIndex = null;
+    this.dragOverIndex = null;
+  }
+
+  onDragEnd(): void {
+    this.draggedIndex = null;
+    this.dragOverIndex = null;
   }
 
   goBack(): void {

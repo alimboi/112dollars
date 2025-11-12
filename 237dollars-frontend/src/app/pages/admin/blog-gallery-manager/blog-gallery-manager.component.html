@@ -120,7 +120,7 @@
                 <!-- Image Preview -->
                 <div class="image-preview" *ngIf="image.imageUrl && i === formData.mainImageIndex">
                   <p class="preview-label">{{ 'admin.mainImagePreview' | translate }}</p>
-                  <img [src]="image.imageUrl" alt="Main preview" class="preview-image" />
+                  <img [src]="getAbsoluteImageUrl(image.imageUrl)" alt="Main preview" class="preview-image" />
                 </div>
               </div>
             </div>

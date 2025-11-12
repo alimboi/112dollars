@@ -43,19 +43,37 @@ export class ReferencesService {
   }
 
   // Admin - Get all references
-  async findAll(page: number = 1, limit: number = 20, isPublished?: boolean) {
-    const where: any = {};
+  async findAll(
+    page: number = 1,
+    limit: number = 20,
+    isPublished?: boolean,
+    majorId?: number,
+    topicId?: number,
+  ) {
+    const queryBuilder = this.referenceRepository
+      .createQueryBuilder('reference')
+      .leftJoinAndSelect('reference.topic', 'topic')
+      .leftJoinAndSelect('topic.major', 'major')
+      .leftJoinAndSelect('reference.creator', 'creator');
+
     if (isPublished !== undefined) {
-      where.isPublished = isPublished;
+      queryBuilder.andWhere('reference.isPublished = :isPublished', { isPublished });
     }
 
-    const [references, total] = await this.referenceRepository.findAndCount({
-      where,
-      skip: (page - 1) * limit,
-      take: limit,
-      order: { displayOrder: 'ASC', createdAt: 'DESC' },
-      relations: ['topic', 'topic.major', 'creator'],
-    });
+    if (majorId !== undefined) {
+      queryBuilder.andWhere('topic.majorId = :majorId', { majorId });
+    }
+
+    if (topicId !== undefined) {
+      queryBuilder.andWhere('reference.topicId = :topicId', { topicId });
+    }
+
+    const [references, total] = await queryBuilder
+      .orderBy('reference.displayOrder', 'ASC')
+      .addOrderBy('reference.createdAt', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
 
     return {
       references,

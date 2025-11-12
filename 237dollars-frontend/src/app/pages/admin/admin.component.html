@@ -42,18 +42,51 @@
 
       <!-- Filters -->
       <div class="filters-section">
-        <div class="filter-group">
-          <label for="publishedFilter">Status:</label>
-          <select
-            id="publishedFilter"
-            [(ngModel)]="publishedFilter"
-            (change)="onFilterChange()"
-            class="filter-select"
-          >
-            <option value="all">All References</option>
-            <option value="published">Published Only</option>
-            <option value="unpublished">Unpublished Only</option>
-          </select>
+        <div class="filters-row">
+          <div class="filter-group">
+            <label for="publishedFilter">Status:</label>
+            <select
+              id="publishedFilter"
+              [(ngModel)]="publishedFilter"
+              (change)="onFilterChange()"
+              class="filter-select"
+            >
+              <option value="all">All References</option>
+              <option value="published">Published Only</option>
+              <option value="unpublished">Unpublished Only</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="majorFilter">Major:</label>
+            <select
+              id="majorFilter"
+              [(ngModel)]="majorFilter"
+              (change)="onMajorFilterChange()"
+              class="filter-select"
+            >
+              <option value="all">All Majors</option>
+              <option *ngFor="let major of majors" [value]="major.id">
+                {{ major.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="topicFilter">Topic:</label>
+            <select
+              id="topicFilter"
+              [(ngModel)]="topicFilter"
+              (change)="onFilterChange()"
+              class="filter-select"
+              [disabled]="majorFilter !== 'all' && filteredTopics.length === 0"
+            >
+              <option value="all">All Topics</option>
+              <option *ngFor="let topic of filteredTopics" [value]="topic.id">
+                {{ topic.name }}
+              </option>
+            </select>
+          </div>
         </div>
 
         <div class="stats">

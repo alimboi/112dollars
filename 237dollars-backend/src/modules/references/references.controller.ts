@@ -42,9 +42,13 @@ export class ReferencesController {
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '20',
     @Query('published') published?: string,
+    @Query('majorId') majorId?: string,
+    @Query('topicId') topicId?: string,
   ) {
     const publishedFilter = published === 'true' ? true : published === 'false' ? false : undefined;
-    return this.referencesService.findAll(+page, +limit, publishedFilter);
+    const majorIdFilter = majorId ? +majorId : undefined;
+    const topicIdFilter = topicId ? +topicId : undefined;
+    return this.referencesService.findAll(+page, +limit, publishedFilter, majorIdFilter, topicIdFilter);
   }
 
   // References

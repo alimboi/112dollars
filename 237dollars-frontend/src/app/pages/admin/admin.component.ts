@@ -28,6 +28,17 @@ interface Reference {
   };
 }
 
+interface Major {
+  id: number;
+  name: string;
+}
+
+interface Topic {
+  id: number;
+  name: string;
+  majorId: number;
+}
+
 interface ReferenceResponse {
   references: Reference[];
   total: number;
@@ -61,6 +72,13 @@ export class AdminComponent implements OnInit {
 
   // Filters
   publishedFilter: 'all' | 'published' | 'unpublished' = 'all';
+  majorFilter: number | 'all' = 'all';
+  topicFilter: number | 'all' = 'all';
+
+  // Filter data
+  majors: Major[] = [];
+  topics: Topic[] = [];
+  filteredTopics: Topic[] = [];
 
   // Drag and drop for galleries
   draggedGalleryIndex: number | null = null;
@@ -76,8 +94,66 @@ export class AdminComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadMajors();
+    this.loadTopics();
     this.loadReferences();
     this.loadGalleries();
+  }
+
+  loadMajors(): void {
+    this.api.get<Major[]>('references/majors').subscribe({
+      next: (majors) => {
+        this.majors = majors;
+      },
+      error: (err) => {
+        console.error('Error loading majors:', err);
+      }
+    });
+  }
+
+  loadTopics(): void {
+    // Load all topics by fetching from all majors
+    this.api.get<Major[]>('references/majors').subscribe({
+      next: (majors) => {
+        // Fetch topics for each major
+        const topicRequests = majors.map(major =>
+          this.api.get<Topic[]>(`references/majors/${major.id}/topics`)
+        );
+
+        // Wait for all topic requests to complete
+        Promise.all(topicRequests.map(req => req.toPromise()))
+          .then(topicArrays => {
+            this.topics = topicArrays.flat().filter(t => t != null) as Topic[];
+            this.filteredTopics = this.topics;
+          })
+          .catch(err => {
+            console.error('Error loading topics:', err);
+          });
+      },
+      error: (err) => {
+        console.error('Error loading majors for topics:', err);
+      }
+    });
+  }
+
+  onMajorFilterChange(): void {
+    // Filter topics based on selected major
+    if (this.majorFilter === 'all') {
+      this.filteredTopics = this.topics;
+    } else {
+      this.filteredTopics = this.topics.filter(t => t.majorId === this.majorFilter);
+    }
+
+    // Reset topic filter if current topic doesn't belong to selected major
+    if (this.topicFilter !== 'all') {
+      const topicExists = this.filteredTopics.some(t => t.id === this.topicFilter);
+      if (!topicExists) {
+        this.topicFilter = 'all';
+      }
+    }
+
+    this.currentPage = 1;
+    this.loadReferences();
   }
 
   loadGalleries(): void {
@@ -98,6 +174,12 @@ export class AdminComponent implements OnInit {
     let queryParams = `page=${this.currentPage}&limit=${this.limit}`;
     if (this.publishedFilter !== 'all') {
       queryParams += `&published=${this.publishedFilter === 'published'}`;
+    }
+    if (this.majorFilter !== 'all') {
+      queryParams += `&majorId=${this.majorFilter}`;
+    }
+    if (this.topicFilter !== 'all') {
+      queryParams += `&topicId=${this.topicFilter}`;
     }
 
     this.api.get<ReferenceResponse>(`references/admin/all?${queryParams}`).subscribe({

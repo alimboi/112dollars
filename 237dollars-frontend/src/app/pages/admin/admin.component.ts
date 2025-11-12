@@ -268,8 +268,21 @@ export class AdminComponent implements OnInit {
     this.galleries.splice(this.draggedGalleryIndex, 1);
     this.galleries.splice(dropIndex, 0, draggedGallery);
 
-    // TODO: Save new order to backend if needed
-    console.log('Gallery order changed:', this.galleries.map(g => ({ id: g.id, title: g.title })));
+    // Save new order to backend
+    const orderData = this.galleries.map((g, index) => ({
+      id: g.id,
+      order: index
+    }));
+
+    this.api.put('blog/galleries/reorder', orderData).subscribe({
+      next: () => {
+        console.log('Gallery order saved successfully');
+      },
+      error: (err) => {
+        console.error('Failed to save gallery order:', err);
+        alert('Failed to save gallery order');
+      }
+    });
 
     this.draggedGalleryIndex = null;
     this.dragOverGalleryIndex = null;

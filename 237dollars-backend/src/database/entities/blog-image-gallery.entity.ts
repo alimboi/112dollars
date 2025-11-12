@@ -32,6 +32,9 @@ export class BlogImageGallery {
   @Column({ name: 'is_published', default: false })
   isPublished: boolean;
 
+  @Column({ name: 'display_order', default: 0 })
+  displayOrder: number;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

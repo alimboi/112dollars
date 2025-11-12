@@ -60,7 +60,8 @@ export class BlogGalleryService {
 
     const [galleries, total] = await query
       .leftJoinAndSelect('gallery.images', 'images')
-      .orderBy('gallery.createdAt', 'DESC')
+      .orderBy('gallery.displayOrder', 'ASC')
+      .addOrderBy('gallery.createdAt', 'DESC')
       .skip((page - 1) * limit)
       .take(limit)
       .getManyAndCount();
@@ -148,5 +149,13 @@ export class BlogGalleryService {
     gallery.isPublished = false;
     await this.galleryRepository.save(gallery);
     return gallery;
+  }
+
+  async updateOrder(orderData: { id: number; order: number }[]) {
+    // Update each gallery's displayOrder
+    for (const item of orderData) {
+      await this.galleryRepository.update(item.id, { displayOrder: item.order });
+    }
+    return { message: 'Gallery order updated successfully' };
   }
 }

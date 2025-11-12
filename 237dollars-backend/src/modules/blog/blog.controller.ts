@@ -172,4 +172,10 @@ export class BlogController {
   removeGallery(@Param('id') id: string) {
     return this.blogGalleryService.remove(+id);
   }
+
+  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Put('galleries/reorder')
+  updateGalleryOrder(@Body() orderData: { id: number; order: number }[]) {
+    return this.blogGalleryService.updateOrder(orderData);
+  }
 }

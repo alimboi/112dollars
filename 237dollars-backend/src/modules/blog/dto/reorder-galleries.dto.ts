@@ -1,7 +1,7 @@
 import { IsArray, IsInt, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
-class GalleryOrderItem {
+export class GalleryOrderItem {
   @IsInt()
   id: number;
 

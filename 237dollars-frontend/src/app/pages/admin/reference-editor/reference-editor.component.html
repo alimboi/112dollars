@@ -41,7 +41,7 @@
         <div *ngFor="let block of contentBlocks" class="preview-block">
 
           <!-- Heading Block -->
-          <h2 *ngIf="block.blockType === 'heading'" [ngStyle]="{
+          <h2 *ngIf="block.blockType === 'heading'" [ngStyle]="getThemeAwareStyle({
             'font-family': block.styling?.fontFamily,
             'font-size.px': block.styling?.fontSize,
             'color': block.styling?.color,
@@ -52,12 +52,12 @@
             'margin-top.px': block.styling?.marginTop,
             'margin-bottom.px': block.styling?.marginBottom,
             'padding.px': block.styling?.padding
-          }">
+          })">
             {{ block.content }}
           </h2>
 
           <!-- Text Block -->
-          <p *ngIf="block.blockType === 'text'" [ngStyle]="{
+          <p *ngIf="block.blockType === 'text'" [ngStyle]="getThemeAwareStyle({
             'font-family': block.styling?.fontFamily,
             'font-size.px': block.styling?.fontSize,
             'color': block.styling?.color,
@@ -71,7 +71,7 @@
             'margin-top.px': block.styling?.marginTop,
             'margin-bottom.px': block.styling?.marginBottom,
             'padding.px': block.styling?.padding
-          }">
+          })">
             {{ block.content }}
           </p>
 
@@ -103,7 +103,7 @@
           </div>
 
           <!-- Code Block -->
-          <pre *ngIf="block.blockType === 'code_block'" [ngStyle]="{
+          <pre *ngIf="block.blockType === 'code_block'" [ngStyle]="getThemeAwareStyle({
             'font-family': block.styling?.fontFamily,
             'font-size.px': block.styling?.fontSize,
             'color': block.styling?.color,
@@ -111,7 +111,7 @@
             'padding.px': block.styling?.padding,
             'margin-top.px': block.styling?.marginTop,
             'margin-bottom.px': block.styling?.marginBottom
-          }"><code>{{ block.content }}</code></pre>
+          })"><code>{{ block.content }}</code></pre>
 
         </div>
       </div>
@@ -358,7 +358,7 @@
                 <!-- Live Preview -->
                 <div class="live-preview">
                   <h5>Live Preview:</h5>
-                  <div class="preview-box" [ngStyle]="{
+                  <div class="preview-box" [ngStyle]="getThemeAwareStyle({
                     'font-family': currentBlock.styling?.fontFamily,
                     'font-size.px': currentBlock.styling?.fontSize,
                     'color': currentBlock.styling?.color,
@@ -368,7 +368,7 @@
                     'line-height': currentBlock.styling?.lineHeight,
                     'letter-spacing.px': currentBlock.styling?.letterSpacing,
                     'padding.px': currentBlock.styling?.padding
-                  }">
+                  })">
                     {{ currentBlock.content || 'Your text will appear here...' }}
                   </div>
                 </div>
@@ -562,6 +562,104 @@
             </div>
           </div>
 
+        </div>
+      </div>
+
+      <!-- Live Preview Section -->
+      <div class="live-preview-section" *ngIf="!previewMode && !loading && contentBlocks.length > 0">
+        <div class="preview-header-divider">
+          <h3>📺 Live Preview</h3>
+          <p class="preview-subtitle">See how your content will look</p>
+        </div>
+
+        <div class="live-preview-container">
+          <div class="preview-meta">
+            <div class="preview-title-block">
+              <h2 class="preview-main-title">{{ referenceTitle || 'Untitled Reference' }}</h2>
+              <p class="preview-main-description">{{ referenceDescription }}</p>
+            </div>
+          </div>
+
+          <div class="preview-blocks">
+            <div *ngFor="let block of contentBlocks" class="preview-block">
+
+              <!-- Heading Block Preview -->
+              <h3 *ngIf="block.blockType === 'heading'" [ngStyle]="getThemeAwareStyle({
+                'font-family': block.styling?.fontFamily,
+                'font-size.px': block.styling?.fontSize,
+                'color': block.styling?.color,
+                'background-color': block.styling?.backgroundColor,
+                'font-weight': block.styling?.fontWeight,
+                'text-align': block.styling?.textAlign,
+                'line-height': block.styling?.lineHeight,
+                'margin-top.px': block.styling?.marginTop,
+                'margin-bottom.px': block.styling?.marginBottom,
+                'padding.px': block.styling?.padding
+              })" class="preview-heading">
+                {{ block.content }}
+              </h3>
+
+              <!-- Text Block Preview -->
+              <p *ngIf="block.blockType === 'text'" [ngStyle]="getThemeAwareStyle({
+                'font-family': block.styling?.fontFamily,
+                'font-size.px': block.styling?.fontSize,
+                'color': block.styling?.color,
+                'background-color': block.styling?.backgroundColor,
+                'font-weight': block.styling?.fontWeight,
+                'font-style': block.styling?.fontStyle,
+                'text-decoration': block.styling?.textDecoration,
+                'text-align': block.styling?.textAlign,
+                'line-height': block.styling?.lineHeight,
+                'letter-spacing.px': block.styling?.letterSpacing,
+                'margin-top.px': block.styling?.marginTop,
+                'margin-bottom.px': block.styling?.marginBottom,
+                'padding.px': block.styling?.padding
+              })" class="preview-text">
+                {{ block.content }}
+              </p>
+
+              <!-- Image Block Preview -->
+              <div *ngIf="block.blockType === 'image'" class="preview-image-block" [ngStyle]="{
+                'text-align': block.blockData?.alignment
+              }">
+                <img [src]="block.blockData?.url"
+                     [alt]="block.blockData?.alt"
+                     [ngStyle]="{
+                       'width': block.blockData?.width,
+                       'height': block.blockData?.height,
+                       'border-radius.px': block.blockData?.borderRadius
+                     }"
+                     [class]="'shadow-' + block.blockData?.boxShadow"
+                     class="preview-image">
+              </div>
+
+              <!-- Video Block Preview -->
+              <div *ngIf="block.blockType === 'video'" class="preview-video-block" [ngStyle]="{
+                'text-align': block.blockData?.alignment
+              }">
+                <iframe
+                  *ngIf="block.blockData?.videoId"
+                  [src]="'https://www.youtube.com/embed/' + block.blockData.videoId | safeUrl"
+                  [style.width]="block.blockData?.width"
+                  class="preview-iframe"
+                  frameborder="0"
+                  allowfullscreen>
+                </iframe>
+              </div>
+
+              <!-- Code Block Preview -->
+              <pre *ngIf="block.blockType === 'code_block'" [ngStyle]="getThemeAwareStyle({
+                'font-family': block.styling?.fontFamily,
+                'font-size.px': block.styling?.fontSize,
+                'color': block.styling?.color,
+                'background-color': block.styling?.backgroundColor,
+                'padding.px': block.styling?.padding,
+                'margin-top.px': block.styling?.marginTop,
+                'margin-bottom.px': block.styling?.marginBottom
+              })" class="preview-code"><code>{{ block.content }}</code></pre>
+
+            </div>
+          </div>
         </div>
       </div>
 

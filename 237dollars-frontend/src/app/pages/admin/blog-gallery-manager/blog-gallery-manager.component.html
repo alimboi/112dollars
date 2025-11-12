@@ -1,0 +1,254 @@
+<div class="blog-gallery-manager" [ngClass]="currentTheme">
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>{{ 'admin.blogGalleries' | translate }}</h1>
+      <button class="btn-primary" (click)="openForm()" [disabled]="saving">
+        <span class="icon">+</span>
+        {{ 'admin.addNewGallery' | translate }}
+      </button>
+    </div>
+
+    <!-- Success Message -->
+    <div class="message success-message" *ngIf="successMessage" [@fadeIn]>
+      {{ successMessage }}
+    </div>
+
+    <!-- Error Message -->
+    <div class="message error-message" *ngIf="error" [@fadeIn]>
+      {{ error }}
+    </div>
+
+    <!-- Form Modal -->
+    <div class="modal-overlay" *ngIf="isFormOpen" [@fadeIn] (click)="closeForm()">
+      <div class="modal-content" [@slideUp] (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ isEditMode ? ('admin.editGallery' | translate) : ('admin.addNewGallery' | translate) }}</h2>
+          <button class="btn-close" (click)="closeForm()">×</button>
+        </div>
+
+        <form (ngSubmit)="saveGallery()" #galleryForm="ngForm" class="gallery-form">
+          <!-- Title Field -->
+          <div class="form-group">
+            <label for="title">{{ 'admin.title' | translate }} <span class="required">*</span></label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              [(ngModel)]="formData.title"
+              class="form-input"
+              [disabled]="saving"
+              placeholder="Enter gallery title"
+            />
+          </div>
+
+          <!-- Description Field -->
+          <div class="form-group">
+            <label for="description">{{ 'admin.description' | translate }} <span class="required">*</span></label>
+            <textarea
+              id="description"
+              name="description"
+              [(ngModel)]="formData.description"
+              class="form-textarea"
+              [disabled]="saving"
+              placeholder="Enter gallery description"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <!-- Images Section -->
+          <div class="images-section">
+            <div class="images-header">
+              <h3>{{ 'admin.images' | translate }} <span class="required">*</span></h3>
+              <button
+                type="button"
+                class="btn-add-image"
+                (click)="addImageField()"
+                [disabled]="saving"
+              >
+                <span class="icon">+</span> {{ 'admin.addImage' | translate }}
+              </button>
+            </div>
+
+            <!-- Image URL Fields -->
+            <div class="images-list">
+              <div
+                class="image-field-wrapper"
+                *ngFor="let image of formData.images; let i = index"
+                [@fadeIn]
+              >
+                <div class="image-field-group">
+                  <!-- Main Image Selector -->
+                  <div class="main-image-selector">
+                    <input
+                      type="radio"
+                      [id]="'mainImage-' + i"
+                      [name]="'mainImage'"
+                      [(ngModel)]="formData.mainImageIndex"
+                      [value]="i"
+                      [disabled]="saving"
+                    />
+                    <label [for]="'mainImage-' + i">
+                      {{ 'admin.setAsMain' | translate }}
+                    </label>
+                  </div>
+
+                  <!-- Image URL Input -->
+                  <div class="image-url-input">
+                    <input
+                      type="text"
+                      [(ngModel)]="image.imageUrl"
+                      [name]="'imageUrl-' + i"
+                      class="form-input"
+                      [disabled]="saving"
+                      placeholder="https://example.com/image.jpg"
+                    />
+                  </div>
+
+                  <!-- Remove Button -->
+                  <button
+                    type="button"
+                    class="btn-remove-image"
+                    (click)="removeImageField(i)"
+                    [disabled]="saving || formData.images.length === 1"
+                    title="Remove this image"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <!-- Image Preview -->
+                <div class="image-preview" *ngIf="image.imageUrl && i === formData.mainImageIndex">
+                  <p class="preview-label">{{ 'admin.mainImagePreview' | translate }}</p>
+                  <img [src]="image.imageUrl" alt="Main preview" class="preview-image" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Publish Status -->
+          <div class="form-group checkbox-group">
+            <label for="isPublished">
+              <input
+                type="checkbox"
+                id="isPublished"
+                name="isPublished"
+                [(ngModel)]="formData.isPublished"
+                [disabled]="saving"
+              />
+              {{ 'admin.publishGallery' | translate }}
+            </label>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="closeForm()" [disabled]="saving">
+              {{ 'common.cancel' | translate }}
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="saving">
+              <span *ngIf="!saving">
+                {{ isEditMode ? ('admin.update' | translate) : ('admin.create' | translate) }}
+              </span>
+              <span *ngIf="saving" class="spinner"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading && galleries.length === 0">
+      <div class="spinner-large"></div>
+      <p>{{ 'common.loading' | translate }}</p>
+    </div>
+
+    <!-- Galleries Grid -->
+    <div class="galleries-grid" *ngIf="!loading || galleries.length > 0">
+      <div class="gallery-card" *ngFor="let gallery of galleries" [@fadeIn]>
+        <div class="gallery-image-wrapper">
+          <img [src]="getMainImage(gallery)" alt="{{ gallery.title }}" class="gallery-image" />
+          <div class="image-count" *ngIf="getImageCount(gallery) > 1">
+            <span class="count-text">{{ getImageCount(gallery) }} {{ 'admin.images' | translate }}</span>
+          </div>
+        </div>
+
+        <div class="gallery-info">
+          <h3 class="gallery-title">{{ gallery.title }}</h3>
+          <p class="gallery-description">{{ gallery.description | slice: 0:100 }}{{ gallery.description.length > 100 ? '...' : '' }}</p>
+
+          <div class="gallery-meta">
+            <span class="status-badge" [ngClass]="gallery.isPublished ? 'published' : 'draft'">
+              {{ gallery.isPublished ? ('admin.published' | translate) : ('admin.draft' | translate) }}
+            </span>
+            <span class="date-text">{{ gallery.createdAt | date: 'short' }}</span>
+          </div>
+        </div>
+
+        <div class="gallery-actions">
+          <!-- Toggle Publish Button -->
+          <button
+            class="btn-icon btn-publish"
+            [title]="gallery.isPublished ? ('admin.unpublish' | translate) : ('admin.publish' | translate)"
+            (click)="togglePublish(gallery, !gallery.isPublished)"
+            [disabled]="saving"
+          >
+            <span class="icon">{{ gallery.isPublished ? '👁️' : '🔒' }}</span>
+          </button>
+
+          <!-- Edit Button -->
+          <button
+            class="btn-icon btn-edit"
+            [title]="'admin.edit' | translate"
+            (click)="openForm(gallery)"
+            [disabled]="saving"
+          >
+            <span class="icon">✏️</span>
+          </button>
+
+          <!-- Delete Button -->
+          <button
+            class="btn-icon btn-delete"
+            [title]="'admin.delete' | translate"
+            (click)="deleteGallery(gallery.id!)"
+            [disabled]="saving"
+          >
+            <span class="icon">🗑️</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="galleries.length === 0 && !loading">
+        <div class="empty-icon">🖼️</div>
+        <h3>{{ 'admin.noGalleries' | translate }}</h3>
+        <p>{{ 'admin.noGalleriesDescription' | translate }}</p>
+        <button class="btn-primary" (click)="openForm()">
+          {{ 'admin.createFirstGallery' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button
+        class="pagination-btn"
+        (click)="goToPage(currentPage - 1)"
+        [disabled]="currentPage === 1 || loading"
+      >
+        ← {{ 'common.previous' | translate }}
+      </button>
+
+      <div class="page-info">
+        {{ 'common.page' | translate }}: <strong>{{ currentPage }}</strong> / <strong>{{ totalPages }}</strong>
+      </div>
+
+      <button
+        class="pagination-btn"
+        (click)="goToPage(currentPage + 1)"
+        [disabled]="currentPage === totalPages || loading"
+      >
+        {{ 'common.next' | translate }} →
+      </button>
+    </div>
+  </div>
+</div>

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
 import { CdkDrag, CdkDropList, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SafeUrlPipe } from '../../../shared/pipes/safe-url.pipe';
+import { ColorThemeUtil } from '../../../shared/utils/color-theme.util';
 
 interface Major {
   id: number;
@@ -66,12 +67,14 @@ export class ReferenceEditorComponent implements OnInit {
   contentBlocks: ContentBlock[] = [];
   currentBlock: ContentBlock | null = null;
   editingBlockIndex: number | null = null;
+  contrastWarning: string = '';
 
   // UI state
   loading = false;
   saving = false;
   previewMode = false;
   showBlockEditor = false;
+  currentTheme: 'light' | 'dark' = 'light';
 
   // Reference ID (for editing)
   referenceId: number | null = null;
@@ -84,6 +87,12 @@ export class ReferenceEditorComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Detect initial theme
+    this.detectTheme();
+
+    // Listen for theme changes
+    this.listenForThemeChanges();
+
     this.loadMajors();
 
     // Check if editing existing reference
@@ -151,17 +160,33 @@ export class ReferenceEditorComponent implements OnInit {
           }));
         }
 
-        this.loading = false;
-
-        // Load topics for selected major
+        // Load topics for selected major (this will also set loading to false when done)
         if (this.selectedMajorId) {
-          this.onMajorChange();
+          this.loadTopicsForMajor(this.selectedMajorId);
+        } else {
+          this.loading = false;
         }
       },
       error: (err) => {
         console.error('Error loading reference:', err);
         alert('Failed to load reference');
         this.router.navigate(['/admin']);
+        this.loading = false;
+      }
+    });
+  }
+
+  /**
+   * Load topics for a major
+   */
+  private loadTopicsForMajor(majorId: number): void {
+    this.api.get<Topic[]>(`references/majors/${majorId}/topics`).subscribe({
+      next: (topics) => {
+        this.topics = topics;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading topics:', err);
         this.loading = false;
       }
     });
@@ -363,14 +388,28 @@ export class ReferenceEditorComponent implements OnInit {
 
       if (this.currentBlock && this.currentBlock.blockData) {
         // Store the URL returned from backend
-        this.currentBlock.blockData.url = 'http://localhost:3000' + response.url;
-        this.currentBlock.blockData.filename = response.filename;
+        this.currentBlock.blockData.url = 'http://localhost:3000' + response?.url;
+        this.currentBlock.blockData.filename = response?.filename;
       }
 
       this.loading = false;
-    } catch (err) {
+      alert('Image uploaded successfully!');
+    } catch (err: any) {
       console.error('Error uploading image:', err);
-      alert('Failed to upload image');
+
+      // Handle different error types
+      let errorMessage = 'Failed to upload image';
+      if (err?.status === 401) {
+        errorMessage = 'Unauthorized: Your session may have expired. Please log in again and try again.';
+      } else if (err?.status === 403) {
+        errorMessage = 'Forbidden: You don\'t have permission to upload images. Please contact your administrator.';
+      } else if (err?.status === 413) {
+        errorMessage = 'File too large: Maximum file size is 5MB';
+      } else if (err?.error?.message) {
+        errorMessage = err.error.message;
+      }
+
+      alert(errorMessage);
       this.loading = false;
     }
   }
@@ -509,5 +548,126 @@ export class ReferenceEditorComponent implements OnInit {
     } else {
       return block.content?.substring(0, 50) || 'Empty block';
     }
+  }
+
+  // ===== COLOR CONTRAST CHECKING =====
+
+  /**
+   * Check contrast when color changes
+   * Shows warning if colors have poor contrast
+   */
+  onColorChange(): void {
+    if (!this.currentBlock?.styling) {
+      this.contrastWarning = '';
+      return;
+    }
+
+    const textColor = this.currentBlock.styling.color;
+    const bgColor = this.currentBlock.styling.backgroundColor;
+
+    // Only check if both colors are set
+    if (!textColor || !bgColor) {
+      this.contrastWarning = '';
+      return;
+    }
+
+    const warning = ColorThemeUtil.getContrastWarning(textColor, bgColor);
+    this.contrastWarning = warning.hasWarning
+      ? `⚠️ ${warning.message}`
+      : `✓ ${warning.message}`;
+  }
+
+  /**
+   * Get color accessibility options for admin
+   */
+  getColorOptions(): Array<{ value: string; label: string }> {
+    return ColorThemeUtil.getColorOptions();
+  }
+
+  /**
+   * Check if colors are accessible
+   */
+  areColorsAccessible(): boolean {
+    if (!this.currentBlock?.styling) return true;
+
+    const textColor = this.currentBlock.styling.color;
+    const bgColor = this.currentBlock.styling.backgroundColor;
+
+    if (!textColor || !bgColor) return true;
+
+    return ColorThemeUtil.isAccessibleContrast(textColor, bgColor);
+  }
+
+  // ===== THEME AWARENESS =====
+
+  /**
+   * Detect current theme from document root attribute
+   */
+  private detectTheme(): void {
+    // Check data-theme attribute on document root (set by navbar)
+    const dataTheme = document.documentElement.getAttribute('data-theme');
+    if (dataTheme === 'dark') {
+      this.currentTheme = 'dark';
+      return;
+    }
+
+    // Check if user has a saved theme preference in localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      this.currentTheme = 'dark';
+      return;
+    }
+
+    // Default to light theme
+    this.currentTheme = 'light';
+  }
+
+  /**
+   * Listen for theme changes in real-time
+   */
+  private listenForThemeChanges(): void {
+    // Use MutationObserver to watch for data-theme attribute changes on document root
+    const observer = new MutationObserver(() => {
+      this.detectTheme();
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+
+    // Also listen for storage changes (in case theme changes in different tab)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'theme') {
+        this.detectTheme();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+  }
+
+  /**
+   * Get theme-aware style for a content block
+   * Automatically adjusts colors based on current theme
+   */
+  getThemeAwareStyle(styling: any): any {
+    if (!styling) return {};
+
+    const themeAwareStyle = { ...styling };
+
+    // Adjust color based on current theme
+    if (styling.color) {
+      themeAwareStyle.color = ColorThemeUtil.getThemeAwareColor(styling.color, this.currentTheme);
+    }
+
+    // Adjust background color based on current theme
+    if (styling.backgroundColor) {
+      themeAwareStyle.backgroundColor = ColorThemeUtil.getThemeAwareColor(
+        styling.backgroundColor,
+        this.currentTheme
+      );
+    }
+
+    return themeAwareStyle;
   }
 }

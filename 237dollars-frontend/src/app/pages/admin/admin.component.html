@@ -9,168 +9,248 @@
         </h1>
         <p class="admin-subtitle">Manage references and content</p>
       </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="admin-tabs">
+      <button
+        class="tab-button"
+        [class.active]="activeTab === 'references'"
+        (click)="switchTab('references')"
+      >
+        <span class="tab-icon">📚</span>
+        References
+      </button>
+      <button
+        class="tab-button"
+        [class.active]="activeTab === 'blog'"
+        (click)="switchTab('blog')"
+      >
+        <span class="tab-icon">🖼️</span>
+        Blog Galleries
+      </button>
+    </div>
+
+    <!-- Tab Content: References -->
+    <div class="tab-content" *ngIf="activeTab === 'references'">
       <div class="header-actions">
         <button class="btn btn-primary" routerLink="/admin/references/new">
           <span class="icon">➕</span>
           Create Reference
         </button>
       </div>
-    </div>
 
-    <!-- Filters -->
-    <div class="filters-section">
-      <div class="filter-group">
-        <label for="publishedFilter">Status:</label>
-        <select
-          id="publishedFilter"
-          [(ngModel)]="publishedFilter"
-          (change)="onFilterChange()"
-          class="filter-select"
-        >
-          <option value="all">All References</option>
-          <option value="published">Published Only</option>
-          <option value="unpublished">Unpublished Only</option>
-        </select>
+      <!-- Filters -->
+      <div class="filters-section">
+        <div class="filter-group">
+          <label for="publishedFilter">Status:</label>
+          <select
+            id="publishedFilter"
+            [(ngModel)]="publishedFilter"
+            (change)="onFilterChange()"
+            class="filter-select"
+          >
+            <option value="all">All References</option>
+            <option value="published">Published Only</option>
+            <option value="unpublished">Unpublished Only</option>
+          </select>
+        </div>
+
+        <div class="stats">
+          <span class="stat-item">
+            <strong>Total:</strong> {{ totalReferences }}
+          </span>
+        </div>
       </div>
 
-      <div class="stats">
-        <span class="stat-item">
-          <strong>Total:</strong> {{ totalReferences }}
-        </span>
-      </div>
-    </div>
-
-    <!-- Loading State -->
-    <div *ngIf="loading" class="loading-state">
-      <div class="spinner"></div>
-      <p>Loading references...</p>
-    </div>
-
-    <!-- Error State -->
-    <div *ngIf="error && !loading" class="error-state">
-      <div class="error-icon">⚠️</div>
-      <h3>Error Loading References</h3>
-      <p>{{ error }}</p>
-      <button class="btn btn-outline" (click)="loadReferences()">Try Again</button>
-    </div>
-
-    <!-- References Table -->
-    <div *ngIf="!loading && !error" class="references-table">
-      <div *ngIf="references.length === 0" class="empty-state">
-        <div class="empty-icon">📄</div>
-        <h3>No References Found</h3>
-        <p>Start by creating your first reference</p>
-        <button class="btn btn-primary" routerLink="/admin/references/new">
-          Create Reference
-        </button>
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading references...</p>
       </div>
 
-      <table *ngIf="references.length > 0">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Major</th>
-            <th>Topic</th>
-            <th>Status</th>
-            <th>Created</th>
-            <th>Creator</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let reference of references" [class.unpublished]="!reference.isPublished">
-            <td class="id-cell">{{ reference.id }}</td>
-            <td class="title-cell">
-              <div class="title-content">
-                <strong>{{ reference.title }}</strong>
-                <p *ngIf="reference.description" class="description">
-                  {{ reference.description }}
-                </p>
-              </div>
-            </td>
-            <td class="major-cell">
-              {{ reference.topic?.major?.name || 'N/A' }}
-            </td>
-            <td class="topic-cell">
-              {{ reference.topic?.name || 'N/A' }}
-            </td>
-            <td class="status-cell">
-              <span class="status-badge" [class.published]="reference.isPublished">
-                {{ reference.isPublished ? '✓ Published' : '○ Draft' }}
-              </span>
-            </td>
-            <td class="date-cell">
-              {{ formatDate(reference.createdAt) }}
-            </td>
-            <td class="creator-cell">
-              {{ reference.creator?.email || 'Unknown' }}
-            </td>
-            <td class="actions-cell">
-              <div class="action-buttons">
-                <button
-                  class="btn-icon btn-view"
-                  [routerLink]="['/references', reference.id]"
-                  title="View"
-                >
-                  👁️
-                </button>
-                <button
-                  class="btn-icon btn-edit"
-                  [routerLink]="['/admin/references', reference.id, 'edit']"
-                  title="Edit"
-                >
-                  ✏️
-                </button>
-                <button
-                  class="btn-icon btn-toggle"
-                  (click)="togglePublish(reference)"
-                  [title]="reference.isPublished ? 'Unpublish' : 'Publish'"
-                >
-                  {{ reference.isPublished ? '🔽' : '🔼' }}
-                </button>
-                <button
-                  class="btn-icon btn-delete"
-                  (click)="deleteReference(reference)"
-                  title="Delete"
-                >
-                  🗑️
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <!-- Error State -->
+      <div *ngIf="error && !loading" class="error-state">
+        <div class="error-icon">⚠️</div>
+        <h3>Error Loading References</h3>
+        <p>{{ error }}</p>
+        <button class="btn btn-outline" (click)="loadReferences()">Try Again</button>
+      </div>
 
-    <!-- Pagination -->
-    <div *ngIf="!loading && totalPages > 1" class="pagination">
-      <button
-        class="pagination-btn"
-        (click)="goToPage(currentPage - 1)"
-        [disabled]="currentPage === 1"
-      >
-        ← Previous
-      </button>
+      <!-- References Table -->
+      <div *ngIf="!loading && !error" class="references-table">
+        <div *ngIf="references.length === 0" class="empty-state">
+          <div class="empty-icon">📄</div>
+          <h3>No References Found</h3>
+          <p>Start by creating your first reference</p>
+          <button class="btn btn-primary" routerLink="/admin/references/new">
+            Create Reference
+          </button>
+        </div>
 
-      <div class="page-numbers">
+        <table *ngIf="references.length > 0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Major</th>
+              <th>Topic</th>
+              <th>Status</th>
+              <th>Created</th>
+              <th>Creator</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let reference of references" [class.unpublished]="!reference.isPublished">
+              <td class="id-cell">{{ reference.id }}</td>
+              <td class="title-cell">
+                <div class="title-content">
+                  <strong>{{ reference.title }}</strong>
+                  <p *ngIf="reference.description" class="description">
+                    {{ reference.description }}
+                  </p>
+                </div>
+              </td>
+              <td class="major-cell">
+                {{ reference.topic?.major?.name || 'N/A' }}
+              </td>
+              <td class="topic-cell">
+                {{ reference.topic?.name || 'N/A' }}
+              </td>
+              <td class="status-cell">
+                <span class="status-badge" [class.published]="reference.isPublished">
+                  {{ reference.isPublished ? '✓ Published' : '○ Draft' }}
+                </span>
+              </td>
+              <td class="date-cell">
+                {{ formatDate(reference.createdAt) }}
+              </td>
+              <td class="creator-cell">
+                {{ reference.creator?.email || 'Unknown' }}
+              </td>
+              <td class="actions-cell">
+                <div class="action-buttons">
+                  <button
+                    class="btn-icon btn-view"
+                    [routerLink]="['/references', reference.id]"
+                    title="View"
+                  >
+                    👁️
+                  </button>
+                  <button
+                    class="btn-icon btn-edit"
+                    [routerLink]="['/admin/references', reference.id, 'edit']"
+                    title="Edit"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    class="btn-icon btn-toggle"
+                    (click)="togglePublish(reference)"
+                    [title]="reference.isPublished ? 'Unpublish' : 'Publish'"
+                  >
+                    {{ reference.isPublished ? '🔽' : '🔼' }}
+                  </button>
+                  <button
+                    class="btn-icon btn-delete"
+                    (click)="deleteReference(reference)"
+                    title="Delete"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="!loading && totalPages > 1" class="pagination">
         <button
-          *ngFor="let page of getPageNumbers()"
-          class="page-btn"
-          [class.active]="page === currentPage"
-          (click)="goToPage(page)"
+          class="pagination-btn"
+          (click)="goToPage(currentPage - 1)"
+          [disabled]="currentPage === 1"
         >
-          {{ page }}
+          ← Previous
+        </button>
+
+        <div class="page-numbers">
+          <button
+            *ngFor="let page of getPageNumbers()"
+            class="page-btn"
+            [class.active]="page === currentPage"
+            (click)="goToPage(page)"
+          >
+            {{ page }}
+          </button>
+        </div>
+
+        <button
+          class="pagination-btn"
+          (click)="goToPage(currentPage + 1)"
+          [disabled]="currentPage === totalPages"
+        >
+          Next →
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab Content: Blog Galleries -->
+    <div class="tab-content" *ngIf="activeTab === 'blog'">
+      <div class="header-actions">
+        <button class="btn btn-primary" routerLink="/admin/galleries/new">
+          <span class="icon">➕</span>
+          Create New Gallery
         </button>
       </div>
 
-      <button
-        class="pagination-btn"
-        (click)="goToPage(currentPage + 1)"
-        [disabled]="currentPage === totalPages"
-      >
-        Next →
-      </button>
+      <!-- Galleries Grid -->
+      <div class="galleries-grid">
+        <div class="gallery-card" *ngFor="let gallery of galleries">
+          <div class="gallery-thumbnail">
+            <img [src]="getMainGalleryImage(gallery)" [alt]="gallery.title" />
+            <span class="image-count" *ngIf="getGalleryImageCount(gallery) > 1">
+              {{ getGalleryImageCount(gallery) }} images
+            </span>
+          </div>
+          <div class="gallery-info">
+            <h3>{{ gallery.title || 'Untitled' }}</h3>
+            <p class="description">{{ gallery.description | slice: 0:100 }}{{ gallery.description.length > 100 ? '...' : '' }}</p>
+            <span class="status-badge" [ngClass]="gallery.isPublished ? 'published' : 'draft'">
+              {{ gallery.isPublished ? 'Published' : 'Draft' }}
+            </span>
+          </div>
+          <div class="gallery-actions">
+            <button
+              class="btn-icon"
+              [routerLink]="['/admin/galleries', gallery.id, 'edit']"
+              title="Edit"
+            >
+              ✏️
+            </button>
+            <button
+              class="btn-icon btn-danger"
+              (click)="deleteGallery(gallery.id)"
+              [disabled]="false"
+              title="Delete"
+            >
+              🗑️
+            </button>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="galleries.length === 0">
+          <div class="empty-icon">🖼️</div>
+          <h3>No galleries yet</h3>
+          <p>Create your first gallery to get started</p>
+          <button class="btn btn-primary" routerLink="/admin/galleries/new">
+            Create Gallery
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

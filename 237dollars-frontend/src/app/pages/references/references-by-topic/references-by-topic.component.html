@@ -1,13 +1,13 @@
 <div class="tutorial-page">
   <!-- Mobile Header with Sidebar Toggle -->
-  <div class="mobile-header" *ngIf="selectedTopic && !loading">
+  <div class="mobile-header" *ngIf="!loading">
     <button class="menu-toggle" (click)="toggleSidebar()">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="3" y1="6" x2="21" y2="6"></line>
         <line x1="3" y1="12" x2="21" y2="12"></line>
         <line x1="3" y1="18" x2="21" y2="18"></line>
       </svg>
-      <span>{{ selectedTopic?.name || 'Topics' }}</span>
+      <span>Contents</span>
     </button>
   </div>
 
@@ -15,47 +15,53 @@
   <div class="sidebar-backdrop" [class.active]="sidebarOpen" (click)="closeSidebar()"></div>
 
   <div class="tutorial-container">
-    <!-- Left Sidebar - Topics -->
+    <!-- Left Sidebar -->
     <aside class="sidebar" [class.open]="sidebarOpen">
-      <div class="sidebar-header">
-        <button routerLink="/references" class="btn-back-sidebar">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-          <span>Back to Majors</span>
-        </button>
-      </div>
-
-      <div class="topics-list">
-        <div class="list-title">Topics</div>
-        <nav class="nav-topics">
-          <button *ngFor="let topic of topics"
-                  (click)="selectTopic(topic)"
-                  [class.active]="selectedTopic?.id === topic.id"
-                  class="topic-item">
-            <div class="topic-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-              </svg>
-            </div>
-            <div class="topic-info">
-              <span class="topic-name">{{ topic.name }}</span>
-            </div>
-            <div class="topic-indicator">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </div>
+      <!-- Contents List -->
+      <div class="sidebar-section">
+        <div class="sidebar-header">
+          <button (click)="goBackToTopics()" class="btn-back-sidebar btn-back-to-topics">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span>Back to Topics</span>
           </button>
-        </nav>
-      </div>
+        </div>
 
-      <div class="sidebar-footer">
-        <div class="progress-info">
-          <p class="progress-label">Total Topics</p>
-          <p class="progress-count">{{ topics.length }} topics</p>
+        <div class="contents-list">
+          <div class="list-title">Contents</div>
+          <nav class="nav-contents">
+            <button *ngFor="let content of contents"
+                    (click)="selectContent(content)"
+                    [class.active]="selectedContent?.id === content.id"
+                    class="content-item">
+              <div class="content-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+              </div>
+              <div class="content-info">
+                <span class="content-name">{{ content.title }}</span>
+                <span class="content-meta" *ngIf="content.readingTimeMinutes">
+                  {{ content.readingTimeMinutes }} min
+                </span>
+              </div>
+              <div class="content-badge" *ngIf="content.isFree">
+                <span class="badge-free">Free</span>
+              </div>
+            </button>
+          </nav>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="progress-info">
+            <p class="progress-label">Contents</p>
+            <p class="progress-count">{{ contents.length }} items</p>
+          </div>
         </div>
       </div>
     </aside>
@@ -65,7 +71,7 @@
       <!-- Loading State -->
       <div class="loading-state" *ngIf="loading">
         <div class="spinner-large"></div>
-        <p class="loading-text">Loading content...</p>
+        <p class="loading-text">Loading...</p>
       </div>
 
       <!-- Error State -->
@@ -78,83 +84,146 @@
         <span>{{ error }}</span>
       </div>
 
-      <!-- Content Header -->
-      <div class="content-header" *ngIf="selectedTopic && !loading">
-        <div class="header-badge">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-          </svg>
-          <span>Learning Materials</span>
-        </div>
-        <h1 class="content-title">{{ selectedTopic?.name }}</h1>
-        <p class="content-subtitle" *ngIf="selectedTopic?.description">{{ selectedTopic?.description }}</p>
-      </div>
-
-      <!-- Empty State -->
-      <div class="empty-state" *ngIf="!loading && !error && references.length === 0">
-        <div class="empty-icon">
-          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-          </svg>
-        </div>
-        <h3 class="empty-title">No References Available</h3>
-        <p class="empty-message">
-          There are no learning materials published for this topic yet. Check back soon!
-        </p>
-      </div>
-
-      <!-- References List (Tutorial Style) -->
-      <div class="references-tutorial-list" *ngIf="!loading && !error && references.length > 0">
-        <div class="reference-item" *ngFor="let reference of references; let i = index"
-             [routerLink]="['/references', reference.id]"
-             [style.animation-delay]="(i * 0.05) + 's'">
-
-          <div class="item-header">
-            <h3 class="item-title">{{ reference.title }}</h3>
-            <div class="item-badges">
-              <span class="badge" [ngClass]="reference.isFree ? 'badge-free' : 'badge-premium'">
-                <svg *ngIf="reference.isFree" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <!-- Contents View - Selected Content Detail -->
+      <div class="content-view detail-view" *ngIf="!loading && !error">
+        <div *ngIf="selectedContent" class="content-detail">
+          <!-- Content Header -->
+          <div class="detail-header">
+            <div class="detail-badges">
+              <span class="badge" [ngClass]="selectedContent.isFree ? 'badge-free' : 'badge-premium'">
+                <svg *ngIf="selectedContent.isFree" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                   <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
                 </svg>
-                <svg *ngIf="!reference.isFree" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg *ngIf="!selectedContent.isFree" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                 </svg>
-                <span>{{ reference.isFree ? 'Free' : 'Premium' }}</span>
+                <span>{{ selectedContent.isFree ? 'Free' : 'Premium' }}</span>
               </span>
             </div>
+            <h1 class="detail-title">{{ selectedContent.title }}</h1>
+            <p class="detail-description">{{ selectedContent.description }}</p>
+
+            <div class="detail-meta">
+              <div class="meta-item" *ngIf="selectedContent.readingTimeMinutes">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>{{ selectedContent.readingTimeMinutes }} min read</span>
+              </div>
+
+              <div class="meta-item" *ngIf="selectedContent.totalWords">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                <span>{{ selectedContent.totalWords }} words</span>
+              </div>
+            </div>
           </div>
 
-          <p class="item-description">{{ reference.description }}</p>
+          <!-- Content Body - Show Full Content Inline -->
+          <div class="detail-body">
+            <!-- Content Blocks -->
+            <div class="content-blocks" *ngIf="(selectedContent?.contentBlocks?.length ?? 0) > 0">
+              <div class="content-block" *ngFor="let block of selectedContent.contentBlocks" [ngSwitch]="block.blockType">
+                <!-- Heading Block -->
+                <h2 *ngSwitchCase="'heading'" class="heading-block" [ngStyle]="getThemeAwareStyle({
+                  'font-family': block.styling?.fontFamily,
+                  'font-size.px': block.styling?.fontSize,
+                  'color': block.styling?.color,
+                  'background-color': block.styling?.backgroundColor,
+                  'font-weight': block.styling?.fontWeight,
+                  'text-align': block.styling?.textAlign,
+                  'line-height': block.styling?.lineHeight,
+                  'margin-top.px': block.styling?.marginTop,
+                  'margin-bottom.px': block.styling?.marginBottom,
+                  'padding.px': block.styling?.padding
+                })">{{ block.content }}</h2>
 
-          <div class="item-meta">
-            <div class="meta-badge" *ngIf="reference.readingTimeMinutes">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-              </svg>
-              <span>{{ reference.readingTimeMinutes }} min read</span>
+                <!-- Text Block -->
+                <p *ngSwitchCase="'text'" class="text-block" [ngStyle]="getThemeAwareStyle({
+                  'font-family': block.styling?.fontFamily,
+                  'font-size.px': block.styling?.fontSize,
+                  'color': block.styling?.color,
+                  'background-color': block.styling?.backgroundColor,
+                  'font-weight': block.styling?.fontWeight,
+                  'font-style': block.styling?.fontStyle,
+                  'text-decoration': block.styling?.textDecoration,
+                  'text-align': block.styling?.textAlign,
+                  'line-height': block.styling?.lineHeight,
+                  'letter-spacing.px': block.styling?.letterSpacing,
+                  'margin-top.px': block.styling?.marginTop,
+                  'margin-bottom.px': block.styling?.marginBottom,
+                  'padding.px': block.styling?.padding
+                })">{{ block.content }}</p>
+
+                <!-- Image Block -->
+                <div *ngSwitchCase="'image'" class="image-block" [ngStyle]="{'text-align': block.blockData?.alignment}">
+                  <img [src]="block.blockData?.url"
+                       [alt]="block.blockData?.alt || 'Content image'"
+                       [ngStyle]="{
+                         'width': block.blockData?.width,
+                         'height': block.blockData?.height,
+                         'border-radius.px': block.blockData?.borderRadius
+                       }"
+                       [class]="'shadow-' + block.blockData?.boxShadow">
+                </div>
+
+                <!-- Video Block -->
+                <div *ngSwitchCase="'video'" class="video-block" [ngStyle]="{'text-align': block.blockData?.alignment}">
+                  <iframe *ngIf="block.blockData?.videoId"
+                          [src]="'https://www.youtube.com/embed/' + block.blockData?.videoId | safeUrl"
+                          [style.width]="block.blockData?.width"
+                          height="400"
+                          frameborder="0"
+                          allowfullscreen>
+                  </iframe>
+                </div>
+
+                <!-- Code Block -->
+                <div *ngSwitchCase="'code_block'" class="code-block" [ngStyle]="getThemeAwareStyle({
+                  'background-color': block.styling?.backgroundColor,
+                  'color': block.styling?.color,
+                  'padding.px': block.styling?.padding,
+                  'margin-top.px': block.styling?.marginTop,
+                  'margin-bottom.px': block.styling?.marginBottom
+                })">
+                  <div class="code-header">
+                    <div class="code-dots">
+                      <span class="dot dot-red"></span>
+                      <span class="dot dot-yellow"></span>
+                      <span class="dot dot-green"></span>
+                    </div>
+                    <span class="code-label">Code</span>
+                  </div>
+                  <pre><code>{{ block.content }}</code></pre>
+                </div>
+              </div>
             </div>
 
-            <div class="meta-badge" *ngIf="reference.totalWords">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
-              </svg>
-              <span>{{ reference.totalWords }} words</span>
+            <!-- No Content Blocks -->
+            <div class="no-blocks" *ngIf="(selectedContent?.contentBlocks?.length ?? 0) === 0">
+              <p>No content blocks available for this item.</p>
             </div>
           </div>
+        </div>
 
-          <div class="item-arrow">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="9 18 15 12 9 6"></polyline>
+        <!-- Empty State - No content selected -->
+        <div class="empty-state" *ngIf="!selectedContent">
+          <div class="empty-icon">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
             </svg>
           </div>
+          <h3 class="empty-title">No Content Selected</h3>
+          <p class="empty-message">
+            Select a content from the left sidebar to view details.
+          </p>
         </div>
       </div>
     </main>

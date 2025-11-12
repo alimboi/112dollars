@@ -16,6 +16,8 @@ import { ReadingProgress } from './reading-progress.entity';
 import { DiscountEligibility } from './discount-eligibility.entity';
 import { DiscountApplication } from './discount-application.entity';
 import { BlogPost } from './blog-post.entity';
+import { BlogImage } from './blog-image.entity';
+import { BlogImageGallery } from './blog-image-gallery.entity';
 import { AdminActivityLog } from './admin-activity-log.entity';
 
 @Entity('users')
@@ -100,6 +102,12 @@ export class User {
 
   @OneToMany(() => BlogPost, (post) => post.author)
   blogPosts: BlogPost[];
+
+  @OneToMany(() => BlogImage, (image) => image.creator)
+  blogImages: BlogImage[];
+
+  @OneToMany(() => BlogImageGallery, (gallery) => gallery.creator)
+  blogImageGalleries: BlogImageGallery[];
 
   @OneToMany(() => AdminActivityLog, (log) => log.admin)
   activityLogs: AdminActivityLog[];

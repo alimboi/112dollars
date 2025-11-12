@@ -1,0 +1,128 @@
+<div class="about-page">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">About 237 Dollars</h1>
+      <p class="hero-subtitle">Empowering learners worldwide with high-quality, accessible education</p>
+    </div>
+    <div class="hero-background"></div>
+  </section>
+
+  <!-- Introduction Section -->
+  <section class="intro-section">
+    <div class="container">
+      <div class="intro-grid">
+        <div class="intro-text">
+          <h2>Our Mission</h2>
+          <p>
+            237 Dollars is dedicated to making quality education affordable and accessible to everyone.
+            We believe that learning should not be a luxury, but a right available to all learners
+            regardless of their financial situation.
+          </p>
+          <p>
+            Our platform brings together comprehensive courses, expert instructors, and an engaged
+            community of learners to help you master new skills and achieve your goals.
+          </p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number">1000+</div>
+            <div class="stat-label">Active Learners</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">50+</div>
+            <div class="stat-label">Expert Courses</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Quality Assured</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">Support Available</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Course Gallery Section -->
+  <section class="gallery-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our Courses</h2>
+        <p>Explore our diverse range of courses designed for every skill level</p>
+      </div>
+
+      <div class="gallery-grid">
+        <div class="course-card" *ngFor="let image of courseImages">
+          <div class="course-image-wrapper">
+            <img [src]="image.src" [alt]="image.alt" class="course-image">
+            <div class="course-overlay">
+              <button class="btn-explore">Explore Course</button>
+            </div>
+          </div>
+          <div class="course-info">
+            <h3>{{ image.title }}</h3>
+            <p class="course-description">Learn industry-standard skills with hands-on projects and expert guidance.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values Section -->
+  <section class="values-section">
+    <div class="container">
+      <h2 class="section-title">Why Choose 237 Dollars?</h2>
+
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon">💡</div>
+          <h3>Expert Content</h3>
+          <p>Curated courses created by industry experts with real-world experience.</p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">🎯</div>
+          <h3>Goal-Oriented</h3>
+          <p>Structured learning paths designed to help you achieve your career goals.</p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">💰</div>
+          <h3>Affordable</h3>
+          <p>Quality education at a fraction of the cost of traditional programs.</p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">🌍</div>
+          <h3>Global Community</h3>
+          <p>Learn alongside thousands of students from around the world.</p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">📱</div>
+          <h3>Mobile Friendly</h3>
+          <p>Learn anywhere, anytime with our responsive platform.</p>
+        </div>
+
+        <div class="value-card">
+          <div class="value-icon">⭐</div>
+          <h3>High Quality</h3>
+          <p>All courses undergo rigorous quality assurance and student feedback.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2>Ready to Start Learning?</h2>
+      <p>Join thousands of students already learning on 237 Dollars</p>
+      <button class="btn-primary btn-large" routerLink="/enrollment">Start Your Journey</button>
+    </div>
+  </section>
+</div>

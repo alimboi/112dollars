@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
+import { BlogGalleryManagerComponent } from './blog-gallery-manager/blog-gallery-manager.component';
 
 interface Reference {
   id: number;
@@ -37,12 +38,17 @@ interface ReferenceResponse {
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, BlogGalleryManagerComponent],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit {
+  // Tab navigation
+  activeTab: 'references' | 'blog' = 'references';
+
+  // References data
   references: Reference[] = [];
+  galleries: any[] = [];
   loading = false;
   error: string | null = null;
 
@@ -62,6 +68,18 @@ export class AdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadReferences();
+    this.loadGalleries();
+  }
+
+  loadGalleries(): void {
+    this.api.get<any>('blog/galleries?page=1&limit=100').subscribe({
+      next: (response) => {
+        this.galleries = response.galleries || [];
+      },
+      error: (err) => {
+        console.error('Error loading galleries:', err);
+      }
+    });
   }
 
   loadReferences(): void {
@@ -161,6 +179,37 @@ export class AdminComponent implements OnInit {
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
+    });
+  }
+
+  switchTab(tab: 'references' | 'blog'): void {
+    this.activeTab = tab;
+  }
+
+  getMainGalleryImage(gallery: any): string {
+    if (!gallery.images || gallery.images.length === 0) {
+      return 'https://via.placeholder.com/300x200?text=No+Image';
+    }
+    const mainIndex = gallery.mainImageIndex || 0;
+    return gallery.images[mainIndex]?.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image';
+  }
+
+  getGalleryImageCount(gallery: any): number {
+    return gallery.images?.length || 0;
+  }
+
+  deleteGallery(id: number): void {
+    if (!confirm('Delete this gallery permanently? This action cannot be undone.')) {
+      return;
+    }
+
+    this.api.delete(`blog/galleries/${id}`).subscribe({
+      next: () => {
+        this.galleries = this.galleries.filter(g => g.id !== id);
+      },
+      error: (err) => {
+        alert(`Failed to delete gallery: ${err.error?.message || 'Unknown error'}`);
+      }
     });
   }
 }

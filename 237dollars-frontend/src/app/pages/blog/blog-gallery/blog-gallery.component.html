@@ -1,0 +1,159 @@
+<div class="blog-gallery-page" [ngClass]="currentTheme">
+  <div class="container">
+    <!-- Header -->
+    <div class="gallery-header">
+      <h1 class="gallery-title">Gallery</h1>
+      <p class="gallery-subtitle">Explore our curated collections</p>
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="loading && galleries.length === 0">
+      <div class="spinner-large"></div>
+      <p>Loading galleries...</p>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-state" *ngIf="error && !loading">
+      <div class="error-icon">⚠️</div>
+      <p>{{ error }}</p>
+      <button class="btn-retry" (click)="loadGalleries()">Try Again</button>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div class="galleries-grid" *ngIf="!loading || galleries.length > 0">
+      <div
+        class="gallery-card"
+        *ngFor="let gallery of galleries"
+        [@fadeIn]
+        (mouseenter)="onGalleryHover(gallery)"
+        (mouseleave)="onGalleryLeave(gallery)"
+      >
+        <!-- Main Image with Hover Overlay -->
+        <div class="gallery-image-wrapper">
+          <img
+            [src]="getCurrentImage(gallery)?.imageUrl"
+            [alt]="gallery.title"
+            class="gallery-main-image"
+          />
+
+          <!-- Image Indicators (dots) -->
+          <div class="image-indicators" *ngIf="gallery.images.length > 1">
+            <span
+              *ngFor="let image of gallery.images; let i = index"
+              class="indicator-dot"
+              [class.active]="i === (gallery.mainImageIndex || 0)"
+            ></span>
+          </div>
+
+          <!-- Hover Overlay -->
+          <div class="hover-overlay" (click)="openGalleryModal(gallery)">
+            <div class="overlay-content">
+              <span class="view-full-icon">🔍</span>
+              <p class="view-full-text">View Full</p>
+              <span class="image-count" *ngIf="gallery.images.length > 1">
+                {{ (gallery.mainImageIndex || 0) + 1 }} / {{ gallery.images.length }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gallery Info -->
+        <div class="gallery-info">
+          <h3 class="gallery-title-text">{{ gallery.title }}</h3>
+          <p class="gallery-description">{{ gallery.description }}</p>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="galleries.length === 0 && !loading">
+        <div class="empty-icon">📸</div>
+        <h3>No Galleries Found</h3>
+        <p>Check back soon for our latest collections</p>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button
+        class="pagination-btn"
+        (click)="goToPage(currentPage - 1)"
+        [disabled]="currentPage === 1 || loading"
+      >
+        ← Previous
+      </button>
+
+      <div class="page-info">
+        Page <strong>{{ currentPage }}</strong> of <strong>{{ totalPages }}</strong>
+      </div>
+
+      <button
+        class="pagination-btn"
+        (click)="goToPage(currentPage + 1)"
+        [disabled]="currentPage === totalPages || loading"
+      >
+        Next →
+      </button>
+    </div>
+  </div>
+
+  <!-- Fullscreen Modal -->
+  <div class="modal-overlay" *ngIf="isModalOpen" [@fadeIn] (click)="closeModal()">
+    <div class="modal-content" [@slideUp] (click)="$event.stopPropagation()">
+      <!-- Close Button -->
+      <button class="btn-close" (click)="closeModal()">✕</button>
+
+      <!-- Main Image Container -->
+      <div class="modal-image-container">
+        <img
+          [src]="selectedGallery?.images?.[currentImageIndex]?.imageUrl || 'https://via.placeholder.com/800x600?text=Image+Not+Found'"
+          [alt]="selectedGallery?.title"
+          class="modal-main-image"
+        />
+
+        <!-- Navigation Arrows -->
+        <button
+          class="nav-arrow nav-arrow-left"
+          (click)="previousImage()"
+          *ngIf="selectedGallery && selectedGallery.images.length > 1"
+          title="Previous image"
+        >
+          ‹
+        </button>
+
+        <button
+          class="nav-arrow nav-arrow-right"
+          (click)="nextImage()"
+          *ngIf="selectedGallery && selectedGallery.images.length > 1"
+          title="Next image"
+        >
+          ›
+        </button>
+      </div>
+
+      <!-- Content Section -->
+      <div class="modal-content-section">
+        <div class="content-header">
+          <h2 class="modal-title">{{ selectedGallery?.title }}</h2>
+          <p class="image-counter" *ngIf="getImageCount() > 1">
+            {{ currentImageIndex + 1 }} / {{ getImageCount() }}
+          </p>
+        </div>
+
+        <p class="modal-description">{{ selectedGallery?.description }}</p>
+
+        <!-- Image Indicators/Thumbnails -->
+        <div class="thumbnail-strip" *ngIf="selectedGallery && selectedGallery.images.length > 1">
+          <button
+            *ngFor="let image of selectedGallery.images; let i = index"
+            class="thumbnail"
+            [class.active]="i === currentImageIndex"
+            (click)="goToImage(i)"
+            [title]="'Image ' + (i + 1)"
+          >
+            <img [src]="image.imageUrl" [alt]="'Thumbnail ' + (i + 1)" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

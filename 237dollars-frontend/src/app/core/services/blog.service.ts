@@ -19,8 +19,12 @@ export interface BlogPost {
 export class BlogService {
   constructor(private api: ApiService) {}
 
-  getAllPosts(page: number = 1, limit: number = 10): Observable<{ posts: BlogPost[], total: number }> {
-    return this.api.get<{ posts: BlogPost[], total: number }>('blog/posts', { page, limit });
+  getAllPosts(page: number = 1, limit: number = 10, published?: boolean): Observable<{ posts: BlogPost[], total: number }> {
+    const params: any = { page, limit };
+    if (published !== undefined) {
+      params.published = published;
+    }
+    return this.api.get<{ posts: BlogPost[], total: number }>('blog/posts', params);
   }
 
   getPost(id: number): Observable<BlogPost> {

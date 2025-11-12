@@ -17,7 +17,8 @@
    CUSTOM FONTS - CLEAN EDUCATIONAL TYPOGRAPHY
    ========================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700;800&display=swap');
+/* Commented out external Google Fonts import for offline builds */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700;800&display=swap'); */
 
 /* ==========================================
    CSS CUSTOM PROPERTIES - EDUCATIONAL PALETTE
@@ -186,6 +187,12 @@
   --font-bold: 700;
   --font-extrabold: 800;
   --font-black: 900;
+
+  /* Admin Component Colors */
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: var(--border-light);
+  --accent-primary: var(--accent-500);
+  --danger: var(--error);
 }
 
 /* ==========================================
@@ -233,6 +240,11 @@
   /* Adjust gradients for dark mode */
   --gradient-bg-light: linear-gradient(180deg, var(--neutral-50) 0%, #1a2332 100%);
   --gradient-bg-card: linear-gradient(135deg, #1a2332 0%, var(--neutral-50) 100%);
+
+  /* Dark mode admin colors */
+  --glass-bg: rgba(30, 41, 59, 0.8);
+  --glass-border: var(--border-light);
+  --accent-primary: var(--accent-400);
 }
 
 /* ============================================

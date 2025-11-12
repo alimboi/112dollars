@@ -49,42 +49,30 @@
           <h2>Gallery Information</h2>
 
           <!-- Title -->
-          <div class="form-group" [class.form-group-error]="hasFieldError('title')">
+          <div class="form-group">
             <label for="title">Title <span class="optional-badge">optional</span></label>
             <input
               type="text"
               id="title"
               [(ngModel)]="title"
-              (ngModelChange)="validateFieldOnChange('title')"
               class="form-input"
-              [ngClass]="{ 'input-error': hasFieldError('title') }"
               [disabled]="saving"
               placeholder="Gallery title (optional)"
               maxlength="255"
             />
-            <div class="validation-error" *ngIf="hasFieldError('title')">
-              ✕ {{ getFieldError('title') }}
-            </div>
-            <small class="char-count">{{ title.length }}/{{ VALIDATION.title.maxLength }}</small>
           </div>
 
           <!-- Description -->
-          <div class="form-group" [class.form-group-error]="hasFieldError('description')">
+          <div class="form-group">
             <label for="description">Description <span class="optional-badge">optional</span></label>
             <textarea
               id="description"
               [(ngModel)]="description"
-              (ngModelChange)="validateFieldOnChange('description')"
               class="form-textarea"
-              [ngClass]="{ 'input-error': hasFieldError('description') }"
               [disabled]="saving"
               placeholder="Gallery description (optional)"
               rows="6"
             ></textarea>
-            <div class="validation-error" *ngIf="hasFieldError('description')">
-              ✕ {{ getFieldError('description') }}
-            </div>
-            <small class="char-count">{{ description.length }}/{{ VALIDATION.description.maxLength }} characters</small>
           </div>
 
           <!-- Main Image Selection -->

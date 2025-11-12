@@ -31,7 +31,7 @@
         <!-- Main Image with Hover Overlay -->
         <div class="gallery-image-wrapper">
           <img
-            [src]="getCurrentImage(gallery)?.imageUrl"
+            [src]="getAbsoluteImageUrl(getCurrentImage(gallery)?.imageUrl)"
             [alt]="gallery.title"
             class="gallery-main-image"
           />
@@ -105,7 +105,7 @@
       <!-- Main Image Container -->
       <div class="modal-image-container">
         <img
-          [src]="selectedGallery?.images?.[currentImageIndex]?.imageUrl || 'https://via.placeholder.com/800x600?text=Image+Not+Found'"
+          [src]="getAbsoluteImageUrl(selectedGallery?.images?.[currentImageIndex]?.imageUrl)"
           [alt]="selectedGallery?.title"
           class="modal-main-image"
         />
@@ -150,7 +150,7 @@
             (click)="goToImage(i)"
             [title]="'Image ' + (i + 1)"
           >
-            <img [src]="image.imageUrl" [alt]="'Thumbnail ' + (i + 1)" />
+            <img [src]="getAbsoluteImageUrl(image.imageUrl)" [alt]="'Thumbnail ' + (i + 1)" />
           </button>
         </div>
       </div>

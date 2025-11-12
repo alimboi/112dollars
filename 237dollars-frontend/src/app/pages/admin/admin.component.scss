@@ -317,6 +317,7 @@
       tr {
         border-bottom: 1px solid var(--border-light);
         transition: all var(--transition-base);
+        cursor: move;
 
         &:hover {
           background: var(--primary-50);
@@ -324,6 +325,17 @@
 
         &.unpublished {
           opacity: 0.6;
+        }
+
+        &.dragging {
+          opacity: 0.4;
+          background-color: var(--neutral-100);
+        }
+
+        &.drag-over {
+          border-top: 3px solid var(--primary-600);
+          transform: scale(1.01);
+          background-color: rgba(12, 74, 110, 0.05);
         }
 
         td {
@@ -620,6 +632,16 @@
             background: rgba(8, 145, 178, 0.1);
           }
 
+          &.dragging {
+            opacity: 0.4;
+            background-color: var(--neutral-800);
+          }
+
+          &.drag-over {
+            border-top-color: var(--primary-400);
+            background-color: rgba(8, 145, 178, 0.15);
+          }
+
           td {
             color: var(--text-secondary);
           }
@@ -741,10 +763,24 @@
   transition: all var(--transition-base);
   display: flex;
   flex-direction: column;
+  cursor: move;
 
   &:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-md);
+  }
+
+  &.dragging {
+    opacity: 0.4;
+    transform: scale(0.95);
+  }
+
+  &.drag-over {
+    border-color: #667eea;
+    border-width: 3px;
+    border-style: dashed;
+    background-color: rgba(102, 126, 234, 0.05);
+    transform: scale(1.05);
   }
 
   .gallery-thumbnail {

@@ -49,49 +49,41 @@
           <h2>Gallery Information</h2>
 
           <!-- Title -->
-          <div class="form-group" [class.form-group-error]="hasFieldError('title')">
+          <div class="form-group">
             <label for="title">Title <span class="optional-badge">optional</span></label>
             <input
               type="text"
               id="title"
               [(ngModel)]="title"
-              (ngModelChange)="validateFieldOnChange('title')"
               class="form-input"
-              [ngClass]="{ 'input-error': hasFieldError('title') }"
               [disabled]="saving"
               placeholder="Gallery title (optional)"
               maxlength="255"
             />
-            <div class="validation-error" *ngIf="hasFieldError('title')">
-              ✕ {{ getFieldError('title') }}
-            </div>
-            <small class="char-count">{{ title.length }}/{{ VALIDATION.title.maxLength }}</small>
           </div>
 
           <!-- Description -->
-          <div class="form-group" [class.form-group-error]="hasFieldError('description')">
+          <div class="form-group">
             <label for="description">Description <span class="optional-badge">optional</span></label>
             <textarea
               id="description"
               [(ngModel)]="description"
-              (ngModelChange)="validateFieldOnChange('description')"
               class="form-textarea"
-              [ngClass]="{ 'input-error': hasFieldError('description') }"
               [disabled]="saving"
               placeholder="Gallery description (optional)"
               rows="6"
             ></textarea>
-            <div class="validation-error" *ngIf="hasFieldError('description')">
-              ✕ {{ getFieldError('description') }}
-            </div>
-            <small class="char-count">{{ description.length }}/{{ VALIDATION.description.maxLength }} characters</small>
           </div>
 
           <!-- Main Image Selection -->
           <div class="form-group">
             <label>Main Image (shown in gallery grid)</label>
             <div class="main-image-preview" *ngIf="images.length > 0 && images[mainImageIndex]">
-              <img [src]="getAbsoluteImageUrl(images[mainImageIndex].imageUrl)" alt="Main image preview" />
+              <img
+                [src]="getAbsoluteImageUrl(images[mainImageIndex].imageUrl)"
+                alt="Main image preview"
+                (error)="onImageError($event, images[mainImageIndex])"
+              />
               <p class="preview-label">Image {{ mainImageIndex + 1 }} of {{ images.length }}</p>
             </div>
             <div class="no-images" *ngIf="images.length === 0">
@@ -153,13 +145,6 @@
               <span *ngIf="uploading">Uploading: {{ uploadProgress }}%</span>
             </button>
 
-            <button
-              class="btn btn-secondary btn-full"
-              (click)="addImageUrl()"
-              [disabled]="saving"
-            >
-              🔗 Add Image URL
-            </button>
           </div>
 
           <!-- Upload Progress -->
@@ -173,10 +158,22 @@
               class="image-item"
               *ngFor="let image of images; let i = index"
               [class.active]="i === mainImageIndex"
+              [class.dragging]="i === draggedIndex"
+              [class.drag-over]="i === dragOverIndex"
+              draggable="true"
+              (dragstart)="onDragStart($event, i)"
+              (dragover)="onDragOver($event, i)"
+              (dragleave)="onDragLeave($event)"
+              (drop)="onDrop($event, i)"
+              (dragend)="onDragEnd()"
             >
               <!-- Image Thumbnail -->
               <div class="image-thumbnail">
-                <img [src]="getAbsoluteImageUrl(image.imageUrl)" [alt]="'Image ' + (i + 1)" />
+                <img
+                  [src]="getAbsoluteImageUrl(image.imageUrl)"
+                  [alt]="'Image ' + (i + 1)"
+                  (error)="onImageError($event, image)"
+                />
                 <span class="image-number">{{ i + 1 }}</span>
               </div>
 
@@ -232,11 +229,12 @@
           <!-- Empty State -->
           <div class="empty-state" *ngIf="images.length === 0">
             <div class="empty-icon">🖼️</div>
-            <h3>No images yet</h3>
-            <p>Upload images from your device or add image URLs to get started</p>
+            <h3>No media yet</h3>
+            <p>Upload images from your device or add media URLs to get started</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+

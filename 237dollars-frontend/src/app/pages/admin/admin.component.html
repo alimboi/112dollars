@@ -102,7 +102,18 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let reference of references" [class.unpublished]="!reference.isPublished">
+            <tr
+              *ngFor="let reference of references; let i = index"
+              [class.unpublished]="!reference.isPublished"
+              [class.dragging]="i === draggedReferenceIndex"
+              [class.drag-over]="i === dragOverReferenceIndex"
+              draggable="true"
+              (dragstart)="onReferenceDragStart($event, i)"
+              (dragover)="onReferenceDragOver($event, i)"
+              (dragleave)="onReferenceDragLeave($event)"
+              (drop)="onReferenceDrop($event, i)"
+              (dragend)="onReferenceDragEnd()"
+            >
               <td class="id-cell">{{ reference.id }}</td>
               <td class="title-cell">
                 <div class="title-content">
@@ -208,7 +219,18 @@
 
       <!-- Galleries Grid -->
       <div class="galleries-grid">
-        <div class="gallery-card" *ngFor="let gallery of galleries">
+        <div
+          class="gallery-card"
+          *ngFor="let gallery of galleries; let i = index"
+          [class.dragging]="i === draggedGalleryIndex"
+          [class.drag-over]="i === dragOverGalleryIndex"
+          draggable="true"
+          (dragstart)="onGalleryDragStart($event, i)"
+          (dragover)="onGalleryDragOver($event, i)"
+          (dragleave)="onGalleryDragLeave($event)"
+          (drop)="onGalleryDrop($event, i)"
+          (dragend)="onGalleryDragEnd()"
+        >
           <div class="gallery-thumbnail">
             <img [src]="getMainGalleryImage(gallery)" [alt]="gallery.title" />
             <span class="image-count" *ngIf="getGalleryImageCount(gallery) > 1">

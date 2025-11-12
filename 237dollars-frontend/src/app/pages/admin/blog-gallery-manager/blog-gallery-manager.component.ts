@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { ApiService } from '../../../core/services/api.service';
+import { environment } from '../../../../environments/environment';
 
 interface BlogGalleryImage {
   id?: number;
@@ -243,11 +244,25 @@ export class BlogGalleryManagerComponent implements OnInit, OnDestroy {
   getMainImage(gallery: BlogGallery): string {
     const images = gallery.images || [];
     const index = gallery.mainImageIndex || 0;
-    return images[index]?.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image';
+    const imageUrl = images[index]?.imageUrl;
+    return this.getAbsoluteImageUrl(imageUrl);
   }
 
   getImageCount(gallery: BlogGallery): number {
     return (gallery.images || []).length;
+  }
+
+  getAbsoluteImageUrl(imageUrl: string | undefined): string {
+    if (!imageUrl) {
+      return 'https://via.placeholder.com/300x200?text=No+Image';
+    }
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+    if (imageUrl.startsWith('/uploads/')) {
+      return environment.baseUrl + imageUrl;
+    }
+    return environment.apiUrl + imageUrl;
   }
 
   private detectTheme(): void {

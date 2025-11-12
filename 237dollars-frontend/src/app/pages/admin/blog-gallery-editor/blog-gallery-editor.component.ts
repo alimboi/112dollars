@@ -55,6 +55,8 @@ export class BlogGalleryEditorComponent implements OnInit {
 
   // UI
   currentTheme: 'light' | 'dark' = 'light';
+  draggedIndex: number | null = null;
+  dragOverIndex: number | null = null;
 
   constructor(
     private api: ApiService,
@@ -151,20 +153,6 @@ export class BlogGalleryEditorComponent implements OnInit {
     }
   }
 
-  addImageUrl(): void {
-    const urlInput = prompt('Enter image URL:');
-    if (urlInput && this.isValidUrl(urlInput)) {
-      this.images.push({
-        imageUrl: urlInput,
-        order: this.images.length
-      });
-      this.successMessage = 'Image URL added!';
-      setTimeout(() => this.successMessage = '', 3000);
-    } else if (urlInput) {
-      this.error = 'Invalid URL format';
-    }
-  }
-
   removeImage(index: number): void {
     if (confirm('Remove this image?')) {
       this.images.splice(index, 1);
@@ -207,24 +195,27 @@ export class BlogGalleryEditorComponent implements OnInit {
     this.error = '';
 
     try {
+      const payload: any = {
+        images: this.images.map(img => img.imageUrl)
+      };
+
+      // Only include title and description if they have values
+      if (this.title && this.title.trim()) {
+        payload.title = this.title.trim();
+      }
+      if (this.description && this.description.trim()) {
+        payload.description = this.description.trim();
+      }
+
       if (this.isEditMode && this.galleryId) {
         // Update
-        const payload = {
-          title: this.title || 'Untitled Gallery',
-          description: this.description || '',
-          mainImageIndex: this.mainImageIndex,
-          images: this.images.map(img => img.imageUrl),
-          isPublished: this.isPublished
-        };
+        payload.mainImageIndex = this.mainImageIndex;
+        payload.isPublished = this.isPublished;
+
         await this.api.put<any>(`blog/galleries/${this.galleryId}`, payload).toPromise();
         this.successMessage = 'Gallery updated successfully!';
       } else {
         // Create
-        const payload = {
-          title: this.title || 'Untitled Gallery',
-          description: this.description || '',
-          images: this.images.map(img => img.imageUrl)
-        };
         const response = await this.api.post<any>('blog/galleries', payload).toPromise();
         this.successMessage = 'Gallery created successfully!';
 
@@ -242,7 +233,25 @@ export class BlogGalleryEditorComponent implements OnInit {
         this.router.navigate(['/admin']);
       }, 2000);
     } catch (err: any) {
-      this.error = err?.error?.message || 'Failed to save gallery';
+      console.error('Save gallery error:', err);
+
+      // Extract error message from various possible error structures
+      let errorMessage = 'Failed to save gallery';
+
+      if (err?.error?.message) {
+        // NestJS validation error
+        if (Array.isArray(err.error.message)) {
+          errorMessage = err.error.message.join(', ');
+        } else {
+          errorMessage = err.error.message;
+        }
+      } else if (err?.message) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      }
+
+      this.error = errorMessage;
       this.saving = false;
     }
   }
@@ -291,6 +300,63 @@ export class BlogGalleryEditorComponent implements OnInit {
     }
   }
 
+  // Drag and drop methods
+  onDragStart(event: DragEvent, index: number): void {
+    this.draggedIndex = index;
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+    }
+  }
+
+  onDragOver(event: DragEvent, index: number): void {
+    event.preventDefault();
+    this.dragOverIndex = index;
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+  }
+
+  onDragLeave(event: DragEvent): void {
+    this.dragOverIndex = null;
+  }
+
+  onDrop(event: DragEvent, dropIndex: number): void {
+    event.preventDefault();
+
+    if (this.draggedIndex === null || this.draggedIndex === dropIndex) {
+      this.draggedIndex = null;
+      this.dragOverIndex = null;
+      return;
+    }
+
+    // Reorder the images array
+    const draggedImage = this.images[this.draggedIndex];
+    this.images.splice(this.draggedIndex, 1);
+    this.images.splice(dropIndex, 0, draggedImage);
+
+    // Update order property for all images
+    this.images.forEach((img, i) => {
+      img.order = i;
+    });
+
+    // Adjust mainImageIndex if needed
+    if (this.mainImageIndex === this.draggedIndex) {
+      this.mainImageIndex = dropIndex;
+    } else if (this.draggedIndex < this.mainImageIndex && dropIndex >= this.mainImageIndex) {
+      this.mainImageIndex--;
+    } else if (this.draggedIndex > this.mainImageIndex && dropIndex <= this.mainImageIndex) {
+      this.mainImageIndex++;
+    }
+
+    this.draggedIndex = null;
+    this.dragOverIndex = null;
+  }
+
+  onDragEnd(): void {
+    this.draggedIndex = null;
+    this.dragOverIndex = null;
+  }
+
   goBack(): void {
     this.router.navigate(['/admin']);
   }
@@ -300,7 +366,9 @@ export class BlogGalleryEditorComponent implements OnInit {
    * Converts relative URLs to absolute by prepending the appropriate base URL
    */
   getAbsoluteImageUrl(imageUrl: string): string {
-    if (!imageUrl) return '';
+    if (!imageUrl) {
+      return '';
+    }
     // If it's already an absolute URL (http:// or https://), return as is
     if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
       return imageUrl;
@@ -314,13 +382,8 @@ export class BlogGalleryEditorComponent implements OnInit {
     return environment.apiUrl + imageUrl;
   }
 
-  private isValidUrl(url: string): boolean {
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
-    }
+  onImageError(event: any, image: BlogGalleryImage): void {
+    console.error('Image failed to load:', image.imageUrl);
   }
 
   private detectTheme(): void {
@@ -356,24 +419,6 @@ export class BlogGalleryEditorComponent implements OnInit {
   private validateForm(): boolean {
     let isValid = true;
 
-    // Validate title if provided
-    if (this.title.trim()) {
-      const titleError = this.validateField('title', this.title);
-      if (titleError) {
-        this.validationErrors['title'] = titleError;
-        isValid = false;
-      }
-    }
-
-    // Validate description if provided
-    if (this.description.trim()) {
-      const descError = this.validateField('description', this.description);
-      if (descError) {
-        this.validationErrors['description'] = descError;
-        isValid = false;
-      }
-    }
-
     // Validate images
     const imagesError = this.validateImages();
     if (imagesError) {
@@ -389,32 +434,6 @@ export class BlogGalleryEditorComponent implements OnInit {
   }
 
   /**
-   * Validate a single field
-   */
-  private validateField(fieldName: string, value: string): string | null {
-    const config = GALLERY_VALIDATION[fieldName as keyof typeof GALLERY_VALIDATION];
-
-    if (!config) return null;
-
-    // Type guard for fields with minLength/maxLength
-    if ('minLength' in config && 'maxLength' in config) {
-      const typedConfig = config as any;
-
-      // Check minLength
-      if (value.length < typedConfig.minLength) {
-        return typedConfig.errorMessages.minLength;
-      }
-
-      // Check maxLength
-      if (value.length > typedConfig.maxLength) {
-        return typedConfig.errorMessages.maxLength;
-      }
-    }
-
-    return null;
-  }
-
-  /**
    * Validate images array
    */
   private validateImages(): string | null {
@@ -424,35 +443,7 @@ export class BlogGalleryEditorComponent implements OnInit {
       return config.errorMessages.minItems;
     }
 
-    // Validate each image URL
-    for (const image of this.images) {
-      if (!this.isValidUrl(image.imageUrl)) {
-        return config.errorMessages.invalidUrl;
-      }
-    }
-
     return null;
-  }
-
-  /**
-   * Validate a field in real-time and update error display
-   */
-  validateFieldOnChange(fieldName: string): void {
-    if (fieldName === 'title' && this.title.trim()) {
-      const error = this.validateField('title', this.title);
-      if (error) {
-        this.validationErrors['title'] = error;
-      } else {
-        delete this.validationErrors['title'];
-      }
-    } else if (fieldName === 'description' && this.description.trim()) {
-      const error = this.validateField('description', this.description);
-      if (error) {
-        this.validationErrors['description'] = error;
-      } else {
-        delete this.validationErrors['description'];
-      }
-    }
   }
 
   /**

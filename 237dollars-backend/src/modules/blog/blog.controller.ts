@@ -18,6 +18,7 @@ import { CreateBlogImageDto } from './dto/create-blog-image.dto';
 import { UpdateBlogImageDto } from './dto/update-blog-image.dto';
 import { CreateBlogGalleryDto } from './dto/create-blog-gallery.dto';
 import { UpdateBlogGalleryDto } from './dto/update-blog-gallery.dto';
+import { ReorderGalleriesDto } from './dto/reorder-galleries.dto';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { Public } from '../../common/decorators/public.decorator';
 import { UserRole } from '../../types/user-role.enum';
@@ -147,6 +148,12 @@ export class BlogController {
   @Get('galleries/:id')
   findOneGallery(@Param('id') id: string) {
     return this.blogGalleryService.findOne(+id);
+  }
+
+  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Put('galleries/reorder')
+  updateGalleryOrder(@Body() dto: ReorderGalleriesDto) {
+    return this.blogGalleryService.updateOrder(dto.galleries);
   }
 
   @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)

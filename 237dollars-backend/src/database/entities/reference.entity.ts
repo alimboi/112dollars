@@ -47,6 +47,9 @@ export class Reference {
   @Column({ name: 'is_free', default: true })
   isFree: boolean;
 
+  @Column({ name: 'display_order', default: 0 })
+  displayOrder: number;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

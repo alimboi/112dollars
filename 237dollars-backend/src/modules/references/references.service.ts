@@ -53,7 +53,7 @@ export class ReferencesService {
       where,
       skip: (page - 1) * limit,
       take: limit,
-      order: { createdAt: 'DESC' },
+      order: { displayOrder: 'ASC', createdAt: 'DESC' },
       relations: ['topic', 'topic.major', 'creator'],
     });
 
@@ -86,7 +86,7 @@ export class ReferencesService {
       where: { topicId, isPublished: true },
       skip: (page - 1) * limit,
       take: limit,
-      order: { createdAt: 'DESC' },
+      order: { displayOrder: 'ASC', createdAt: 'DESC' },
       relations: ['topic', 'topic.major'],
     });
 
@@ -227,5 +227,13 @@ export class ReferencesService {
   calculateReadingTime(content: string): number {
     const words = content.split(/\s+/).length;
     return Math.ceil(words / 225); // 225 words per minute average
+  }
+
+  async updateOrder(orderData: { id: number; order: number }[]) {
+    // Update each reference's displayOrder
+    for (const item of orderData) {
+      await this.referenceRepository.update(item.id, { displayOrder: item.order });
+    }
+    return { message: 'Reference order updated successfully' };
   }
 }

@@ -6,9 +6,23 @@ import { ApiService } from '../../../core/services/api.service';
 import { GALLERY_VALIDATION } from './gallery-validation.constants';
 import { environment } from '../../../../environments/environment';
 
+enum GalleryMediaType {
+  IMAGE = 'IMAGE',
+  VIDEO = 'VIDEO',
+  YOUTUBE = 'YOUTUBE',
+  INSTAGRAM = 'INSTAGRAM',
+  TELEGRAM = 'TELEGRAM',
+}
+
 interface BlogGalleryImage {
   id?: number;
-  imageUrl: string;
+  imageUrl: string; // Kept for backward compatibility
+  mediaType?: GalleryMediaType;
+  mediaUrl?: string;
+  title?: string;
+  description?: string;
+  thumbnail?: string;
+  duration?: number;
   order?: number;
 }
 
@@ -56,6 +70,14 @@ export class BlogGalleryEditorComponent implements OnInit {
   // UI
   currentTheme: 'light' | 'dark' = 'light';
 
+  // Media types
+  GalleryMediaType = GalleryMediaType;
+  showAddMediaModal = false;
+  selectedMediaType: GalleryMediaType = GalleryMediaType.IMAGE;
+  newMediaUrl = '';
+  newMediaTitle = '';
+  newMediaDescription = '';
+
   constructor(
     private api: ApiService,
     private route: ActivatedRoute,
@@ -85,7 +107,15 @@ export class BlogGalleryEditorComponent implements OnInit {
         this.description = gallery.description || '';
         this.mainImageIndex = gallery.mainImageIndex || 0;
         this.isPublished = gallery.isPublished || false;
-        this.images = gallery.images || [];
+
+        // Map the images to ensure mediaUrl is set
+        this.images = (gallery.images || []).map((img: any) => ({
+          ...img,
+          imageUrl: img.imageUrl || img.mediaUrl, // Backward compatibility
+          mediaUrl: img.mediaUrl || img.imageUrl,
+          mediaType: img.mediaType || GalleryMediaType.IMAGE
+        }));
+
         this.loading = false;
       },
       error: (err) => {
@@ -126,6 +156,8 @@ export class BlogGalleryEditorComponent implements OnInit {
           if (response.url) {
             this.images.push({
               imageUrl: response.url,
+              mediaUrl: response.url,
+              mediaType: GalleryMediaType.IMAGE,
               order: this.images.length
             });
           }
@@ -156,12 +188,88 @@ export class BlogGalleryEditorComponent implements OnInit {
     if (urlInput && this.isValidUrl(urlInput)) {
       this.images.push({
         imageUrl: urlInput,
+        mediaUrl: urlInput,
+        mediaType: GalleryMediaType.IMAGE,
         order: this.images.length
       });
       this.successMessage = 'Image URL added!';
       setTimeout(() => this.successMessage = '', 3000);
     } else if (urlInput) {
       this.error = 'Invalid URL format';
+    }
+  }
+
+  openAddMediaModal(mediaType?: GalleryMediaType): void {
+    this.selectedMediaType = mediaType || GalleryMediaType.IMAGE;
+    this.newMediaUrl = '';
+    this.newMediaTitle = '';
+    this.newMediaDescription = '';
+    this.showAddMediaModal = true;
+  }
+
+  closeAddMediaModal(): void {
+    this.showAddMediaModal = false;
+  }
+
+  addMediaItem(): void {
+    if (!this.newMediaUrl || !this.isValidUrl(this.newMediaUrl)) {
+      this.error = 'Please enter a valid URL';
+      return;
+    }
+
+    const mediaItem: BlogGalleryImage = {
+      imageUrl: this.newMediaUrl, // For backward compatibility
+      mediaUrl: this.newMediaUrl,
+      mediaType: this.selectedMediaType,
+      title: this.newMediaTitle || undefined,
+      description: this.newMediaDescription || undefined,
+      order: this.images.length
+    };
+
+    // For YouTube, extract thumbnail and video ID
+    if (this.selectedMediaType === GalleryMediaType.YOUTUBE) {
+      const videoId = this.extractYouTubeId(this.newMediaUrl);
+      if (videoId) {
+        mediaItem.thumbnail = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+      }
+    }
+
+    this.images.push(mediaItem);
+    this.closeAddMediaModal();
+    this.successMessage = `${this.selectedMediaType} added successfully!`;
+    setTimeout(() => this.successMessage = '', 3000);
+  }
+
+  extractYouTubeId(url: string): string | null {
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/,
+      /youtube\.com\/embed\/([^&\n?#]+)/,
+      /youtube\.com\/v\/([^&\n?#]+)/
+    ];
+
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+
+    return null;
+  }
+
+  getMediaTypeLabel(type?: GalleryMediaType): string {
+    switch (type) {
+      case GalleryMediaType.VIDEO:
+        return 'Video';
+      case GalleryMediaType.YOUTUBE:
+        return 'YouTube';
+      case GalleryMediaType.INSTAGRAM:
+        return 'Instagram';
+      case GalleryMediaType.TELEGRAM:
+        return 'Telegram';
+      case GalleryMediaType.IMAGE:
+      default:
+        return 'Image';
     }
   }
 
@@ -208,22 +316,38 @@ export class BlogGalleryEditorComponent implements OnInit {
 
     try {
       if (this.isEditMode && this.galleryId) {
-        // Update
+        // Update - use new mediaItems format
         const payload = {
           title: this.title || 'Untitled Gallery',
           description: this.description || '',
           mainImageIndex: this.mainImageIndex,
-          images: this.images.map(img => img.imageUrl),
+          mediaItems: this.images.map(img => ({
+            mediaType: img.mediaType || GalleryMediaType.IMAGE,
+            mediaUrl: img.mediaUrl || img.imageUrl,
+            title: img.title,
+            description: img.description,
+            thumbnail: img.thumbnail,
+            duration: img.duration,
+            order: img.order
+          })),
           isPublished: this.isPublished
         };
         await this.api.put<any>(`blog/galleries/${this.galleryId}`, payload).toPromise();
         this.successMessage = 'Gallery updated successfully!';
       } else {
-        // Create
+        // Create - use new mediaItems format
         const payload = {
           title: this.title || 'Untitled Gallery',
           description: this.description || '',
-          images: this.images.map(img => img.imageUrl)
+          mediaItems: this.images.map(img => ({
+            mediaType: img.mediaType || GalleryMediaType.IMAGE,
+            mediaUrl: img.mediaUrl || img.imageUrl,
+            title: img.title,
+            description: img.description,
+            thumbnail: img.thumbnail,
+            duration: img.duration,
+            order: img.order
+          }))
         };
         const response = await this.api.post<any>('blog/galleries', payload).toPromise();
         this.successMessage = 'Gallery created successfully!';
@@ -315,6 +439,12 @@ export class BlogGalleryEditorComponent implements OnInit {
   }
 
   private isValidUrl(url: string): boolean {
+    if (!url || typeof url !== 'string') return false;
+
+    // Accept relative URLs starting with /
+    if (url.startsWith('/')) return true;
+
+    // Accept absolute URLs
     try {
       new URL(url);
       return true;

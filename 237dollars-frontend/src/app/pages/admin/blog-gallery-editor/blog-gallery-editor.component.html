@@ -153,13 +153,47 @@
               <span *ngIf="uploading">Uploading: {{ uploadProgress }}%</span>
             </button>
 
-            <button
-              class="btn btn-secondary btn-full"
-              (click)="addImageUrl()"
-              [disabled]="saving"
-            >
-              🔗 Add Image URL
-            </button>
+            <div class="media-type-buttons">
+              <button
+                class="btn btn-secondary"
+                (click)="openAddMediaModal(GalleryMediaType.IMAGE)"
+                [disabled]="saving"
+              >
+                🖼️ Image URL
+              </button>
+
+              <button
+                class="btn btn-secondary"
+                (click)="openAddMediaModal(GalleryMediaType.VIDEO)"
+                [disabled]="saving"
+              >
+                🎥 Video
+              </button>
+
+              <button
+                class="btn btn-secondary"
+                (click)="openAddMediaModal(GalleryMediaType.YOUTUBE)"
+                [disabled]="saving"
+              >
+                ▶️ YouTube
+              </button>
+
+              <button
+                class="btn btn-secondary"
+                (click)="openAddMediaModal(GalleryMediaType.INSTAGRAM)"
+                [disabled]="saving"
+              >
+                📷 Instagram
+              </button>
+
+              <button
+                class="btn btn-secondary"
+                (click)="openAddMediaModal(GalleryMediaType.TELEGRAM)"
+                [disabled]="saving"
+              >
+                ✈️ Telegram
+              </button>
+            </div>
           </div>
 
           <!-- Upload Progress -->
@@ -232,11 +266,81 @@
           <!-- Empty State -->
           <div class="empty-state" *ngIf="images.length === 0">
             <div class="empty-icon">🖼️</div>
-            <h3>No images yet</h3>
-            <p>Upload images from your device or add image URLs to get started</p>
+            <h3>No media yet</h3>
+            <p>Upload images from your device or add media URLs to get started</p>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Media Modal -->
+<div class="modal-overlay" *ngIf="showAddMediaModal" (click)="closeAddMediaModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Add {{ getMediaTypeLabel(selectedMediaType) }}</h2>
+      <button class="btn-close" (click)="closeAddMediaModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="mediaUrl">
+          {{ selectedMediaType === GalleryMediaType.YOUTUBE ? 'YouTube URL' :
+             selectedMediaType === GalleryMediaType.INSTAGRAM ? 'Instagram Post URL' :
+             selectedMediaType === GalleryMediaType.TELEGRAM ? 'Telegram Post URL' :
+             selectedMediaType === GalleryMediaType.VIDEO ? 'Video URL' :
+             'Image URL' }}
+          <span class="required">*</span>
+        </label>
+        <input
+          type="text"
+          id="mediaUrl"
+          [(ngModel)]="newMediaUrl"
+          class="form-input"
+          placeholder="Enter URL or embed link"
+        />
+        <small class="help-text" *ngIf="selectedMediaType === GalleryMediaType.YOUTUBE">
+          Example: https://www.youtube.com/watch?v=... or https://youtu.be/...
+        </small>
+        <small class="help-text" *ngIf="selectedMediaType === GalleryMediaType.INSTAGRAM">
+          Example: https://www.instagram.com/p/.../
+        </small>
+        <small class="help-text" *ngIf="selectedMediaType === GalleryMediaType.TELEGRAM">
+          Example: https://t.me/channel/post_id
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="mediaTitle">Title (optional)</label>
+        <input
+          type="text"
+          id="mediaTitle"
+          [(ngModel)]="newMediaTitle"
+          class="form-input"
+          placeholder="Enter a title for this media"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="mediaDescription">Description (optional)</label>
+        <textarea
+          id="mediaDescription"
+          [(ngModel)]="newMediaDescription"
+          class="form-textarea"
+          rows="3"
+          placeholder="Enter a description"
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeAddMediaModal()">
+        Cancel
+      </button>
+      <button class="btn btn-primary" (click)="addMediaItem()">
+        Add {{ getMediaTypeLabel(selectedMediaType) }}
+      </button>
     </div>
   </div>
 </div>

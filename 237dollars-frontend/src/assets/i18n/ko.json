@@ -1,9 +1,7 @@
 {
   "nav": {
     "home": "홈",
-    "dashboard": "대시보드",
     "references": "학습 자료",
-    "quiz": "퀴즈",
     "blog": "블로그",
     "contact": "문의",
     "documents": "문서",
@@ -19,7 +17,7 @@
   "home": {
     "title": "237DOLLARS",
     "subtitle": "교육 우수성을 향한 관문",
-    "description": "종합 학습 플랫폼으로 한국어, 영어, 코딩을 마스터하세요. 진행 상황을 추적하고, 퀴즈를 풀고, 보상을 받으세요.",
+    "description": "종합 학습 플랫폼으로 한국어, 영어, 코딩을 마스터하세요. 진행 상황을 추적하고 보상을 받으세요.",
     "getStarted": "시작하기",
     "learnMore": "자세히 알아보기",
     "features": {
@@ -29,8 +27,8 @@
         "description": "한국어, 영어, 코딩 과목에 걸쳐 양질의 학습 자료에 액세스하세요"
       },
       "interactive": {
-        "title": "인터랙티브 퀴즈",
-        "description": "매력적인 퀴즈와 즉각적인 피드백으로 지식을 테스트하세요"
+        "title": "인터랙티브 학습",
+        "description": "고품질 콘텐츠와 함께 학습 진행 상황을 추적하세요"
       },
       "progress": {
         "title": "진행 상황 추적",
@@ -38,11 +36,49 @@
       },
       "gamification": {
         "title": "보상 획득",
-        "description": "코스와 퀴즈를 완료하면서 포인트를 얻고 할인을 잠금 해제하세요"
+        "description": "코스를 완료하면서 포인트를 얻고 할인을 잠금 해제하세요"
       }
     }
   },
   "auth": {
+    "username_or_email": "Username or Email",
+    "identifier_placeholder": "Enter your username or email",
+    "identifier_required": "Username or email is required",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "username": "Username",
+    "username_placeholder": "Choose a unique username",
+    "username_required": "Username is required",
+    "username_checking": "Checking availability...",
+    "username_available": "Username is available",
+    "username_taken": "Username is already taken",
+    "email": "Email",
+    "email_placeholder": "Enter your email address",
+    "email_required": "Email is required",
+    "email_checking": "Checking availability...",
+    "email_available": "Email is available",
+    "email_taken": "Email is already registered",
+    "password": "Password",
+    "password_placeholder": "Create a secure password",
+    "password_required": "Password is required",
+    "confirm_password": "Confirm Password",
+    "confirm_password_placeholder": "Re-enter your password",
+    "telegram_username": "Telegram Username (Optional)",
+    "telegram_username_placeholder": "@username",
+    "telegram_phone": "Telegram Phone (Optional)",
+    "telegram_phone_placeholder": "+1234567890",
+    "verify_email_title": "Verify Your Email",
+    "verify_email_instruction": "We've sent a 6-digit verification code to your email. Please enter it below.",
+    "verification_code": "Verification Code",
+    "code_required": "Verification code is required",
+    "code_must_be_6_digits": "Code must be 6 digits",
+    "code_expires_in": "Code expires in",
+    "code_expired": "Code has expired",
+    "verify": "Verify",
+    "verifying": "Verifying",
+    "didnt_receive_code": "Didn't receive the code?",
+    "resend_code": "Resend Code",
+    "resend_in": "Resend in",
     "login": {
       "title": "계정에 로그인",
       "email": "이메일 주소",
@@ -63,7 +99,7 @@
       "submit": "회원가입",
       "hasAccount": "이미 계정이 있으신가요?",
       "loginLink": "여기서 로그인하세요",
-      "success": "가입 성공! 로그인해 주세요.",
+      "success": "가입 성공! 이메일을 확인해 주세요.",
       "error": "가입 실패. 다시 시도해 주세요.",
       "passwordMismatch": "비밀번호가 일치하지 않습니다"
     }
@@ -76,7 +112,6 @@
     "error": "참고 자료 로드 실패",
     "noReferences": "사용 가능한 참고 자료 없음",
     "readMore": "더 읽기",
-    "takeQuiz": "퀴즈 풀기",
     "contentBlocks": {
       "text": "텍스트 콘텐츠",
       "image": "이미지",
@@ -87,29 +122,6 @@
       "korean": "한국어",
       "english": "영어",
       "coding": "프로그래밍 및 코딩"
-    }
-  },
-  "quiz": {
-    "title": "퀴즈",
-    "question": "문제",
-    "of": "/",
-    "progress": "진행률",
-    "selectAnswer": "답변을 선택하세요",
-    "next": "다음",
-    "previous": "이전",
-    "submit": "퀴즈 제출",
-    "retake": "다시 풀기",
-    "loading": "퀴즈 로드 중...",
-    "error": "퀴즈 로드 실패",
-    "result": {
-      "title": "퀴즈 결과",
-      "score": "당신의 점수",
-      "passed": "축하합니다! 통과했습니다!",
-      "failed": "이번에는 통과하지 못했습니다. 다시 시도하세요!",
-      "correctAnswers": "정답 수",
-      "timeTaken": "소요 시간",
-      "seconds": "초",
-      "pointsEarned": "획득 포인트"
     }
   },
   "blog": {
@@ -157,26 +169,25 @@
     "newPassword": "새 비밀번호",
     "confirmPassword": "새 비밀번호 확인",
     "updatePassword": "비밀번호 업데이트",
-    "preferences": "환경설정",
+    "preferences": "환경 설정",
     "language": "언어",
     "darkMode": "다크 모드",
-    "savePreferences": "환경설정 저장",
+    "savePreferences": "환경 설정 저장",
     "success": "프로필이 성공적으로 업데이트되었습니다",
     "error": "프로필 업데이트 실패",
     "passwordSuccess": "비밀번호가 성공적으로 변경되었습니다",
     "passwordError": "비밀번호 변경 실패"
   },
   "admin": {
-    "title": "관리자 대시보드",
-    "welcome": "관리자 대시보드에 오신 것을 환영합니다",
+    "title": "관리자 패널",
+    "welcome": "관리자 패널에 오신 것을 환영합니다",
     "statistics": {
       "title": "통계",
       "totalUsers": "총 사용자",
       "activeUsers": "활성 사용자",
       "totalStudents": "총 학생",
       "pendingEnrollments": "대기 중인 등록",
-      "totalReferences": "총 참고 자료",
-      "totalQuizzes": "총 퀴즈"
+      "totalReferences": "총 참고 자료"
     },
     "quickActions": {
       "title": "빠른 작업",
@@ -223,7 +234,7 @@
     "emailLabel": "이메일",
     "phoneLabel": "전화",
     "copyright": "© 2024 237DOLLARS. 모든 권리 보유.",
-    "terms": "이용 약관",
+    "terms": "서비스 약관",
     "privacy": "개인정보 보호정책"
   },
   "languages": {
@@ -232,46 +243,63 @@
     "ru": "러시아어",
     "ko": "한국어"
   },
-  "dashboard": {
-    "goodMorning": "좋은 아침입니다",
-    "goodAfternoon": "좋은 오후입니다",
-    "goodEvening": "좋은 저녁입니다",
-    "subtitle": "학습 진행 상황 개요입니다",
+  "documents": {
+    "title": "내 문서",
+    "myDocuments": "업로드된 문서",
+    "noDocuments": "아직 업로드된 문서가 없습니다",
+    "upload": {
+      "title": "새 문서 업로드",
+      "description": "학생 문서, 인증서 또는 필요한 파일 업로드",
+      "allowedTypes": "허용된 파일 형식",
+      "button": "문서 업로드",
+      "uploading": "업로드 중..."
+    },
+    "table": {
+      "fileName": "파일 이름",
+      "fileType": "형식",
+      "uploadedAt": "업로드 날짜",
+      "actions": "작업"
+    }
+  },
+  "enrollment": {
+    "title": "등록 신청",
+    "apply": "등록 신청",
+    "status": {
+      "pending": "검토 대기 중",
+      "approved": "승인됨",
+      "rejected": "거부됨"
+    },
+    "form": {
+      "preferredMajor": "선호하는 전공",
+      "reason": "등록하려는 이유",
+      "submit": "신청 제출"
+    },
+    "success": "신청이 성공적으로 제출되었습니다",
+    "error": "신청 제출 실패"
+  },
+  "discounts": {
+    "title": "할인 코드",
+    "apply": "할인 신청",
+    "myDiscounts": "내 할인 코드",
+    "noDiscounts": "사용 가능한 할인 코드 없음",
+    "code": "할인 코드",
+    "percentage": "할인",
+    "status": "상태",
+    "generatedAt": "생성 날짜"
+  },
+  "points": {
+    "title": "내 포인트",
     "totalPoints": "총 포인트",
-    "enrollments": "등록",
-    "documents": "문서",
-    "availableDiscounts": "사용 가능한 할인",
-    "reading": "읽기",
-    "quiz": "퀴즈",
-    "pending": "대기 중",
-    "approved": "승인됨",
-    "uploadedFiles": "업로드된 파일",
-    "viewDetails": "자세히 보기",
-    "quickActions": "빠른 작업",
-    "browseReferences": "학습 자료 탐색",
-    "browseReferencesDesc": "학습 자료 및 주제 탐색",
-    "viewLeaderboard": "리더보드 보기",
-    "viewLeaderboardDesc": "순위 및 상위 학생 보기",
-    "applyDiscount": "할인 신청",
-    "applyDiscountDesc": "획득한 할인 코드 받기",
-    "uploadDocument": "문서 업로드",
-    "uploadDocumentDesc": "필요한 문서 제출",
-    "recentDocuments": "최근 문서",
-    "noRecentDocuments": "아직 업로드된 문서가 없습니다",
-    "uploadFirst": "첫 번째 문서 업로드",
-    "viewAllDocuments": "모든 문서 보기",
-    "pointsProgress": "포인트 진행 상황",
-    "nextDiscount": "다음 할인",
     "readingPoints": "읽기 포인트",
-    "quizPoints": "퀴즈 포인트",
-    "earnMorePoints": "더 많은 포인트 획득"
-  }
+    "leaderboard": "리더보드",
+    "rank": "순위",
+    "topStudents": "상위 학생"
   },
   "notFound": {
     "title": "페이지를 찾을 수 없습니다",
     "message": "죄송합니다! 찾으시는 페이지가 존재하지 않습니다.",
     "description": "페이지가 이동되거나 삭제되었거나 URL을 잘못 입력했을 수 있습니다.",
-    "goHome": "홈페이지로 이동",
+    "goHome": "홈으로 이동",
     "goBack": "뒤로 가기",
     "helpfulLinks": "유용한 링크"
   }

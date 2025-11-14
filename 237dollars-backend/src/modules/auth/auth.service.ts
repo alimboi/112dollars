@@ -355,6 +355,11 @@ export class AuthService {
 
     const hashedPassword = await this.passwordService.hashPassword(newPassword);
     user.password = hashedPassword;
+
+    // If user can verify password reset via email, their email is verified
+    user.emailVerified = true;
+    user.isActive = true;
+
     await this.userRepository.save(user);
 
     // Delete used code

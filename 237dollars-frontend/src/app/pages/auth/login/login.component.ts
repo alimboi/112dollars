@@ -23,8 +23,8 @@ export class LoginComponent {
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      identifier: ['', [Validators.required]],
+      password: ['', [Validators.required]]
     });
   }
 
@@ -33,9 +33,9 @@ export class LoginComponent {
       this.loading = true;
       this.errorMessage = '';
 
-      const { email, password } = this.loginForm.value;
+      const { identifier, password } = this.loginForm.value;
 
-      this.authService.login(email, password).subscribe({
+      this.authService.login(identifier, password).subscribe({
         next: () => {
           this.router.navigate(['/']);
         },

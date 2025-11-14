@@ -7,6 +7,9 @@ import { StorageService } from './storage.service';
 export interface User {
   id: number;
   email: string;
+  username: string;
+  firstName?: string;
+  lastName?: string;
   role: string;
 }
 
@@ -14,6 +17,7 @@ export interface AuthResponse {
   user: User;
   accessToken: string;
   refreshToken: string;
+  message?: string;
 }
 
 @Injectable({
@@ -39,14 +43,20 @@ export class AuthService {
   }
 
   register(email: string, password: string): Observable<AuthResponse> {
+    // This method is deprecated, kept for backward compatibility
+    // Use registerWithDetails instead
     return this.api.post<AuthResponse>('auth/register', { email, password })
       .pipe(
-        tap(response => this.handleAuthResponse(response))
+        tap(response => {
+          if (response.accessToken) {
+            this.handleAuthResponse(response);
+          }
+        })
       );
   }
 
-  login(email: string, password: string): Observable<AuthResponse> {
-    return this.api.post<AuthResponse>('auth/login', { email, password })
+  login(identifier: string, password: string): Observable<AuthResponse> {
+    return this.api.post<AuthResponse>('auth/login', { identifier, password })
       .pipe(
         tap(response => this.handleAuthResponse(response))
       );

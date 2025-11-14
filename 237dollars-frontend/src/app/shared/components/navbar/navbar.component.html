@@ -27,10 +27,6 @@
         Home
       </a>
 
-      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link" *ngIf="authService.isAuthenticated()">
-        Dashboard
-      </a>
-
       <a routerLink="/references" routerLinkActive="active" class="nav-link" *ngIf="authService.isAuthenticated()">
         References
       </a>
@@ -135,15 +131,6 @@
             <path d="M8 18v-7h4v7" />
           </svg>
           <span>Home</span>
-        </a>
-
-        <a routerLink="/dashboard" routerLinkActive="active" class="mobile-link" *ngIf="authService.isAuthenticated()"
-          (click)="closeMenu()">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
-            <rect x="3" y="3" width="14" height="14" rx="1" />
-            <path d="M3 8h14M8 3v14" />
-          </svg>
-          <span>Dashboard</span>
         </a>
 
         <a routerLink="/references" routerLinkActive="active" class="mobile-link" *ngIf="authService.isAuthenticated()"

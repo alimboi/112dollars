@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, TooManyRequestsException } from '@nestjs/common';
+import { Injectable, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../database/entities/user.entity';
@@ -123,8 +123,9 @@ export class EmailVerificationService {
 
       if (timeSinceLastRequest < this.RESEND_COOLDOWN_SECONDS) {
         const remainingSeconds = Math.ceil(this.RESEND_COOLDOWN_SECONDS - timeSinceLastRequest);
-        throw new TooManyRequestsException(
+        throw new HttpException(
           `Please wait ${remainingSeconds} seconds before requesting a new code`,
+          HttpStatus.TOO_MANY_REQUESTS,
         );
       }
     }
@@ -140,8 +141,9 @@ export class EmailVerificationService {
       const hourlyAttempts = user.verificationAttempts || 0;
 
       if (hourlyAttempts >= this.MAX_RESEND_ATTEMPTS_PER_HOUR) {
-        throw new TooManyRequestsException(
+        throw new HttpException(
           'Maximum verification requests exceeded. Please try again later',
+          HttpStatus.TOO_MANY_REQUESTS,
         );
       }
     }

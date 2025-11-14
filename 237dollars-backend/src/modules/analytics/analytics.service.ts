@@ -5,8 +5,6 @@ import { User } from '../../database/entities/user.entity';
 import { Student } from '../../database/entities/student.entity';
 import { Enrollment } from '../../database/entities/enrollment.entity';
 import { Reference } from '../../database/entities/reference.entity';
-import { Quiz } from '../../database/entities/quiz.entity';
-import { QuizAttempt } from '../../database/entities/quiz-attempt.entity';
 import { ReadingProgress } from '../../database/entities/reading-progress.entity';
 import { UserPoints } from '../../database/entities/user-points.entity';
 import { BlogPost } from '../../database/entities/blog-post.entity';
@@ -26,10 +24,6 @@ export class AnalyticsService {
     private enrollmentRepository: Repository<Enrollment>,
     @InjectRepository(Reference)
     private referenceRepository: Repository<Reference>,
-    @InjectRepository(Quiz)
-    private quizRepository: Repository<Quiz>,
-    @InjectRepository(QuizAttempt)
-    private quizAttemptRepository: Repository<QuizAttempt>,
     @InjectRepository(ReadingProgress)
     private progressRepository: Repository<ReadingProgress>,
     @InjectRepository(UserPoints)
@@ -49,8 +43,6 @@ export class AnalyticsService {
       pendingEnrollments,
       approvedEnrollments,
       totalReferences,
-      totalQuizzes,
-      totalAttempts,
       totalBlogPosts,
       unreadMessages,
     ] = await Promise.all([
@@ -65,8 +57,6 @@ export class AnalyticsService {
         where: { status: EnrollmentStatus.APPROVED },
       }),
       this.referenceRepository.count(),
-      this.quizRepository.count(),
-      this.quizAttemptRepository.count(),
       this.blogRepository.count(),
       this.contactRepository.count({ where: { status: ContactStatus.NEW } }),
     ]);
@@ -94,11 +84,7 @@ export class AnalyticsService {
       },
       content: {
         references: totalReferences,
-        quizzes: totalQuizzes,
         blogPosts: totalBlogPosts,
-      },
-      engagement: {
-        quizAttempts: totalAttempts,
       },
       messages: {
         unread: unreadMessages,
@@ -141,7 +127,6 @@ export class AnalyticsService {
 
   async getContentAnalytics(): Promise<any> {
     const totalReferences = await this.referenceRepository.count();
-    const totalQuizzes = await this.quizRepository.count();
 
     const mostReadReferences = await this.progressRepository
       .createQueryBuilder('progress')
@@ -154,26 +139,10 @@ export class AnalyticsService {
       .limit(10)
       .getRawMany();
 
-    const quizPerformance = await this.quizAttemptRepository
-      .createQueryBuilder('attempt')
-      .select('attempt.quizId', 'quizId')
-      .addSelect('AVG(attempt.scorePercentage)', 'avgScore')
-      .addSelect('COUNT(*)', 'attempts')
-      .leftJoinAndSelect('attempt.quiz', 'quiz')
-      .groupBy('attempt.quizId')
-      .addGroupBy('quiz.id')
-      .orderBy('attempts', 'DESC')
-      .limit(10)
-      .getRawMany();
-
     return {
       references: {
         total: totalReferences,
         mostRead: mostReadReferences,
-      },
-      quizzes: {
-        total: totalQuizzes,
-        performance: quizPerformance,
       },
     };
   }
@@ -189,10 +158,6 @@ export class AnalyticsService {
       case 'enrollments':
         return await this.enrollmentRepository.find({
           relations: ['student'],
-        });
-      case 'quiz-attempts':
-        return await this.quizAttemptRepository.find({
-          relations: ['quiz', 'user'],
         });
       default:
         return { error: 'Invalid data type' };

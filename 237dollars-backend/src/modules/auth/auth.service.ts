@@ -227,6 +227,30 @@ export class AuthService {
   }
 
   /**
+   * Validate user credentials (for Passport LocalStrategy)
+   */
+  async validateUser(email: string, password: string): Promise<any> {
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      return null;
+    }
+
+    const isPasswordValid = await this.passwordService.comparePassword(password, user.password);
+
+    if (!isPasswordValid) {
+      return null;
+    }
+
+    if (!user.isActive) {
+      return null;
+    }
+
+    const { password: _, ...result } = user;
+    return result;
+  }
+
+  /**
    * Find user by email or username
    */
   private async findUserByIdentifier(identifier: string): Promise<User | null> {

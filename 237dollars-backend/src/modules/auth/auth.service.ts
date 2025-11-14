@@ -295,10 +295,10 @@ export class AuthService {
    * Request password reset (supports username or email)
    */
   async passwordResetRequest(dto: PasswordResetRequestDto) {
-    const { email } = dto;
+    const { identifier } = dto;
 
     // Try to find user by email or username
-    const user = await this.findUserByIdentifier(email);
+    const user = await this.findUserByIdentifier(identifier);
 
     if (!user) {
       // Don't reveal if user exists
@@ -310,7 +310,7 @@ export class AuthService {
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 10); // 10 minutes expiry
 
-    // Store code temporarily
+    // Store code temporarily (using email as key since it's unique)
     this.resetCodes.set(user.email, { code, expiresAt });
 
     // Send email
@@ -323,9 +323,17 @@ export class AuthService {
   }
 
   async passwordResetVerify(dto: PasswordResetVerifyDto) {
-    const { email, code, newPassword } = dto;
+    const { identifier, code, newPassword } = dto;
 
-    const storedData = this.resetCodes.get(email);
+    // Find user by identifier first to get their email
+    const user = await this.findUserByIdentifier(identifier);
+
+    if (!user) {
+      throw new BadRequestException('Invalid or expired reset code');
+    }
+
+    // Now use email to look up reset code (since resetCodes map uses email as key)
+    const storedData = this.resetCodes.get(user.email);
 
     if (!storedData) {
       throw new BadRequestException('Invalid or expired reset code');
@@ -336,7 +344,7 @@ export class AuthService {
     }
 
     if (new Date() > storedData.expiresAt) {
-      this.resetCodes.delete(email);
+      this.resetCodes.delete(user.email);
       throw new BadRequestException('Reset code expired');
     }
 
@@ -345,19 +353,12 @@ export class AuthService {
       throw new BadRequestException(ErrorMessages.WEAK_PASSWORD);
     }
 
-    // Find user and update password
-    const user = await this.userRepository.findOne({ where: { email } });
-
-    if (!user) {
-      throw new BadRequestException(ErrorMessages.USER_NOT_FOUND);
-    }
-
     const hashedPassword = await this.passwordService.hashPassword(newPassword);
     user.password = hashedPassword;
     await this.userRepository.save(user);
 
     // Delete used code
-    this.resetCodes.delete(email);
+    this.resetCodes.delete(user.email);
 
     return { message: 'Password reset successful' };
   }

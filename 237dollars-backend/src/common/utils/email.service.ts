@@ -46,6 +46,24 @@ export class EmailService {
     }
   }
 
+  async sendVerificationCodeEmail(email: string, code: string, firstName: string = ''): Promise<boolean> {
+    const subject = '237dollars - Verify Your Email';
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #333;">Welcome to 237dollars${firstName ? `, ${firstName}` : ''}!</h2>
+        <p style="font-size: 16px; color: #555;">Thank you for registering. Please verify your email address using the code below:</p>
+        <div style="background: #007bff; color: white; padding: 25px; text-align: center; font-size: 36px; font-weight: bold; letter-spacing: 8px; border-radius: 8px; margin: 30px 0;">
+          ${code}
+        </div>
+        <p style="color: #666;">This code will expire in <strong>5 minutes</strong>.</p>
+        <p style="color: #666;">If you didn't create an account, please ignore this email.</p>
+        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+        <p style="color: #999; font-size: 12px;">237dollars Educational Platform</p>
+      </div>
+    `;
+    return await this.sendEmail(email, subject, html);
+  }
+
   async sendPasswordResetEmail(email: string, code: string): Promise<boolean> {
     const subject = '237dollars - Password Reset Code';
     const html = `
@@ -55,7 +73,7 @@ export class EmailService {
         <div style="background: #f4f4f4; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px;">
           ${code}
         </div>
-        <p>This code will expire in 15 minutes.</p>
+        <p>This code will expire in 10 minutes.</p>
         <p>If you didn't request this, please ignore this email.</p>
         <hr>
         <p style="color: #666; font-size: 12px;">237dollars Educational Platform</p>

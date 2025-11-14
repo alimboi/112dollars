@@ -1,0 +1,76 @@
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <button class="close-button" (click)="closeModal()" aria-label="Close">
+      <span>&times;</span>
+    </button>
+
+    <div class="modal-header">
+      <h2>{{ 'auth.verify_email_title' | translate }}</h2>
+      <p class="email-display">{{ email }}</p>
+    </div>
+
+    <div class="modal-body">
+      <p class="instruction">
+        {{ 'auth.verify_email_instruction' | translate }}
+      </p>
+
+      <div class="timer" *ngIf="timeRemaining > 0">
+        <span class="timer-icon">⏱️</span>
+        <span class="timer-text">{{ 'auth.code_expires_in' | translate }}: <strong>{{ getFormattedTime() }}</strong></span>
+      </div>
+
+      <div class="timer expired" *ngIf="timeRemaining <= 0">
+        <span class="timer-icon">⚠️</span>
+        <span class="timer-text">{{ 'auth.code_expired' | translate }}</span>
+      </div>
+
+      <form [formGroup]="verificationForm" (ngSubmit)="verifyCode()">
+        <div class="form-group">
+          <label for="code">{{ 'auth.verification_code' | translate }}</label>
+          <input
+            id="code"
+            type="text"
+            formControlName="code"
+            class="code-input"
+            placeholder="000000"
+            maxlength="6"
+            [class.error]="verificationForm.get('code')?.invalid && verificationForm.get('code')?.touched"
+          />
+          <div class="error-message" *ngIf="verificationForm.get('code')?.invalid && verificationForm.get('code')?.touched">
+            <span *ngIf="verificationForm.get('code')?.errors?.['required']">{{ 'auth.code_required' | translate }}</span>
+            <span *ngIf="verificationForm.get('code')?.errors?.['pattern']">{{ 'auth.code_must_be_6_digits' | translate }}</span>
+          </div>
+        </div>
+
+        <div class="alert alert-error" *ngIf="error">
+          {{ error }}
+        </div>
+
+        <div class="alert alert-success" *ngIf="success">
+          {{ success }}
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="loading || verificationForm.invalid"
+        >
+          <span *ngIf="!loading">{{ 'auth.verify' | translate }}</span>
+          <span *ngIf="loading">{{ 'auth.verifying' | translate }}...</span>
+        </button>
+      </form>
+
+      <div class="resend-section">
+        <p class="resend-text">{{ 'auth.didnt_receive_code' | translate }}</p>
+        <button
+          class="btn btn-secondary"
+          (click)="resendCode()"
+          [disabled]="!canResend || loading"
+        >
+          <span *ngIf="canResend">{{ 'auth.resend_code' | translate }}</span>
+          <span *ngIf="!canResend">{{ 'auth.resend_in' | translate }} {{ getResendCountdown() }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -7,12 +7,10 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
-  OneToOne,
 } from 'typeorm';
 import { Topic } from './topic.entity';
 import { User } from './user.entity';
 import { ContentBlock } from './content-block.entity';
-import { Quiz } from './quiz.entity';
 import { ReadingProgress } from './reading-progress.entity';
 
 @Entity('references')
@@ -67,9 +65,6 @@ export class Reference {
 
   @OneToMany(() => ContentBlock, (block) => block.reference)
   contentBlocks: ContentBlock[];
-
-  @OneToOne(() => Quiz, (quiz) => quiz.reference)
-  quiz: Quiz;
 
   @OneToMany(() => ReadingProgress, (progress) => progress.reference)
   readingProgress: ReadingProgress[];

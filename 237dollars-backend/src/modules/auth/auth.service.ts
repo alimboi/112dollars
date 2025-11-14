@@ -10,10 +10,13 @@ import { Repository } from 'typeorm';
 import { User } from '../../database/entities/user.entity';
 import { PasswordService } from '../../common/utils/password.service';
 import { EmailService } from '../../common/utils/email.service';
+import { EmailVerificationService } from '../../common/utils/email-verification.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { PasswordResetRequestDto } from './dto/password-reset-request.dto';
 import { PasswordResetVerifyDto } from './dto/password-reset-verify.dto';
+import { VerifyEmailDto } from './dto/verify-email.dto';
+import { ResendVerificationDto } from './dto/resend-verification.dto';
 import { ErrorMessages } from '../../common/constants/error-messages';
 
 @Injectable()
@@ -29,18 +32,31 @@ export class AuthService {
     private jwtService: JwtService,
     private passwordService: PasswordService,
     private emailService: EmailService,
+    private emailVerificationService: EmailVerificationService,
   ) {}
 
+  /**
+   * Register new user with email verification
+   */
   async register(registerDto: RegisterDto) {
-    const { email, password } = registerDto;
+    const { email, password, username, firstName, lastName, telegramUsername, telegramPhone } = registerDto;
 
-    // Check if user exists
-    const existingUser = await this.userRepository.findOne({
+    // Check if email exists
+    const existingEmail = await this.userRepository.findOne({
       where: { email },
     });
 
-    if (existingUser) {
-      throw new ConflictException(ErrorMessages.EMAIL_ALREADY_EXISTS);
+    if (existingEmail) {
+      throw new ConflictException('Email already registered');
+    }
+
+    // Check if username exists
+    const existingUsername = await this.userRepository.findOne({
+      where: { username },
+    });
+
+    if (existingUsername) {
+      throw new ConflictException('Username already taken');
     }
 
     // Validate password strength
@@ -51,36 +67,141 @@ export class AuthService {
     // Hash password
     const hashedPassword = await this.passwordService.hashPassword(password);
 
-    // Create user
+    // Normalize telegram username (remove @ if present)
+    const normalizedTelegramUsername = telegramUsername?.startsWith('@')
+      ? telegramUsername.substring(1)
+      : telegramUsername;
+
+    // Create user (not active until email verified)
     const user = this.userRepository.create({
       email,
       password: hashedPassword,
+      username,
+      firstName,
+      lastName,
+      telegramUsername: normalizedTelegramUsername,
+      telegramPhone,
+      emailVerified: false,
+      isActive: false, // Account not active until email verified
     });
 
     await this.userRepository.save(user);
 
-    // Generate tokens
+    // Send verification email
+    await this.emailVerificationService.sendVerificationEmail(email);
+
+    return {
+      message: 'Registration successful! Please check your email for verification code',
+      email: user.email,
+      username: user.username,
+    };
+  }
+
+  /**
+   * Verify email with code
+   */
+  async verifyEmail(dto: VerifyEmailDto) {
+    await this.emailVerificationService.verifyEmail(dto.email, dto.code);
+
+    const user = await this.userRepository.findOne({ where: { email: dto.email } });
+
+    // Generate tokens after verification
     const tokens = await this.generateTokens(user.id, user.role);
 
     return {
+      message: 'Email verified successfully! You can now login',
       user: {
         id: user.id,
         email: user.email,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
         role: user.role,
-        language: user.language,
-        darkMode: user.darkMode,
       },
       ...tokens,
     };
   }
 
-  async login(loginDto: LoginDto) {
-    const { email, password } = loginDto;
+  /**
+   * Resend verification code
+   */
+  async resendVerification(dto: ResendVerificationDto) {
+    await this.emailVerificationService.sendVerificationEmail(dto.email);
 
-    const user = await this.validateUser(email, password);
+    return {
+      message: 'Verification code sent! Please check your email',
+    };
+  }
+
+  /**
+   * Check username availability
+   */
+  async checkUsernameAvailability(username: string) {
+    if (!username || username.length < 3) {
+      return { available: false, message: 'Username must be at least 3 characters' };
+    }
+
+    const existing = await this.userRepository.findOne({
+      where: { username },
+      select: ['id'],
+    });
+
+    return {
+      available: !existing,
+      message: existing ? 'Username already taken' : 'Username available',
+    };
+  }
+
+  /**
+   * Check email availability
+   */
+  async checkEmailAvailability(email: string) {
+    if (!email || !email.includes('@')) {
+      return { available: false, message: 'Invalid email format' };
+    }
+
+    const existing = await this.userRepository.findOne({
+      where: { email },
+      select: ['id'],
+    });
+
+    return {
+      available: !existing,
+      message: existing ? 'Email already registered' : 'Email available',
+    };
+  }
+
+  /**
+   * Login with username or email
+   */
+  async login(loginDto: LoginDto) {
+    const { identifier, password } = loginDto;
+
+    // Try to find user by email or username
+    const user = await this.findUserByIdentifier(identifier);
 
     if (!user) {
-      throw new UnauthorizedException(ErrorMessages.INVALID_CREDENTIALS);
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Check if email is verified
+    if (!user.emailVerified) {
+      throw new UnauthorizedException('Please verify your email before logging in');
+    }
+
+    // Check if account is active
+    if (!user.isActive) {
+      throw new UnauthorizedException('Account is not active');
+    }
+
+    // Validate password
+    const isPasswordValid = await this.passwordService.comparePassword(
+      password,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     // Update last login
@@ -94,6 +215,9 @@ export class AuthService {
       user: {
         id: user.id,
         email: user.email,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
         role: user.role,
         language: user.language,
         darkMode: user.darkMode,
@@ -102,25 +226,22 @@ export class AuthService {
     };
   }
 
-  async validateUser(email: string, password: string): Promise<User | null> {
-    const user = await this.userRepository.findOne({
-      where: { email, isActive: true },
-    });
+  /**
+   * Find user by email or username
+   */
+  private async findUserByIdentifier(identifier: string): Promise<User | null> {
+    // Check if identifier is an email (contains @)
+    const isEmail = identifier.includes('@');
 
-    if (!user) {
-      return null;
+    if (isEmail) {
+      return await this.userRepository.findOne({
+        where: { email: identifier },
+      });
+    } else {
+      return await this.userRepository.findOne({
+        where: { username: identifier },
+      });
     }
-
-    const isPasswordValid = await this.passwordService.comparePassword(
-      password,
-      user.password,
-    );
-
-    if (!isPasswordValid) {
-      return null;
-    }
-
-    return user;
   }
 
   async refreshToken(refreshToken: string) {
@@ -135,7 +256,7 @@ export class AuthService {
         where: { id: payload.sub },
       });
 
-      if (!user || !user.isActive) {
+      if (!user || !user.isActive || !user.emailVerified) {
         throw new UnauthorizedException(ErrorMessages.USER_NOT_FOUND);
       }
 
@@ -146,10 +267,14 @@ export class AuthService {
     }
   }
 
+  /**
+   * Request password reset (supports username or email)
+   */
   async passwordResetRequest(dto: PasswordResetRequestDto) {
     const { email } = dto;
 
-    const user = await this.userRepository.findOne({ where: { email } });
+    // Try to find user by email or username
+    const user = await this.findUserByIdentifier(email);
 
     if (!user) {
       // Don't reveal if user exists
@@ -159,15 +284,15 @@ export class AuthService {
     // Generate 6-digit code
     const code = this.passwordService.generateResetCode();
     const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minutes expiry
+    expiresAt.setMinutes(expiresAt.getMinutes() + 10); // 10 minutes expiry
 
     // Store code temporarily
-    this.resetCodes.set(email, { code, expiresAt });
+    this.resetCodes.set(user.email, { code, expiresAt });
 
     // Send email
-    await this.emailService.sendPasswordResetEmail(email, code);
+    await this.emailService.sendPasswordResetEmail(user.email, code);
 
-    // Clean up expired codes (simple cleanup)
+    // Clean up expired codes
     this.cleanupExpiredCodes();
 
     return { message: 'If user exists, reset code will be sent' };
@@ -231,21 +356,35 @@ export class AuthService {
       if (user) {
         user.googleId = googleId;
         user.profilePicture = picture;
+        user.emailVerified = true; // Google already verified the email
+        user.isActive = true;
         await this.userRepository.save(user);
       }
     }
 
     // If user doesn't exist at all, create new user
     if (!user) {
+      // Generate username from email
+      const baseUsername = email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '_');
+      let username = baseUsername;
+      let counter = 1;
+
+      // Ensure username is unique
+      while (await this.userRepository.findOne({ where: { username } })) {
+        username = `${baseUsername}${counter}`;
+        counter++;
+      }
+
       user = this.userRepository.create({
         email,
         googleId,
+        username,
         firstName,
         lastName,
         profilePicture: picture,
         isActive: true,
-        // Google users don't have a password (they authenticate via OAuth)
-        password: null,
+        emailVerified: true, // Google users are already verified
+        password: null, // Google users don't have a password
       });
 
       await this.userRepository.save(user);
@@ -262,6 +401,7 @@ export class AuthService {
       user: {
         id: user.id,
         email: user.email,
+        username: user.username,
         role: user.role,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -282,7 +422,7 @@ export class AuthService {
       secret:
         process.env.JWT_REFRESH_SECRET ||
         '237dollars-refresh-secret-key-development-only',
-      expiresIn: process.env.JWT_REFRESH_EXPIRATION || '7d',
+      expiresIn: '30d', // 30 days for refresh token
     });
 
     return {

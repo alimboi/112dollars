@@ -10,7 +10,6 @@ import {
 import { UserRole } from '../../types/user-role.enum';
 import { Language } from '../../types/language.enum';
 import { Student } from './student.entity';
-import { QuizAttempt } from './quiz-attempt.entity';
 import { UserPoints } from './user-points.entity';
 import { ReadingProgress } from './reading-progress.entity';
 import { DiscountEligibility } from './discount-eligibility.entity';
@@ -42,6 +41,30 @@ export class User {
 
   @Column({ name: 'profile_picture', nullable: true })
   profilePicture: string;
+
+  @Column({ unique: true, length: 50, nullable: true })
+  username: string;
+
+  @Column({ name: 'telegram_username', nullable: true })
+  telegramUsername: string;
+
+  @Column({ name: 'telegram_phone', length: 20, nullable: true })
+  telegramPhone: string;
+
+  @Column({ name: 'email_verified', default: false })
+  emailVerified: boolean;
+
+  @Column({ name: 'email_verification_code', length: 6, nullable: true })
+  emailVerificationCode: string;
+
+  @Column({ name: 'email_verification_expiry', type: 'timestamp', nullable: true })
+  emailVerificationExpiry: Date;
+
+  @Column({ name: 'verification_attempts', default: 0 })
+  verificationAttempts: number;
+
+  @Column({ name: 'last_verification_request', type: 'timestamp', nullable: true })
+  lastVerificationRequest: Date;
 
   @Column({
     type: 'enum',
@@ -84,9 +107,6 @@ export class User {
   // Relations
   @OneToOne(() => Student, (student) => student.user)
   student: Student;
-
-  @OneToMany(() => QuizAttempt, (attempt) => attempt.user)
-  quizAttempts: QuizAttempt[];
 
   @OneToMany(() => UserPoints, (points) => points.user)
   points: UserPoints[];

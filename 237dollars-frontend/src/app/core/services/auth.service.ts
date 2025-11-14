@@ -103,7 +103,7 @@ export class AuthService {
     return user?.role === 'admin' || user?.role === 'super_admin' || user?.role === 'content_manager';
   }
 
-  private handleAuthResponse(response: AuthResponse): void {
+  handleAuthResponse(response: AuthResponse): void {
     this.storage.setItem('user', response.user);
     this.storage.setItem('accessToken', response.accessToken);
     this.storage.setItem('refreshToken', response.refreshToken);

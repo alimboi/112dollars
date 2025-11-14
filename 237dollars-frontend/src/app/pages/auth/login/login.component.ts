@@ -98,9 +98,7 @@ export class LoginComponent {
   onVerified(response: any): void {
     // User verified their email, save tokens and redirect
     if (response.accessToken) {
-      localStorage.setItem('accessToken', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
-      this.authService.currentUserSubject.next(response.user);
+      this.authService.handleAuthResponse(response);
     }
     this.showVerificationModal = false;
     this.router.navigate(['/']);

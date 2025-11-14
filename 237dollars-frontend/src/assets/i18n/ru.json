@@ -1,9 +1,7 @@
 {
   "nav": {
     "home": "Главная",
-    "dashboard": "Панель управления",
     "references": "Справочники",
-    "quiz": "Тест",
     "blog": "Блог",
     "contact": "Контакты",
     "documents": "Документы",
@@ -19,7 +17,7 @@
   "home": {
     "title": "237DOLLARS",
     "subtitle": "Ваш путь к образовательному совершенству",
-    "description": "Освойте корейский, английский и программирование с нашей комплексной образовательной платформой. Отслеживайте свой прогресс, проходите тесты и зарабатывайте награды.",
+    "description": "Освойте корейский, английский и программирование с нашей комплексной образовательной платформой. Отслеживайте свой прогресс и зарабатывайте награды.",
     "getStarted": "Начать",
     "learnMore": "Узнать больше",
     "features": {
@@ -29,8 +27,8 @@
         "description": "Доступ к качественным учебным материалам по корейскому, английскому и программированию"
       },
       "interactive": {
-        "title": "Интерактивные тесты",
-        "description": "Проверьте свои знания с помощью увлекательных тестов и мгновенной обратной связи"
+        "title": "Интерактивное обучение",
+        "description": "Проверьте свои знания и отслеживайте прогресс с помощью высококачественного контента и обратной связи"
       },
       "progress": {
         "title": "Отслеживание прогресса",
@@ -38,11 +36,49 @@
       },
       "gamification": {
         "title": "Зарабатывайте награды",
-        "description": "Получайте баллы и открывайте скидки, выполняя курсы и тесты"
+        "description": "Получайте баллы и открывайте скидки, выполняя курсы"
       }
     }
   },
   "auth": {
+    "username_or_email": "Username or Email",
+    "identifier_placeholder": "Enter your username or email",
+    "identifier_required": "Username or email is required",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "username": "Username",
+    "username_placeholder": "Choose a unique username",
+    "username_required": "Username is required",
+    "username_checking": "Checking availability...",
+    "username_available": "Username is available",
+    "username_taken": "Username is already taken",
+    "email": "Email",
+    "email_placeholder": "Enter your email address",
+    "email_required": "Email is required",
+    "email_checking": "Checking availability...",
+    "email_available": "Email is available",
+    "email_taken": "Email is already registered",
+    "password": "Password",
+    "password_placeholder": "Create a secure password",
+    "password_required": "Password is required",
+    "confirm_password": "Confirm Password",
+    "confirm_password_placeholder": "Re-enter your password",
+    "telegram_username": "Telegram Username (Optional)",
+    "telegram_username_placeholder": "@username",
+    "telegram_phone": "Telegram Phone (Optional)",
+    "telegram_phone_placeholder": "+1234567890",
+    "verify_email_title": "Verify Your Email",
+    "verify_email_instruction": "We've sent a 6-digit verification code to your email. Please enter it below.",
+    "verification_code": "Verification Code",
+    "code_required": "Verification code is required",
+    "code_must_be_6_digits": "Code must be 6 digits",
+    "code_expires_in": "Code expires in",
+    "code_expired": "Code has expired",
+    "verify": "Verify",
+    "verifying": "Verifying",
+    "didnt_receive_code": "Didn't receive the code?",
+    "resend_code": "Resend Code",
+    "resend_in": "Resend in",
     "login": {
       "title": "Вход в аккаунт",
       "email": "Электронная почта",
@@ -63,7 +99,7 @@
       "submit": "Зарегистрироваться",
       "hasAccount": "Уже есть аккаунт?",
       "loginLink": "Войдите здесь",
-      "success": "Регистрация успешна! Пожалуйста, войдите.",
+      "success": "Регистрация успешна! Пожалуйста, проверьте вашу электронную почту.",
       "error": "Ошибка регистрации. Пожалуйста, попробуйте снова.",
       "passwordMismatch": "Пароли не совпадают"
     }
@@ -76,7 +112,6 @@
     "error": "Ошибка загрузки справочников",
     "noReferences": "Справочники недоступны",
     "readMore": "Читать далее",
-    "takeQuiz": "Пройти тест",
     "contentBlocks": {
       "text": "Текстовый контент",
       "image": "Изображение",
@@ -87,29 +122,6 @@
       "korean": "Корейский язык",
       "english": "Английский язык",
       "coding": "Программирование и кодирование"
-    }
-  },
-  "quiz": {
-    "title": "Тест",
-    "question": "Вопрос",
-    "of": "из",
-    "progress": "Прогресс",
-    "selectAnswer": "Выберите ответ",
-    "next": "Далее",
-    "previous": "Назад",
-    "submit": "Отправить тест",
-    "retake": "Пройти снова",
-    "loading": "Загрузка теста...",
-    "error": "Ошибка загрузки теста",
-    "result": {
-      "title": "Результаты теста",
-      "score": "Ваш результат",
-      "passed": "Поздравляем! Вы прошли!",
-      "failed": "Вы не прошли в этот раз. Попробуйте снова!",
-      "correctAnswers": "Правильные ответы",
-      "timeTaken": "Затраченное время",
-      "seconds": "секунд",
-      "pointsEarned": "Заработано баллов"
     }
   },
   "blog": {
@@ -175,8 +187,7 @@
       "activeUsers": "Активных пользователей",
       "totalStudents": "Всего студентов",
       "pendingEnrollments": "Ожидающих регистраций",
-      "totalReferences": "Всего справочников",
-      "totalQuizzes": "Всего тестов"
+      "totalReferences": "Всего справочников"
     },
     "quickActions": {
       "title": "Быстрые действия",
@@ -232,40 +243,57 @@
     "ru": "Русский",
     "ko": "Корейский"
   },
-  "dashboard": {
-    "goodMorning": "Доброе утро",
-    "goodAfternoon": "Добрый день",
-    "goodEvening": "Добрый вечер",
-    "subtitle": "Обзор вашего прогресса в обучении",
+  "documents": {
+    "title": "Мои документы",
+    "myDocuments": "Загруженные документы",
+    "noDocuments": "Документы еще не загружены",
+    "upload": {
+      "title": "Загрузить новый документ",
+      "description": "Загрузите студенческие документы, сертификаты или необходимые файлы",
+      "allowedTypes": "Допустимые типы файлов",
+      "button": "Загрузить документ",
+      "uploading": "Загружается..."
+    },
+    "table": {
+      "fileName": "Имя файла",
+      "fileType": "Тип",
+      "uploadedAt": "Дата загрузки",
+      "actions": "Действия"
+    }
+  },
+  "enrollment": {
+    "title": "Подать заявку на регистрацию",
+    "apply": "Подать заявку",
+    "status": {
+      "pending": "Ожидание проверки",
+      "approved": "Одобрено",
+      "rejected": "Отклонено"
+    },
+    "form": {
+      "preferredMajor": "Предпочитаемое направление",
+      "reason": "Причина регистрации",
+      "submit": "Отправить заявку"
+    },
+    "success": "Заявка успешно подана",
+    "error": "Ошибка при отправке заявки"
+  },
+  "discounts": {
+    "title": "Коды скидок",
+    "apply": "Применить скидку",
+    "myDiscounts": "Мои коды скидок",
+    "noDiscounts": "Доступные коды скидок отсутствуют",
+    "code": "Код скидки",
+    "percentage": "Скидка",
+    "status": "Статус",
+    "generatedAt": "Дата создания"
+  },
+  "points": {
+    "title": "Мои баллы",
     "totalPoints": "Всего баллов",
-    "enrollments": "Регистрации",
-    "documents": "Документы",
-    "availableDiscounts": "Доступные скидки",
-    "reading": "Чтение",
-    "quiz": "Тест",
-    "pending": "Ожидание",
-    "approved": "Утверждено",
-    "uploadedFiles": "Загруженные файлы",
-    "viewDetails": "Подробнее",
-    "quickActions": "Быстрые действия",
-    "browseReferences": "Просмотр справочников",
-    "browseReferencesDesc": "Изучайте учебные материалы и темы",
-    "viewLeaderboard": "Посмотреть рейтинг",
-    "viewLeaderboardDesc": "Посмотрите свой рейтинг и лучших студентов",
-    "applyDiscount": "Получить скидку",
-    "applyDiscountDesc": "Получите заработанные коды скидок",
-    "uploadDocument": "Загрузить документ",
-    "uploadDocumentDesc": "Отправьте необходимые документы",
-    "recentDocuments": "Недавние документы",
-    "noRecentDocuments": "Документы еще не загружены",
-    "uploadFirst": "Загрузите свой первый документ",
-    "viewAllDocuments": "Посмотреть все документы",
-    "pointsProgress": "Прогресс баллов",
-    "nextDiscount": "Следующая скидка",
     "readingPoints": "Баллы за чтение",
-    "quizPoints": "Баллы за тесты",
-    "earnMorePoints": "Заработать больше баллов"
-  }
+    "leaderboard": "Таблица лидеров",
+    "rank": "Рейтинг",
+    "topStudents": "Лучшие студенты"
   },
   "notFound": {
     "title": "Страница не найдена",

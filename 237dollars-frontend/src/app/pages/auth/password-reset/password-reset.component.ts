@@ -19,7 +19,7 @@ export class PasswordResetComponent {
   loading = false;
   error = '';
   success = '';
-  email = '';
+  identifier = ''; // Can be email or username
 
   constructor(
     private fb: FormBuilder,
@@ -27,7 +27,7 @@ export class PasswordResetComponent {
     private router: Router
   ) {
     this.requestForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]]
+      identifier: ['', [Validators.required]]
     });
 
     this.resetForm = this.fb.group({
@@ -48,10 +48,10 @@ export class PasswordResetComponent {
       this.error = '';
       this.success = '';
 
-      const { email } = this.requestForm.value;
-      this.email = email;
+      const { identifier } = this.requestForm.value;
+      this.identifier = identifier;
 
-      this.api.post('auth/password-reset/request', { email }).subscribe({
+      this.api.post('auth/password-reset/request', { identifier }).subscribe({
         next: () => {
           this.success = 'A verification code has been sent to your email!';
           this.loading = false;
@@ -74,7 +74,7 @@ export class PasswordResetComponent {
       const { code, newPassword } = this.resetForm.value;
 
       this.api.post('auth/password-reset/verify', {
-        email: this.email,
+        identifier: this.identifier,
         code,
         newPassword
       }).subscribe({

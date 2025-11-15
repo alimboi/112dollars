@@ -1,9 +1,7 @@
 {
   "nav": {
     "home": "Bosh sahifa",
-    "dashboard": "Boshqaruv paneli",
     "references": "Ma'lumotnomalar",
-    "quiz": "Test",
     "blog": "Blog",
     "contact": "Aloqa",
     "documents": "Hujjatlar",
@@ -19,7 +17,7 @@
   "home": {
     "title": "237DOLLARS",
     "subtitle": "Ta'lim mukammalligiga yo'l",
-    "description": "Bizning keng qamrovli ta'lim platformamiz bilan koreys, ingliz va dasturlashni o'rganing. O'z yutuqlaringizni kuzating, testlar ishlang va mukofotlar qo'lga kiriting.",
+    "description": "Bizning keng qamrovli ta'lim platformamiz bilan koreys, ingliz va dasturlashni o'rganing. O'z yutuqlaringizni kuzating va mukofotlar qo'lga kiriting.",
     "getStarted": "Boshlash",
     "learnMore": "Batafsil",
     "features": {
@@ -29,8 +27,8 @@
         "description": "Koreys, ingliz va dasturlash bo'yicha sifatli o'quv materiallariga ega bo'ling"
       },
       "interactive": {
-        "title": "Interaktiv testlar",
-        "description": "Qiziqarli testlar va tezkor fikr-mulohazalar bilan bilimingizni sinab ko'ring"
+        "title": "Interaktiv o'qitish",
+        "description": "Bilimingizni sinab ko'ring va yuqori sifatli kontent va fikr-mulohazalar bilan taraqqiyotni kuzating"
       },
       "progress": {
         "title": "Yutuqlarni kuzatish",
@@ -38,11 +36,49 @@
       },
       "gamification": {
         "title": "Mukofotlar qo'lga kiriting",
-        "description": "Kurslar va testlarni tugatganingizda ball to'plang va chegirmalarni oching"
+        "description": "Kurslarni tugatganingizda ball to'plang va chegirmalarni oching"
       }
     }
   },
   "auth": {
+    "username_or_email": "Username or Email",
+    "identifier_placeholder": "Enter your username or email",
+    "identifier_required": "Username or email is required",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "username": "Username",
+    "username_placeholder": "Choose a unique username",
+    "username_required": "Username is required",
+    "username_checking": "Checking availability...",
+    "username_available": "Username is available",
+    "username_taken": "Username is already taken",
+    "email": "Email",
+    "email_placeholder": "Enter your email address",
+    "email_required": "Email is required",
+    "email_checking": "Checking availability...",
+    "email_available": "Email is available",
+    "email_taken": "Email is already registered",
+    "password": "Password",
+    "password_placeholder": "Create a secure password",
+    "password_required": "Password is required",
+    "confirm_password": "Confirm Password",
+    "confirm_password_placeholder": "Re-enter your password",
+    "telegram_username": "Telegram Username (Optional)",
+    "telegram_username_placeholder": "@username",
+    "telegram_phone": "Telegram Phone (Optional)",
+    "telegram_phone_placeholder": "+1234567890",
+    "verify_email_title": "Verify Your Email",
+    "verify_email_instruction": "We've sent a 6-digit verification code to your email. Please enter it below.",
+    "verification_code": "Verification Code",
+    "code_required": "Verification code is required",
+    "code_must_be_6_digits": "Code must be 6 digits",
+    "code_expires_in": "Code expires in",
+    "code_expired": "Code has expired",
+    "verify": "Verify",
+    "verifying": "Verifying",
+    "didnt_receive_code": "Didn't receive the code?",
+    "resend_code": "Resend Code",
+    "resend_in": "Resend in",
     "login": {
       "title": "Hisobga kirish",
       "email": "Elektron pochta",
@@ -63,7 +99,7 @@
       "submit": "Ro'yxatdan o'tish",
       "hasAccount": "Hisobingiz bormi?",
       "loginLink": "Bu yerda kiring",
-      "success": "Ro'yxatdan o'tish muvaffaqiyatli! Iltimos, kiring.",
+      "success": "Ro'yxatdan o'tish muvaffaqiyatli! Iltimos, elektron pochtangizni tekshiring.",
       "error": "Ro'yxatdan o'tish amalga oshmadi. Iltimos, qayta urinib ko'ring.",
       "passwordMismatch": "Parollar mos kelmayapti"
     }
@@ -76,7 +112,6 @@
     "error": "Ma'lumotnomalarni yuklashda xatolik",
     "noReferences": "Ma'lumotnomalar mavjud emas",
     "readMore": "Batafsil o'qish",
-    "takeQuiz": "Test ishlash",
     "contentBlocks": {
       "text": "Matnli kontent",
       "image": "Rasm",
@@ -87,29 +122,6 @@
       "korean": "Koreys tili",
       "english": "Ingliz tili",
       "coding": "Dasturlash va kodlash"
-    }
-  },
-  "quiz": {
-    "title": "Test",
-    "question": "Savol",
-    "of": "dan",
-    "progress": "Jarayon",
-    "selectAnswer": "Javobni tanlang",
-    "next": "Keyingi",
-    "previous": "Oldingi",
-    "submit": "Testni yuborish",
-    "retake": "Qayta ishlash",
-    "loading": "Test yuklanmoqda...",
-    "error": "Testni yuklashda xatolik",
-    "result": {
-      "title": "Test natijalari",
-      "score": "Sizning balingiz",
-      "passed": "Tabriklaymiz! Siz o'tdingiz!",
-      "failed": "Siz bu safar o'ta olmadingiz. Qayta urinib ko'ring!",
-      "correctAnswers": "To'g'ri javoblar",
-      "timeTaken": "Sarflangan vaqt",
-      "seconds": "soniya",
-      "pointsEarned": "Qo'lga kiritilgan ballar"
     }
   },
   "blog": {
@@ -175,8 +187,7 @@
       "activeUsers": "Faol foydalanuvchilar",
       "totalStudents": "Jami talabalar",
       "pendingEnrollments": "Kutilayotgan ro'yxatdan o'tishlar",
-      "totalReferences": "Jami ma'lumotnomalar",
-      "totalQuizzes": "Jami testlar"
+      "totalReferences": "Jami ma'lumotnomalar"
     },
     "quickActions": {
       "title": "Tezkor harakatlar",
@@ -232,40 +243,57 @@
     "ru": "Ruscha",
     "ko": "Koreyscha"
   },
-  "dashboard": {
-    "goodMorning": "Xayrli tong",
-    "goodAfternoon": "Xayrli kun",
-    "goodEvening": "Xayrli kech",
-    "subtitle": "O'quv jarayoningiz haqida umumiy ma'lumot",
+  "documents": {
+    "title": "Mening hujjatlarim",
+    "myDocuments": "Yuklangan hujjatlar",
+    "noDocuments": "Hali hujjatlar yuklanmagan",
+    "upload": {
+      "title": "Yangi hujjat yuklash",
+      "description": "Talaba hujjatlari, sertifikatlar yoki kerakli fayllarni yuklash",
+      "allowedTypes": "Ruxsat berilgan fayl turlari",
+      "button": "Hujjat yuklash",
+      "uploading": "Yuklanmoqda..."
+    },
+    "table": {
+      "fileName": "Fayl nomi",
+      "fileType": "Turi",
+      "uploadedAt": "Yuklash sanasi",
+      "actions": "Harakatlar"
+    }
+  },
+  "enrollment": {
+    "title": "Ro'yxatdan o'tish uchun ariza topshirish",
+    "apply": "Ariza topshirish",
+    "status": {
+      "pending": "Ko'rib chiqish kutilmoqda",
+      "approved": "Tasdiqlangan",
+      "rejected": "Rad etilgan"
+    },
+    "form": {
+      "preferredMajor": "Afzal yo'nalish",
+      "reason": "Ro'yxatdan o'tish sababi",
+      "submit": "Arizani topshirish"
+    },
+    "success": "Ariza muvaffaqiyatli topshirildi",
+    "error": "Arizani topshirishda xatolik"
+  },
+  "discounts": {
+    "title": "Chegirma kodlari",
+    "apply": "Chegirmani qo'llash",
+    "myDiscounts": "Mening chegirma kodlarim",
+    "noDiscounts": "Mavjud chegirma kodlari yo'q",
+    "code": "Chegirma kodi",
+    "percentage": "Chegirma",
+    "status": "Holati",
+    "generatedAt": "Yaratilgan sana"
+  },
+  "points": {
+    "title": "Mening ballarim",
     "totalPoints": "Jami ballar",
-    "enrollments": "Ro'yxatdan o'tishlar",
-    "documents": "Hujjatlar",
-    "availableDiscounts": "Mavjud chegirmalar",
-    "reading": "O'qish",
-    "quiz": "Test",
-    "pending": "Kutilmoqda",
-    "approved": "Tasdiqlangan",
-    "uploadedFiles": "Yuklangan fayllar",
-    "viewDetails": "Batafsil",
-    "quickActions": "Tezkor harakatlar",
-    "browseReferences": "Ma'lumotnomalarni ko'rish",
-    "browseReferencesDesc": "O'quv materiallari va mavzularni o'rganish",
-    "viewLeaderboard": "Reyting jadvalini ko'rish",
-    "viewLeaderboardDesc": "O'z o'rningiz va eng yaxshi talabalarni ko'ring",
-    "applyDiscount": "Chegirma olish",
-    "applyDiscountDesc": "Ishlab topgan chegirma kodlarini olish",
-    "uploadDocument": "Hujjat yuklash",
-    "uploadDocumentDesc": "Kerakli hujjatlarni yuklash",
-    "recentDocuments": "So'nggi hujjatlar",
-    "noRecentDocuments": "Hali hujjatlar yuklanmagan",
-    "uploadFirst": "Birinchi hujjatingizni yuklang",
-    "viewAllDocuments": "Barcha hujjatlarni ko'rish",
-    "pointsProgress": "Ballar taraqqiyoti",
-    "nextDiscount": "Keyingi chegirma",
     "readingPoints": "O'qish ballari",
-    "quizPoints": "Test ballari",
-    "earnMorePoints": "Ko'proq ball toplash"
-  }
+    "leaderboard": "Reyting jadvali",
+    "rank": "Reyting",
+    "topStudents": "Eng yaxshi talabalar"
   },
   "notFound": {
     "title": "Sahifa topilmadi",

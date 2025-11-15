@@ -139,27 +139,4 @@ export class AdminService {
 
     return await this.activityLogRepository.save(log);
   }
-
-  async getDashboardStats(): Promise<any> {
-    const totalUsers = await this.userRepository.count();
-    const activeUsers = await this.userRepository.count({
-      where: { isActive: true },
-    });
-    const studentsPassedTest = await this.userRepository.count({
-      where: { role: UserRole.ENROLLED_STUDENT, realTestPassed: true },
-    });
-
-    const recentActivity = await this.activityLogRepository.find({
-      take: 10,
-      order: { createdAt: 'DESC' },
-      relations: ['admin'],
-    });
-
-    return {
-      totalUsers,
-      activeUsers,
-      studentsPassedTest,
-      recentActivity,
-    };
-  }
 }

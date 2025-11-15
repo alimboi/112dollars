@@ -1,8 +1,9 @@
-import { IsEmail, IsString, MinLength, Matches, Length } from 'class-validator';
+import { IsString, IsNotEmpty, MinLength, Matches, Length } from 'class-validator';
 
 export class PasswordResetVerifyDto {
-  @IsEmail()
-  email: string;
+  @IsString()
+  @IsNotEmpty()
+  identifier: string; // Can be email or username
 
   @IsString()
   @Length(6, 6, { message: 'Reset code must be 6 digits' })

@@ -1,9 +1,7 @@
 {
   "nav": {
     "home": "Home",
-    "dashboard": "Dashboard",
     "references": "References",
-    "quiz": "Quiz",
     "blog": "Blog",
     "contact": "Contact",
     "documents": "Documents",
@@ -19,7 +17,7 @@
   "home": {
     "title": "237DOLLARS",
     "subtitle": "Your Gateway to Educational Excellence",
-    "description": "Master Korean, English, and Coding with our comprehensive learning platform. Track your progress, take quizzes, and earn rewards.",
+    "description": "Master Korean, English, and Coding with our comprehensive learning platform. Track your progress and earn rewards.",
     "getStarted": "Get Started",
     "learnMore": "Learn More",
     "features": {
@@ -29,8 +27,8 @@
         "description": "Access quality learning materials across Korean, English, and Coding subjects"
       },
       "interactive": {
-        "title": "Interactive Quizzes",
-        "description": "Test your knowledge with engaging quizzes and instant feedback"
+        "title": "Interactive Learning",
+        "description": "Engage with high-quality content and track your learning progress"
       },
       "progress": {
         "title": "Track Progress",
@@ -38,11 +36,49 @@
       },
       "gamification": {
         "title": "Earn Rewards",
-        "description": "Gain points and unlock discounts as you complete courses and quizzes"
+        "description": "Gain points and unlock discounts as you complete courses"
       }
     }
   },
   "auth": {
+    "username_or_email": "Username or Email",
+    "identifier_placeholder": "Enter your username or email",
+    "identifier_required": "Username or email is required",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "username": "Username",
+    "username_placeholder": "Choose a unique username",
+    "username_required": "Username is required",
+    "username_checking": "Checking availability...",
+    "username_available": "Username is available",
+    "username_taken": "Username is already taken",
+    "email": "Email",
+    "email_placeholder": "Enter your email address",
+    "email_required": "Email is required",
+    "email_checking": "Checking availability...",
+    "email_available": "Email is available",
+    "email_taken": "Email is already registered",
+    "password": "Password",
+    "password_placeholder": "Create a secure password",
+    "password_required": "Password is required",
+    "confirm_password": "Confirm Password",
+    "confirm_password_placeholder": "Re-enter your password",
+    "telegram_username": "Telegram Username (Optional)",
+    "telegram_username_placeholder": "@username",
+    "telegram_phone": "Telegram Phone (Optional)",
+    "telegram_phone_placeholder": "+1234567890",
+    "verify_email_title": "Verify Your Email",
+    "verify_email_instruction": "We've sent a 6-digit verification code to your email. Please enter it below.",
+    "verification_code": "Verification Code",
+    "code_required": "Verification code is required",
+    "code_must_be_6_digits": "Code must be 6 digits",
+    "code_expires_in": "Code expires in",
+    "code_expired": "Code has expired",
+    "verify": "Verify",
+    "verifying": "Verifying",
+    "didnt_receive_code": "Didn't receive the code?",
+    "resend_code": "Resend Code",
+    "resend_in": "Resend in",
     "login": {
       "title": "Login to Your Account",
       "email": "Email Address",
@@ -63,7 +99,7 @@
       "submit": "Register",
       "hasAccount": "Already have an account?",
       "loginLink": "Login here",
-      "success": "Registration successful! Please login.",
+      "success": "Registration successful! Please verify your email.",
       "error": "Registration failed. Please try again.",
       "passwordMismatch": "Passwords do not match"
     }
@@ -76,7 +112,6 @@
     "error": "Failed to load references",
     "noReferences": "No references available",
     "readMore": "Read More",
-    "takeQuiz": "Take Quiz",
     "contentBlocks": {
       "text": "Text Content",
       "image": "Image",
@@ -87,29 +122,6 @@
       "korean": "Korean Language",
       "english": "English Language",
       "coding": "Programming & Coding"
-    }
-  },
-  "quiz": {
-    "title": "Quiz",
-    "question": "Question",
-    "of": "of",
-    "progress": "Progress",
-    "selectAnswer": "Select your answer",
-    "next": "Next",
-    "previous": "Previous",
-    "submit": "Submit Quiz",
-    "retake": "Retake Quiz",
-    "loading": "Loading quiz...",
-    "error": "Failed to load quiz",
-    "result": {
-      "title": "Quiz Results",
-      "score": "Your Score",
-      "passed": "Congratulations! You passed!",
-      "failed": "You didn't pass this time. Try again!",
-      "correctAnswers": "Correct Answers",
-      "timeTaken": "Time Taken",
-      "seconds": "seconds",
-      "pointsEarned": "Points Earned"
     }
   },
   "blog": {
@@ -167,16 +179,15 @@
     "passwordError": "Failed to change password"
   },
   "admin": {
-    "title": "Admin Dashboard",
-    "welcome": "Welcome to Admin Dashboard",
+    "title": "Admin Panel",
+    "welcome": "Welcome to Admin Panel",
     "statistics": {
       "title": "Statistics",
       "totalUsers": "Total Users",
       "activeUsers": "Active Users",
       "totalStudents": "Total Students",
       "pendingEnrollments": "Pending Enrollments",
-      "totalReferences": "Total References",
-      "totalQuizzes": "Total Quizzes"
+      "totalReferences": "Total References"
     },
     "quickActions": {
       "title": "Quick Actions",
@@ -280,44 +291,9 @@
     "title": "My Points",
     "totalPoints": "Total Points",
     "readingPoints": "Reading Points",
-    "quizPoints": "Quiz Points",
     "leaderboard": "Leaderboard",
     "rank": "Rank",
     "topStudents": "Top Students"
-  },
-  "dashboard": {
-    "goodMorning": "Good Morning",
-    "goodAfternoon": "Good Afternoon",
-    "goodEvening": "Good Evening",
-    "subtitle": "Here's an overview of your learning progress",
-    "totalPoints": "Total Points",
-    "enrollments": "Enrollments",
-    "documents": "Documents",
-    "availableDiscounts": "Available Discounts",
-    "reading": "Reading",
-    "quiz": "Quiz",
-    "pending": "Pending",
-    "approved": "Approved",
-    "uploadedFiles": "Uploaded Files",
-    "viewDetails": "View Details",
-    "quickActions": "Quick Actions",
-    "browseReferences": "Browse References",
-    "browseReferencesDesc": "Explore learning materials and topics",
-    "viewLeaderboard": "View Leaderboard",
-    "viewLeaderboardDesc": "See your rank and top students",
-    "applyDiscount": "Apply for Discount",
-    "applyDiscountDesc": "Claim your earned discount codes",
-    "uploadDocument": "Upload Document",
-    "uploadDocumentDesc": "Submit required documents",
-    "recentDocuments": "Recent Documents",
-    "noRecentDocuments": "No documents uploaded yet",
-    "uploadFirst": "Upload Your First Document",
-    "viewAllDocuments": "View All Documents",
-    "pointsProgress": "Points Progress",
-    "nextDiscount": "Next Discount",
-    "readingPoints": "Reading Points",
-    "quizPoints": "Quiz Points",
-    "earnMorePoints": "Earn More Points"
   },
   "notFound": {
     "title": "Page Not Found",

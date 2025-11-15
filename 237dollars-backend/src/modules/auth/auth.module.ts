@@ -11,6 +11,7 @@ import { GoogleStrategy } from './strategies/google.strategy';
 import { User } from '../../database/entities/user.entity';
 import { PasswordService } from '../../common/utils/password.service';
 import { EmailService } from '../../common/utils/email.service';
+import { EmailVerificationService } from '../../common/utils/email-verification.service';
 import { jwtConfig } from '../../config/jwt.config';
 
 @Module({
@@ -28,6 +29,7 @@ import { jwtConfig } from '../../config/jwt.config';
     GoogleStrategy,
     PasswordService,
     EmailService,
+    EmailVerificationService,
   ],
   exports: [AuthService],
 })

@@ -36,10 +36,4 @@ export class AdminController {
   markRealTestPassed(@Request() req, @Body() markTestDto: MarkTestPassedDto) {
     return this.adminService.markRealTestPassed(req.user.userId, markTestDto);
   }
-
-  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN)
-  @Get('dashboard-stats')
-  getDashboardStats() {
-    return this.adminService.getDashboardStats();
-  }
 }

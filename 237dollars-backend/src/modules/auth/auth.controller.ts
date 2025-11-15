@@ -8,6 +8,7 @@ import {
   Request,
   Get,
   Res,
+  Query,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { Throttle } from '@nestjs/throttler';
@@ -17,6 +18,8 @@ import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { PasswordResetRequestDto } from './dto/password-reset-request.dto';
 import { PasswordResetVerifyDto } from './dto/password-reset-verify.dto';
+import { VerifyEmailDto } from './dto/verify-email.dto';
+import { ResendVerificationDto } from './dto/resend-verification.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { Public } from '../../common/decorators/public.decorator';
@@ -60,6 +63,38 @@ export class AuthController {
   @Post('password-reset/verify')
   async passwordResetVerify(@Body() dto: PasswordResetVerifyDto) {
     return this.authService.passwordResetVerify(dto);
+  }
+
+  // Email verification endpoints
+  @Public()
+  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 attempts per minute
+  @HttpCode(HttpStatus.OK)
+  @Post('verify-email')
+  async verifyEmail(@Body() dto: VerifyEmailDto) {
+    return this.authService.verifyEmail(dto);
+  }
+
+  @Public()
+  @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 resend requests per minute
+  @HttpCode(HttpStatus.OK)
+  @Post('resend-verification')
+  async resendVerification(@Body() dto: ResendVerificationDto) {
+    return this.authService.resendVerification(dto);
+  }
+
+  // Availability check endpoints
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Get('check-username')
+  async checkUsername(@Query('username') username: string) {
+    return this.authService.checkUsernameAvailability(username);
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Get('check-email')
+  async checkEmail(@Query('email') email: string) {
+    return this.authService.checkEmailAvailability(email);
   }
 
   // Google OAuth endpoints

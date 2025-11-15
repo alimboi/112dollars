@@ -15,7 +15,7 @@
       </div>
     </div>
 
-    <!-- Alert Messages -->
+    <!-- Alert Messages for Profile -->
     <div class="alert alert-success" *ngIf="success">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -46,7 +46,7 @@
           </div>
           <div>
             <h3 class="card-title">Profile Information</h3>
-            <p class="card-subtitle">Update your account credentials</p>
+            <p class="card-subtitle">Update your personal details</p>
           </div>
         </div>
 
@@ -66,9 +66,133 @@
                 formControlName="email"
                 class="form-input"
                 readonly>
-              <div class="input-badge">Verified</div>
+              <div class="input-badge badge-verified" *ngIf="user?.emailVerified">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                Verified
+              </div>
             </div>
             <p class="input-hint">Your email address cannot be changed</p>
+          </div>
+
+          <div class="form-group">
+            <label for="username" class="form-label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Username</span>
+            </label>
+            <input
+              type="text"
+              id="username"
+              formControlName="username"
+              class="form-input"
+              [class.input-error]="usernameInvalid"
+              placeholder="Enter your username">
+            <p class="input-hint input-error-text" *ngIf="usernameInvalid">
+              Username must be 3-50 characters and contain only letters, numbers, and underscores
+            </p>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName" class="form-label">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>First Name</span>
+              </label>
+              <input
+                type="text"
+                id="firstName"
+                formControlName="firstName"
+                class="form-input"
+                placeholder="Enter your first name">
+            </div>
+
+            <div class="form-group">
+              <label for="lastName" class="form-label">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Last Name</span>
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                formControlName="lastName"
+                class="form-input"
+                placeholder="Enter your last name">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-modern btn-primary" [disabled]="loading || profileForm.invalid">
+            <span class="spinner" *ngIf="loading"></span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" *ngIf="!loading">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+              <polyline points="17 21 17 13 7 13 7 21"></polyline>
+              <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            <span>{{ loading ? 'Updating...' : 'Update Profile' }}</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Password Change Card -->
+      <div class="settings-card card-password">
+        <div class="card-header">
+          <div class="card-icon icon-purple">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="card-title">Change Password</h3>
+            <p class="card-subtitle">Update your password for security</p>
+          </div>
+        </div>
+
+        <!-- Password Alert Messages -->
+        <div class="alert alert-success" *ngIf="passwordSuccess">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <span>{{ passwordSuccess }}</span>
+        </div>
+
+        <div class="alert alert-error" *ngIf="passwordError">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span>{{ passwordError }}</span>
+        </div>
+
+        <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
+          <div class="form-group">
+            <label for="currentPassword" class="form-label">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span>Current Password</span>
+            </label>
+            <input
+              type="password"
+              id="currentPassword"
+              formControlName="currentPassword"
+              class="form-input"
+              placeholder="Enter your current password"
+              required>
+            <p class="input-hint">You must enter your current password to change it</p>
           </div>
 
           <div class="form-group">
@@ -84,34 +208,42 @@
               id="newPassword"
               formControlName="newPassword"
               class="form-input"
-              placeholder="Enter new password (optional)">
-            <p class="input-hint">Leave blank to keep your current password</p>
+              [class.input-error]="newPasswordInvalid"
+              placeholder="Enter new password"
+              required>
+            <p class="input-hint input-error-text" *ngIf="newPasswordInvalid">
+              Password must be at least 8 characters with uppercase, lowercase, and number
+            </p>
+            <p class="input-hint" *ngIf="!newPasswordInvalid">
+              Minimum 8 characters, including uppercase, lowercase, and number
+            </p>
           </div>
 
           <div class="form-group">
-            <label for="confirmPassword" class="form-label">
+            <label for="confirmNewPassword" class="form-label">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
-              <span>Confirm Password</span>
+              <span>Confirm New Password</span>
             </label>
             <input
               type="password"
-              id="confirmPassword"
-              formControlName="confirmPassword"
+              id="confirmNewPassword"
+              formControlName="confirmNewPassword"
               class="form-input"
-              placeholder="Confirm new password">
+              placeholder="Confirm new password"
+              required>
           </div>
 
-          <button type="submit" class="btn-modern btn-primary" [disabled]="loading">
-            <span class="spinner" *ngIf="loading"></span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" *ngIf="!loading">
+          <button type="submit" class="btn-modern btn-secondary" [disabled]="passwordLoading || passwordForm.invalid">
+            <span class="spinner" *ngIf="passwordLoading"></span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" *ngIf="!passwordLoading">
               <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
               <polyline points="17 21 17 13 7 13 7 21"></polyline>
               <polyline points="7 3 7 8 15 8"></polyline>
             </svg>
-            <span>{{ loading ? 'Updating...' : 'Update Profile' }}</span>
+            <span>{{ passwordLoading ? 'Changing Password...' : 'Change Password' }}</span>
           </button>
         </form>
       </div>
@@ -188,17 +320,18 @@
         <div class="card-header">
           <div class="card-icon icon-orange">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="12" y1="1" x2="12" y2="23"></line>
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
             </svg>
           </div>
           <div>
-            <h3 class="card-title">Account Overview</h3>
-            <p class="card-subtitle">Your learning statistics</p>
+            <h3 class="card-title">Learning Statistics</h3>
+            <p class="card-subtitle">Track your progress and achievements</p>
           </div>
         </div>
 
-        <div class="stats-grid">
+        <div class="stats-grid" *ngIf="!statsLoading">
           <div class="stat-item">
             <div class="stat-icon stat-blue">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -208,19 +341,7 @@
             </div>
             <div class="stat-content">
               <p class="stat-label">References Read</p>
-              <p class="stat-value">0</p>
-            </div>
-          </div>
-
-          <div class="stat-item">
-            <div class="stat-icon stat-green">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-            </div>
-            <div class="stat-content">
-              <p class="stat-label">Quizzes Completed</p>
-              <p class="stat-value">0</p>
+              <p class="stat-value">{{ stats.referencesRead }}</p>
             </div>
           </div>
 
@@ -233,7 +354,7 @@
             </div>
             <div class="stat-content">
               <p class="stat-label">Study Time</p>
-              <p class="stat-value">0h</p>
+              <p class="stat-value">{{ stats.totalReadingTime.formatted }}</p>
             </div>
           </div>
 
@@ -245,9 +366,26 @@
             </div>
             <div class="stat-content">
               <p class="stat-label">Current Streak</p>
-              <p class="stat-value">0 days</p>
+              <p class="stat-value">{{ stats.currentStreak }} days</p>
             </div>
           </div>
+
+          <div class="stat-item">
+            <div class="stat-icon stat-green">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <p class="stat-label">Total Points</p>
+              <p class="stat-value">{{ stats.totalPoints }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-loading" *ngIf="statsLoading">
+          <span class="spinner"></span>
+          <p>Loading statistics...</p>
         </div>
       </div>
 

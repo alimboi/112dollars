@@ -11,6 +11,9 @@ export interface User {
   firstName?: string;
   lastName?: string;
   role: string;
+  emailVerified?: boolean;
+  language?: string;
+  darkMode?: boolean;
 }
 
 export interface AuthResponse {

@@ -5,6 +5,20 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService, User } from '../../core/services/auth.service';
 import { ApiService } from '../../core/services/api.service';
 
+interface UserStats {
+  referencesRead: number;
+  totalReadingTime: {
+    hours: number;
+    minutes: number;
+    seconds: number;
+    formatted: string;
+  };
+  totalPoints: number;
+  totalReadingPoints: number;
+  currentStreak: number;
+  accountAge: number;
+}
+
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -25,11 +39,18 @@ export class ProfileComponent implements OnInit {
   passwordError = '';
 
   // User stats
-  stats = {
+  stats: UserStats = {
     referencesRead: 0,
-    totalReadingTime: { formatted: '0h 0m' },
+    totalReadingTime: {
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+      formatted: '0h 0m'
+    },
     currentStreak: 0,
-    totalPoints: 0
+    totalPoints: 0,
+    totalReadingPoints: 0,
+    accountAge: 0
   };
   statsLoading = true;
 
@@ -64,8 +85,8 @@ export class ProfileComponent implements OnInit {
   }
 
   loadProfile(): void {
-    this.api.get('users/profile').subscribe({
-      next: (data: any) => {
+    this.api.get<User>('users/profile').subscribe({
+      next: (data) => {
         this.user = data;
         this.profileForm.patchValue({
           email: data.email,
@@ -87,8 +108,8 @@ export class ProfileComponent implements OnInit {
 
   loadStats(): void {
     this.statsLoading = true;
-    this.api.get('users/stats').subscribe({
-      next: (data: any) => {
+    this.api.get<UserStats>('users/stats').subscribe({
+      next: (data) => {
         this.stats = data;
         this.statsLoading = false;
       },
@@ -115,7 +136,7 @@ export class ProfileComponent implements OnInit {
       if (firstName) updateData.firstName = firstName;
       if (lastName) updateData.lastName = lastName;
 
-      this.api.put('users/profile', updateData).subscribe({
+      this.api.put<User>('users/profile', updateData).subscribe({
         next: (response) => {
           this.success = 'Profile updated successfully';
           this.loading = false;
@@ -164,7 +185,7 @@ export class ProfileComponent implements OnInit {
       this.error = '';
       this.success = '';
 
-      this.api.put('users/preferences', this.preferencesForm.value).subscribe({
+      this.api.put<User>('users/preferences', this.preferencesForm.value).subscribe({
         next: (response) => {
           this.success = 'Preferences updated successfully';
           this.loading = false;

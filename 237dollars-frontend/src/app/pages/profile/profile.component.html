@@ -331,7 +331,7 @@
           </div>
         </div>
 
-        <div class="stats-grid" *ngIf="!statsLoading">
+        <div class="stats-grid stats-grid-3" *ngIf="!statsLoading">
           <div class="stat-item">
             <div class="stat-icon stat-blue">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -367,18 +367,6 @@
             <div class="stat-content">
               <p class="stat-label">Current Streak</p>
               <p class="stat-value">{{ stats.currentStreak }} days</p>
-            </div>
-          </div>
-
-          <div class="stat-item">
-            <div class="stat-icon stat-green">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-              </svg>
-            </div>
-            <div class="stat-content">
-              <p class="stat-label">Total Points</p>
-              <p class="stat-value">{{ stats.totalPoints }}</p>
             </div>
           </div>
         </div>

@@ -37,15 +37,6 @@ export class AdminService {
       throw new ForbiddenException('Only super admins can create admin users');
     }
 
-    // Check if email already exists
-    const existingUser = await this.userRepository.findOne({
-      where: { email: createAdminDto.email },
-    });
-
-    if (existingUser) {
-      throw new BadRequestException('Email already in use');
-    }
-
     // Validate role (only admin roles)
     const allowedRoles = [
       UserRole.ADMIN,
@@ -57,6 +48,43 @@ export class AdminService {
       throw new BadRequestException('Invalid admin role');
     }
 
+    // Check if email already exists
+    const existingUser = await this.userRepository.findOne({
+      where: { email: createAdminDto.email },
+    });
+
+    if (existingUser) {
+      // User exists - promote them to admin role
+      const oldRole = existingUser.role;
+      existingUser.role = createAdminDto.role;
+      existingUser.isActive = true;
+      existingUser.emailVerified = true;
+
+      // Update password if provided
+      if (createAdminDto.password) {
+        if (!this.passwordService.validatePasswordStrength(createAdminDto.password)) {
+          throw new BadRequestException(
+            'Password must be at least 8 characters with uppercase, lowercase, and number',
+          );
+        }
+        existingUser.password = await this.passwordService.hashPassword(
+          createAdminDto.password,
+        );
+      }
+
+      const saved = await this.userRepository.save(existingUser);
+
+      // Log activity
+      await this.logActivity(
+        superAdminId,
+        ActivityType.UPDATE,
+        `Promoted existing user ${createAdminDto.email} from ${oldRole} to ${createAdminDto.role}`,
+      );
+
+      return saved;
+    }
+
+    // User doesn't exist - create new admin
     // Validate password
     if (!this.passwordService.validatePasswordStrength(createAdminDto.password)) {
       throw new BadRequestException(

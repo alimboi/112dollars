@@ -64,6 +64,7 @@ export class AdminComponent implements OnInit {
   adminStats: AdminStats | null = null;
   activityLogs: ActivityLog[] = [];
   showCreateAdminForm = false;
+  currentUser: any = null;
   newAdmin: CreateAdminDto = {
     email: '',
     password: '',
@@ -112,6 +113,9 @@ export class AdminComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Get current user
+    this.currentUser = this.authService.getCurrentUser();
+
     this.loadMajors();
     this.loadTopics();
     this.loadReferences();
@@ -126,7 +130,7 @@ export class AdminComponent implements OnInit {
   }
 
   isSuperAdmin(): boolean {
-    return this.authService.currentUser?.role === 'super_admin';
+    return this.currentUser?.role === 'super_admin';
   }
 
   loadMajors(): void {

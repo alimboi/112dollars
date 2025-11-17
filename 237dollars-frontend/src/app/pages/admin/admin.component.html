@@ -432,7 +432,7 @@
                 <td>{{ admin.username || 'N/A' }}</td>
                 <td>
                   <select
-                    *ngIf="admin.role !== 'super_admin' && authService.currentUser?.id !== admin.id"
+                    *ngIf="admin.role !== 'super_admin' && currentUser?.id !== admin.id"
                     [(ngModel)]="admin.role"
                     (change)="updateAdminRole(admin, admin.role)"
                     class="role-select"
@@ -441,7 +441,7 @@
                       {{ role.label }}
                     </option>
                   </select>
-                  <span *ngIf="admin.role === 'super_admin' || authService.currentUser?.id === admin.id" class="role-badge super-admin">
+                  <span *ngIf="admin.role === 'super_admin' || currentUser?.id === admin.id" class="role-badge super-admin">
                     {{ formatRole(admin.role) }}
                   </span>
                 </td>
@@ -454,7 +454,7 @@
                 <td class="actions-cell">
                   <div class="action-buttons">
                     <button
-                      *ngIf="admin.isActive && admin.role !== 'super_admin' && authService.currentUser?.id !== admin.id"
+                      *ngIf="admin.isActive && admin.role !== 'super_admin' && currentUser?.id !== admin.id"
                       class="btn-icon btn-warning"
                       (click)="deactivateAdmin(admin)"
                       title="Deactivate"
@@ -469,7 +469,7 @@
                     >
                       ▶️
                     </button>
-                    <span *ngIf="authService.currentUser?.id === admin.id" class="you-badge">
+                    <span *ngIf="currentUser?.id === admin.id" class="you-badge">
                       (You)
                     </span>
                   </div>
@@ -495,7 +495,7 @@
             <div class="activity-content">
               <div class="activity-description">{{ log.description }}</div>
               <div class="activity-meta">
-                <span class="activity-admin">{{ log.admin?.email }}</span>
+                <span class="activity-admin">{{ log.admin.email }}</span>
                 <span class="activity-separator">•</span>
                 <span class="activity-date">{{ formatDate(log.createdAt) }}</span>
               </div>

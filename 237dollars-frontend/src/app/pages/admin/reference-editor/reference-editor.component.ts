@@ -386,10 +386,16 @@ export class ReferenceEditorComponent implements OnInit {
     try {
       const response = await this.api.post<any>('upload/image', formData).toPromise();
 
-      if (this.currentBlock && this.currentBlock.blockData) {
-        // Store the URL returned from backend
-        this.currentBlock.blockData.url = 'http://localhost:3000' + response?.url;
-        this.currentBlock.blockData.filename = response?.filename;
+      if (this.currentBlock) {
+        // Store the URL in content field (consistent with telegram bot)
+        const fullUrl = 'http://localhost:3000' + response?.url;
+        this.currentBlock.content = fullUrl;
+
+        // Also store in blockData for backward compatibility
+        if (this.currentBlock.blockData) {
+          this.currentBlock.blockData.url = fullUrl;
+          this.currentBlock.blockData.filename = response?.filename;
+        }
       }
 
       this.loading = false;

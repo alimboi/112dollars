@@ -10,6 +10,7 @@ import { BlogImageGallery } from '../../database/entities/blog-image-gallery.ent
 import { ReferencesService } from '../references/references.service';
 import { BlogGalleryService } from '../blog/blog-gallery.service';
 import { UserRole } from '../../types/user-role.enum';
+import { ContentBlockType } from '../../types/content-block-type.enum';
 import {
   ConversationState,
   ConversationFlow,
@@ -514,11 +515,11 @@ export class TelegramBotService implements OnModuleInit {
     }
 
     const blockTypeMap = {
-      'block_text': 'TEXT',
-      'block_heading': 'HEADING',
-      'block_image': 'IMAGE',
-      'block_video': 'VIDEO',
-      'block_code': 'CODE_BLOCK',
+      'block_text': ContentBlockType.TEXT,
+      'block_heading': ContentBlockType.HEADING,
+      'block_image': ContentBlockType.IMAGE,
+      'block_video': ContentBlockType.VIDEO,
+      'block_code': ContentBlockType.CODE_BLOCK,
     };
 
     const blockType = blockTypeMap[data];
@@ -528,11 +529,11 @@ export class TelegramBotService implements OnModuleInit {
     state.referenceData.blockStep = ContentBlockStep.ENTER_CONTENT;
 
     const prompts = {
-      'TEXT': 'Enter text content\\:',
-      'HEADING': 'Enter heading text\\:',
-      'IMAGE': 'Enter image URL\\:',
-      'VIDEO': 'Enter video URL\\:',
-      'CODE_BLOCK': 'Enter code content\\:',
+      [ContentBlockType.TEXT]: 'Enter text content\\:',
+      [ContentBlockType.HEADING]: 'Enter heading text\\:',
+      [ContentBlockType.IMAGE]: 'Enter image URL\\:',
+      [ContentBlockType.VIDEO]: 'Enter video URL\\:',
+      [ContentBlockType.CODE_BLOCK]: 'Enter code content\\:',
     };
 
     await ctx.reply(prompts[blockType], { parse_mode: 'MarkdownV2' });
@@ -735,7 +736,7 @@ export class TelegramBotService implements OnModuleInit {
         currentBlock.content = text;
 
         // Check if we need styling/additional info
-        if (currentBlock.blockType === 'HEADING') {
+        if (currentBlock.blockType === ContentBlockType.HEADING) {
           state.referenceData.blockStep = ContentBlockStep.ENTER_STYLING;
           const buttons = [
             [Markup.button.callback('H1', 'heading_1')],
@@ -749,7 +750,7 @@ export class TelegramBotService implements OnModuleInit {
               ...Markup.inlineKeyboard(buttons),
             }
           );
-        } else if (currentBlock.blockType === 'CODE_BLOCK') {
+        } else if (currentBlock.blockType === ContentBlockType.CODE_BLOCK) {
           state.referenceData.blockStep = ContentBlockStep.ENTER_STYLING;
           await ctx.reply(
             'Enter programming language \\(e\\.g\\. javascript, python, typescript\\)\\:',
@@ -763,7 +764,7 @@ export class TelegramBotService implements OnModuleInit {
 
       case ContentBlockStep.ENTER_STYLING:
         // For code blocks, text is the language
-        if (currentBlock.blockType === 'CODE_BLOCK') {
+        if (currentBlock.blockType === ContentBlockType.CODE_BLOCK) {
           currentBlock.styling = { language: text };
         }
         await this.saveContentBlock(ctx, state);

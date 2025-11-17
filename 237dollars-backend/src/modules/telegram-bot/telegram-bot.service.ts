@@ -15,6 +15,7 @@ import {
   ConversationFlow,
   ReferenceCreationStep,
   GalleryCreationStep,
+  ContentBlockStep,
 } from './interfaces/conversation-state.interface';
 
 @Injectable()
@@ -85,6 +86,11 @@ export class TelegramBotService implements OnModuleInit {
     this.bot.command('publish_ref', (ctx) => this.handlePublishReference(ctx));
     this.bot.command('unpublish_ref', (ctx) => this.handleUnpublishReference(ctx));
 
+    // Content block management
+    this.bot.command('add_blocks', (ctx) => this.handleAddBlocks(ctx));
+    this.bot.command('list_blocks', (ctx) => this.handleListBlocks(ctx));
+    this.bot.command('delete_block', (ctx) => this.handleDeleteBlock(ctx));
+
     // Gallery management
     this.bot.command('create_gallery', (ctx) => this.handleCreateGallery(ctx));
     this.bot.command('my_galleries', (ctx) => this.handleMyGalleries(ctx));
@@ -153,6 +159,11 @@ export class TelegramBotService implements OnModuleInit {
 /my\\_references \\- View your references
 /publish\\_ref \\[id\\] \\- Publish a reference
 /unpublish\\_ref \\[id\\] \\- Unpublish a reference
+
+*Content Blocks:*
+/add\\_blocks \\[ref\\_id\\] \\- Add blocks to reference
+/list\\_blocks \\[ref\\_id\\] \\- View all blocks
+/delete\\_block \\[block\\_id\\] \\- Delete a block
 
 *Gallery Management:*
 /create\\_gallery \\- Create new gallery
@@ -446,7 +457,7 @@ export class TelegramBotService implements OnModuleInit {
     const state = this.conversationStates.get(ctx.from.id);
     if (!state) return;
 
-    if (state.flow === ConversationFlow.CREATE_REFERENCE) {
+    if (state.flow === ConversationFlow.CREATE_REFERENCE || state.flow === ConversationFlow.ADD_CONTENT_BLOCK) {
       await this.handleReferenceCreationFlow(ctx, state);
     } else if (state.flow === ConversationFlow.CREATE_GALLERY) {
       await this.handleGalleryCreationFlow(ctx, state);
@@ -478,9 +489,62 @@ export class TelegramBotService implements OnModuleInit {
       await this.handleReferenceMajorSelection(ctx, data);
     } else if (data.startsWith('ref_topic_')) {
       await this.handleReferenceTopicSelection(ctx, data);
+    } else if (data.startsWith('block_')) {
+      await this.handleBlockTypeSelection(ctx, data);
+    } else if (data.startsWith('heading_')) {
+      await this.handleHeadingLevelSelection(ctx, data);
     }
 
     await ctx.answerCbQuery();
+  }
+
+  private async handleBlockTypeSelection(ctx: Context, data: string) {
+    const state = this.conversationStates.get(ctx.from.id);
+    if (!state) return;
+
+    if (data === 'block_done') {
+      const totalBlocks = state.referenceData.contentBlocks?.length || 0;
+      await ctx.reply(
+        `✅ *Reference complete with ${totalBlocks} blocks\\!*\n\n` +
+        `Use /publish\\_ref ${state.referenceData.referenceId} to publish it\\.`,
+        { parse_mode: 'MarkdownV2' }
+      );
+      this.conversationStates.delete(ctx.from.id);
+      return;
+    }
+
+    const blockTypeMap = {
+      'block_text': 'TEXT',
+      'block_heading': 'HEADING',
+      'block_image': 'IMAGE',
+      'block_video': 'VIDEO',
+      'block_code': 'CODE_BLOCK',
+    };
+
+    const blockType = blockTypeMap[data];
+    if (!blockType) return;
+
+    state.referenceData.currentBlock = { blockType };
+    state.referenceData.blockStep = ContentBlockStep.ENTER_CONTENT;
+
+    const prompts = {
+      'TEXT': 'Enter text content\\:',
+      'HEADING': 'Enter heading text\\:',
+      'IMAGE': 'Enter image URL\\:',
+      'VIDEO': 'Enter video URL\\:',
+      'CODE_BLOCK': 'Enter code content\\:',
+    };
+
+    await ctx.reply(prompts[blockType], { parse_mode: 'MarkdownV2' });
+  }
+
+  private async handleHeadingLevelSelection(ctx: Context, data: string) {
+    const state = this.conversationStates.get(ctx.from.id);
+    if (!state || !state.referenceData.currentBlock) return;
+
+    const level = parseInt(data.replace('heading_', ''));
+    state.referenceData.currentBlock.styling = { level };
+    await this.saveContentBlock(ctx, state);
   }
 
   private async handleReferenceMajorSelection(ctx: Context, data: string) {
@@ -527,7 +591,7 @@ export class TelegramBotService implements OnModuleInit {
     state.referenceData.step = ReferenceCreationStep.ENTER_TITLE;
 
     await ctx.reply(
-      '✏️ *Step 3/5\\: Enter Title*\n\n' +
+      '✏️ *Step 3/4\\: Enter Title*\n\n' +
       'Please enter the reference title\\:\n\n' +
       '\\(Use /cancel to abort\\)',
       { parse_mode: 'MarkdownV2' }
@@ -542,7 +606,7 @@ export class TelegramBotService implements OnModuleInit {
         state.referenceData.title = text;
         state.referenceData.step = ReferenceCreationStep.ENTER_DESCRIPTION;
         await ctx.reply(
-          '📝 *Step 4/5\\: Enter Description*\n\n' +
+          '📝 *Step 4/4\\: Enter Description*\n\n' +
           'Please enter the reference description\\:\n\n' +
           '\\(Use /cancel to abort\\)',
           { parse_mode: 'MarkdownV2' }
@@ -551,24 +615,13 @@ export class TelegramBotService implements OnModuleInit {
 
       case ReferenceCreationStep.ENTER_DESCRIPTION:
         state.referenceData.description = text;
-        state.referenceData.step = ReferenceCreationStep.ENTER_CONTENT;
-        await ctx.reply(
-          '📄 *Step 5/5\\: Enter Content*\n\n' +
-          'Please enter the reference content \\(can be text, JSON, or formatted content\\)\\:\n\n' +
-          '\\(Use /cancel to abort\\)',
-          { parse_mode: 'MarkdownV2' }
-        );
+        // Create reference immediately
+        await this.createReferenceAndStartBlocks(ctx, state);
         break;
 
-      case ReferenceCreationStep.ENTER_CONTENT:
-        // Try to parse as JSON, otherwise use as plain text
-        try {
-          state.referenceData.content = JSON.parse(text);
-        } catch {
-          state.referenceData.content = { type: 'text', content: text };
-        }
-
-        await this.createReferenceFromState(ctx, state);
+      case ReferenceCreationStep.ADD_CONTENT_BLOCKS:
+        // Handle block content input based on current block being created
+        await this.handleBlockContentInput(ctx, state, text);
         break;
     }
   }
@@ -616,32 +669,246 @@ export class TelegramBotService implements OnModuleInit {
     }
   }
 
-  private async createReferenceFromState(ctx: Context, state: ConversationState) {
+  private async createReferenceAndStartBlocks(ctx: Context, state: ConversationState) {
     try {
+      // Create reference with empty content
       const reference = await this.referencesService.create(
         {
           topicId: state.referenceData.topicId,
           title: state.referenceData.title,
           description: state.referenceData.description,
-          content: state.referenceData.content,
+          content: {},
           isPublished: false,
         },
         state.userId
       );
 
+      // Save reference ID and initialize blocks array
+      state.referenceData.referenceId = reference.id;
+      state.referenceData.contentBlocks = [];
+      state.referenceData.step = ReferenceCreationStep.ADD_CONTENT_BLOCKS;
+
       await ctx.reply(
-        `✅ *Reference created successfully\\!*\n\n` +
+        `✅ *Reference created\\!*\n\n` +
         `ID: ${reference.id}\n` +
-        `Title: ${this.escapeMarkdown(reference.title)}\n` +
-        `Status: Unpublished\n\n` +
-        `Use /publish\\_ref ${reference.id} to publish it\\.`,
+        `Title: ${this.escapeMarkdown(reference.title)}\n\n` +
+        `Now add content blocks\\:`,
         { parse_mode: 'MarkdownV2' }
       );
 
-      this.conversationStates.delete(ctx.from.id);
+      // Show block type menu
+      await this.showBlockTypeMenu(ctx);
     } catch (error) {
       await ctx.reply(`❌ Error creating reference: ${error.message}`);
       this.conversationStates.delete(ctx.from.id);
+    }
+  }
+
+  private async showBlockTypeMenu(ctx: Context) {
+    const buttons = [
+      [Markup.button.callback('📝 Text', 'block_text')],
+      [Markup.button.callback('🔤 Heading', 'block_heading')],
+      [Markup.button.callback('🖼 Image', 'block_image')],
+      [Markup.button.callback('🎥 Video', 'block_video')],
+      [Markup.button.callback('💻 Code', 'block_code')],
+      [Markup.button.callback('✅ Done', 'block_done')],
+      [Markup.button.callback('❌ Cancel', 'cancel')],
+    ];
+
+    await ctx.reply(
+      'Choose block type to add\\:',
+      {
+        parse_mode: 'MarkdownV2',
+        ...Markup.inlineKeyboard(buttons),
+      }
+    );
+  }
+
+  private async handleBlockContentInput(ctx: Context, state: ConversationState, text: string) {
+    const currentBlock = state.referenceData.currentBlock;
+    const blockStep = state.referenceData.blockStep;
+
+    if (!currentBlock) return;
+
+    switch (blockStep) {
+      case ContentBlockStep.ENTER_CONTENT:
+        currentBlock.content = text;
+
+        // Check if we need styling/additional info
+        if (currentBlock.blockType === 'HEADING') {
+          state.referenceData.blockStep = ContentBlockStep.ENTER_STYLING;
+          const buttons = [
+            [Markup.button.callback('H1', 'heading_1')],
+            [Markup.button.callback('H2', 'heading_2')],
+            [Markup.button.callback('H3', 'heading_3')],
+          ];
+          await ctx.reply(
+            'Select heading level\\:',
+            {
+              parse_mode: 'MarkdownV2',
+              ...Markup.inlineKeyboard(buttons),
+            }
+          );
+        } else if (currentBlock.blockType === 'CODE_BLOCK') {
+          state.referenceData.blockStep = ContentBlockStep.ENTER_STYLING;
+          await ctx.reply(
+            'Enter programming language \\(e\\.g\\. javascript, python, typescript\\)\\:',
+            { parse_mode: 'MarkdownV2' }
+          );
+        } else {
+          // No additional styling needed, save the block
+          await this.saveContentBlock(ctx, state);
+        }
+        break;
+
+      case ContentBlockStep.ENTER_STYLING:
+        // For code blocks, text is the language
+        if (currentBlock.blockType === 'CODE_BLOCK') {
+          currentBlock.styling = { language: text };
+        }
+        await this.saveContentBlock(ctx, state);
+        break;
+    }
+  }
+
+  private async saveContentBlock(ctx: Context, state: ConversationState) {
+    try {
+      const blockData = {
+        blockType: state.referenceData.currentBlock.blockType,
+        content: state.referenceData.currentBlock.content,
+        styling: state.referenceData.currentBlock.styling || {},
+        blockData: state.referenceData.currentBlock.blockData || {},
+        blockOrder: state.referenceData.contentBlocks.length,
+      };
+
+      await this.referencesService.addContentBlock(
+        state.referenceData.referenceId,
+        blockData
+      );
+
+      state.referenceData.contentBlocks.push(blockData);
+      state.referenceData.currentBlock = null;
+      state.referenceData.blockStep = null;
+
+      await ctx.reply(
+        `✅ Block added\\! Total blocks: ${state.referenceData.contentBlocks.length}`,
+        { parse_mode: 'MarkdownV2' }
+      );
+
+      await this.showBlockTypeMenu(ctx);
+    } catch (error) {
+      await ctx.reply(`❌ Error saving block: ${error.message}`);
+      await this.showBlockTypeMenu(ctx);
+    }
+  }
+
+  private async handleAddBlocks(ctx: Context) {
+    const admin = await this.checkAdminAuth(ctx);
+    if (!admin) return;
+
+    const args = (ctx.message as any).text.split(' ');
+    const refId = parseInt(args[1]);
+
+    if (!refId || isNaN(refId)) {
+      await ctx.reply('❌ Please provide a reference ID: /add\\_blocks \\[ref\\_id\\]', {
+        parse_mode: 'MarkdownV2',
+      });
+      return;
+    }
+
+    // Verify reference exists and belongs to user
+    const reference = await this.referenceRepository.findOne({
+      where: { id: refId, createdBy: admin.id },
+    });
+
+    if (!reference) {
+      await ctx.reply('❌ Reference not found or you don\\'t have permission\\.', {
+        parse_mode: 'MarkdownV2',
+      });
+      return;
+    }
+
+    // Initialize state for adding blocks to existing reference
+    this.conversationStates.set(ctx.from.id, {
+      userId: admin.id,
+      telegramUsername: admin.telegramUsername,
+      flow: ConversationFlow.ADD_CONTENT_BLOCK,
+      referenceData: {
+        referenceId: refId,
+        step: ReferenceCreationStep.ADD_CONTENT_BLOCKS,
+        contentBlocks: [],
+      },
+    });
+
+    await ctx.reply(
+      `Adding blocks to: *${this.escapeMarkdown(reference.title)}*`,
+      { parse_mode: 'MarkdownV2' }
+    );
+
+    await this.showBlockTypeMenu(ctx);
+  }
+
+  private async handleListBlocks(ctx: Context) {
+    const admin = await this.checkAdminAuth(ctx);
+    if (!admin) return;
+
+    const args = (ctx.message as any).text.split(' ');
+    const refId = parseInt(args[1]);
+
+    if (!refId || isNaN(refId)) {
+      await ctx.reply('❌ Please provide a reference ID: /list\\_blocks \\[ref\\_id\\]', {
+        parse_mode: 'MarkdownV2',
+      });
+      return;
+    }
+
+    try {
+      const reference = await this.referencesService.findOne(refId);
+
+      if (!reference || !reference.contentBlocks || reference.contentBlocks.length === 0) {
+        await ctx.reply('No blocks found for this reference\\.', {
+          parse_mode: 'MarkdownV2',
+        });
+        return;
+      }
+
+      let message = `📚 *Blocks in: ${this.escapeMarkdown(reference.title)}*\n\n`;
+      reference.contentBlocks.forEach((block, index) => {
+        message += `${index + 1}\\. ${block.blockType} \\(ID: ${block.id}\\)\n`;
+        if (block.content) {
+          const preview = block.content.substring(0, 50);
+          message += `   ${this.escapeMarkdown(preview)}${block.content.length > 50 ? '\\.\\.\\.' : ''}\n`;
+        }
+        message += '\n';
+      });
+
+      await ctx.reply(message, { parse_mode: 'MarkdownV2' });
+    } catch (error) {
+      await ctx.reply(`❌ Error: ${error.message}`);
+    }
+  }
+
+  private async handleDeleteBlock(ctx: Context) {
+    const admin = await this.checkAdminAuth(ctx);
+    if (!admin) return;
+
+    const args = (ctx.message as any).text.split(' ');
+    const blockId = parseInt(args[1]);
+
+    if (!blockId || isNaN(blockId)) {
+      await ctx.reply('❌ Please provide a block ID: /delete\\_block \\[block\\_id\\]', {
+        parse_mode: 'MarkdownV2',
+      });
+      return;
+    }
+
+    try {
+      await this.referencesService.deleteContentBlock(blockId);
+      await ctx.reply(`✅ Block ${blockId} deleted successfully\\!`, {
+        parse_mode: 'MarkdownV2',
+      });
+    } catch (error) {
+      await ctx.reply(`❌ Error: ${error.message}`);
     }
   }
 

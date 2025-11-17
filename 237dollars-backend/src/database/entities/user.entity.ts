@@ -66,6 +66,19 @@ export class User {
   @Column({ name: 'last_verification_request', type: 'timestamp', nullable: true })
   lastVerificationRequest: Date;
 
+  // Password reset fields (SECURITY: Store in database, not memory)
+  @Column({ name: 'password_reset_code', length: 6, nullable: true })
+  passwordResetCode: string;
+
+  @Column({ name: 'password_reset_expiry', type: 'timestamp', nullable: true })
+  passwordResetExpiry: Date;
+
+  @Column({ name: 'password_reset_attempts', default: 0 })
+  passwordResetAttempts: number;
+
+  @Column({ name: 'last_password_reset_request', type: 'timestamp', nullable: true })
+  lastPasswordResetRequest: Date;
+
   @Column({
     type: 'enum',
     enum: UserRole,

@@ -21,10 +21,10 @@ import { ErrorMessages } from '../../common/constants/error-messages';
 
 @Injectable()
 export class AuthService {
-  private resetCodes = new Map<
-    string,
-    { code: string; expiresAt: Date }
-  >();
+  // SECURITY: Password reset codes moved to database (Fix #8)
+  private readonly PASSWORD_RESET_CODE_LENGTH = 6;
+  private readonly PASSWORD_RESET_EXPIRY_MINUTES = 10;
+  private readonly MAX_PASSWORD_RESET_ATTEMPTS = 3;
 
   constructor(
     @InjectRepository(User)
@@ -291,6 +291,7 @@ export class AuthService {
 
   /**
    * Request password reset (supports username or email)
+   * SECURITY: Stores codes in database instead of memory (Fix #8)
    */
   async passwordResetRequest(dto: PasswordResetRequestDto) {
     const { identifier } = dto;
@@ -299,51 +300,74 @@ export class AuthService {
     const user = await this.findUserByIdentifier(identifier);
 
     if (!user) {
-      // Don't reveal if user exists
+      // SECURITY: Don't reveal if user exists
       return { message: 'If user exists, reset code will be sent' };
     }
 
     // Generate 6-digit code
     const code = this.passwordService.generateResetCode();
     const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + 10); // 10 minutes expiry
+    expiresAt.setMinutes(expiresAt.getMinutes() + this.PASSWORD_RESET_EXPIRY_MINUTES);
 
-    // Store code temporarily (using email as key since it's unique)
-    this.resetCodes.set(user.email, { code, expiresAt });
+    // SECURITY: Store code in database instead of memory (Fix #8)
+    user.passwordResetCode = code;
+    user.passwordResetExpiry = expiresAt;
+    user.passwordResetAttempts = 0; // Reset attempts when new code is sent
+    user.lastPasswordResetRequest = new Date();
+
+    await this.userRepository.save(user);
 
     // Send email
     await this.emailService.sendPasswordResetEmail(user.email, code);
 
-    // Clean up expired codes
-    this.cleanupExpiredCodes();
-
     return { message: 'If user exists, reset code will be sent' };
   }
 
+  /**
+   * Verify password reset code and update password
+   * SECURITY: Reads codes from database instead of memory (Fix #8)
+   */
   async passwordResetVerify(dto: PasswordResetVerifyDto) {
     const { identifier, code, newPassword } = dto;
 
-    // Find user by identifier first to get their email
+    // Find user by identifier
     const user = await this.findUserByIdentifier(identifier);
 
     if (!user) {
       throw new BadRequestException('Invalid or expired reset code');
     }
 
-    // Now use email to look up reset code (since resetCodes map uses email as key)
-    const storedData = this.resetCodes.get(user.email);
-
-    if (!storedData) {
+    // SECURITY: Check code from database instead of memory (Fix #8)
+    if (!user.passwordResetCode || !user.passwordResetExpiry) {
       throw new BadRequestException('Invalid or expired reset code');
     }
 
-    if (storedData.code !== code) {
-      throw new BadRequestException('Invalid or expired reset code');
-    }
-
-    if (new Date() > storedData.expiresAt) {
-      this.resetCodes.delete(user.email);
+    // Check if code expired
+    if (new Date() > user.passwordResetExpiry) {
+      // Clean up expired code
+      user.passwordResetCode = null;
+      user.passwordResetExpiry = null;
+      user.passwordResetAttempts = 0;
+      await this.userRepository.save(user);
       throw new BadRequestException('Reset code expired');
+    }
+
+    // Check attempts to prevent brute force
+    if (user.passwordResetAttempts >= this.MAX_PASSWORD_RESET_ATTEMPTS) {
+      throw new BadRequestException(
+        'Maximum reset attempts exceeded. Please request a new code',
+      );
+    }
+
+    // Verify code
+    if (user.passwordResetCode !== code) {
+      user.passwordResetAttempts += 1;
+      await this.userRepository.save(user);
+
+      const remainingAttempts = this.MAX_PASSWORD_RESET_ATTEMPTS - user.passwordResetAttempts;
+      throw new BadRequestException(
+        `Invalid reset code. ${remainingAttempts} attempt(s) remaining`,
+      );
     }
 
     // Validate new password
@@ -354,6 +378,12 @@ export class AuthService {
     const hashedPassword = await this.passwordService.hashPassword(newPassword);
     user.password = hashedPassword;
 
+    // Clean up reset code fields
+    user.passwordResetCode = null;
+    user.passwordResetExpiry = null;
+    user.passwordResetAttempts = 0;
+    user.lastPasswordResetRequest = null;
+
     // SECURITY: Only activate if email was already verified
     // Don't auto-verify on password reset - this could bypass email verification
     if (user.emailVerified) {
@@ -361,9 +391,6 @@ export class AuthService {
     }
 
     await this.userRepository.save(user);
-
-    // Delete used code
-    this.resetCodes.delete(user.email);
 
     return { message: 'Password reset successful' };
   }
@@ -456,14 +483,5 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
-  }
-
-  private cleanupExpiredCodes() {
-    const now = new Date();
-    for (const [email, data] of this.resetCodes.entries()) {
-      if (now > data.expiresAt) {
-        this.resetCodes.delete(email);
-      }
-    }
   }
 }

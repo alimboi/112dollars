@@ -26,12 +26,12 @@ export class UploadController {
   @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Post('image')
   @UseInterceptors(FileInterceptor('image'))
-  uploadImage(@UploadedFile() file: Express.Multer.File) {
+  async uploadImage(@UploadedFile() file: Express.Multer.File) {
     if (!file) {
       throw new BadRequestException('No file provided');
     }
 
-    return this.uploadService.saveImage(file);
+    return await this.uploadService.saveImage(file);
   }
 
   /**

@@ -4,7 +4,8 @@ import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { StorageService } from '../../../core/services/storage.service';
 import { ApiService } from '../../../core/services/api.service';
-import { filter, Subscription } from 'rxjs';
+import { filter, Subscription, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
@@ -28,9 +29,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     { code: 'ko', name: '한국어', flag: '🇰🇷' }
   ];
 
+  // Memory leak prevention
+  private destroy$ = new Subject<void>();
   private routerSubscription?: Subscription;
   private lastScrollTop = 0;
   private scrollThreshold = 100;
+  private captureClickHandler = this.handleCaptureClick.bind(this);
 
   constructor(
     public authService: AuthService,
@@ -60,7 +64,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       });
 
     // Add click handler in CAPTURE phase to prevent clicks on page content
-    document.addEventListener('click', this.handleCaptureClick.bind(this), true);
+    document.addEventListener('click', this.captureClickHandler, true);
   }
 
   // Capture phase click handler - fires BEFORE page elements receive clicks
@@ -82,9 +86,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    // Clean up subscriptions
+    this.destroy$.next();
+    this.destroy$.complete();
+
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
+
+    // Remove event listener to prevent memory leak
+    document.removeEventListener('click', this.captureClickHandler, true);
+
     // Ensure body scroll is re-enabled when component is destroyed
     document.body.classList.remove('menu-open');
   }
@@ -151,10 +163,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     // Sync with backend if user is authenticated
     if (this.authService.isAuthenticated()) {
-      this.api.put('users/preferences', { language: lang }).subscribe({
-        next: () => console.log('Language preference synced with backend'),
-        error: (err) => console.error('Failed to sync language preference', err)
-      });
+      this.api.put('users/preferences', { language: lang })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => console.log('Language preference synced with backend'),
+          error: (err) => console.error('Failed to sync language preference', err)
+        });
     }
   }
 

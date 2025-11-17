@@ -48,18 +48,44 @@ export class AwsS3Service {
       Key: key,
       Body: file.buffer,
       ContentType: file.mimetype,
-      ACL: 'public-read',
+      ACL: 'private', // SECURITY: Changed from 'public-read' to 'private'
     };
 
     try {
       const result = await this.s3.upload(params).promise();
+      // Return presigned URL instead of public Location
+      const signedUrl = await this.getSignedUrl(result.Key);
       return {
-        url: result.Location,
+        url: signedUrl,
         key: result.Key,
       };
     } catch (error) {
       console.error('AWS S3 Upload Error:', error);
       throw new Error('File upload failed');
+    }
+  }
+
+  /**
+   * Generate a presigned URL for secure, temporary file access
+   * @param key S3 object key
+   * @param expiresIn URL expiration time in seconds (default: 1 hour)
+   */
+  async getSignedUrl(key: string, expiresIn: number = 3600): Promise<string> {
+    if (!this.isConfigured) {
+      throw new Error('AWS S3 is not configured');
+    }
+
+    const params = {
+      Bucket: this.bucketName,
+      Key: key,
+      Expires: expiresIn,
+    };
+
+    try {
+      return await this.s3.getSignedUrlPromise('getObject', params);
+    } catch (error) {
+      console.error('AWS S3 Signed URL Error:', error);
+      throw new Error('Failed to generate signed URL');
     }
   }
 

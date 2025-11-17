@@ -42,9 +42,14 @@ export class LoginComponent {
 
       this.authService.login(identifier, password).subscribe({
         next: () => {
+          // SECURITY: Clear password from memory after successful login
+          this.loginForm.patchValue({ password: '' });
           this.router.navigate(['/']);
         },
         error: (error) => {
+          // SECURITY: Clear password from memory even on error
+          this.loginForm.patchValue({ password: '' });
+
           const errorMsg = error.error?.message || 'Login failed. Please try again.';
           this.errorMessage = errorMsg;
           this.loading = false;

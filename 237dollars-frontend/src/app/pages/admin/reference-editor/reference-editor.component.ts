@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +6,8 @@ import { ApiService } from '../../../core/services/api.service';
 import { CdkDrag, CdkDropList, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SafeUrlPipe } from '../../../shared/pipes/safe-url.pipe';
 import { ColorThemeUtil } from '../../../shared/utils/color-theme.util';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 interface Major {
   id: number;
@@ -52,7 +54,16 @@ interface ContentBlock {
   templateUrl: './reference-editor.component.html',
   styleUrls: ['./reference-editor.component.scss']
 })
-export class ReferenceEditorComponent implements OnInit {
+export class ReferenceEditorComponent implements OnInit, OnDestroy {
+  // Memory leak prevention
+  private destroy$ = new Subject<void>();
+  private themeObserver?: MutationObserver;
+  private storageChangeHandler = (e: StorageEvent) => {
+    if (e.key === 'theme') {
+      this.detectTheme();
+    }
+  };
+
   // Form data
   selectedMajorId: number | null = null;
   selectedTopicId: number | null = null;
@@ -96,27 +107,31 @@ export class ReferenceEditorComponent implements OnInit {
     this.loadMajors();
 
     // Check if editing existing reference
-    this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.referenceId = +params['id'];
-        this.isEditMode = true;
-        this.loadReference(this.referenceId);
-      }
-    });
+    this.route.params
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        if (params['id']) {
+          this.referenceId = +params['id'];
+          this.isEditMode = true;
+          this.loadReference(this.referenceId);
+        }
+      });
   }
 
   loadMajors(): void {
     this.loading = true;
-    this.api.get<Major[]>('references/majors').subscribe({
-      next: (majors) => {
-        this.majors = majors;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading majors:', err);
-        this.loading = false;
-      }
-    });
+    this.api.get<Major[]>('references/majors')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (majors) => {
+          this.majors = majors;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Error loading majors:', err);
+          this.loading = false;
+        }
+      });
   }
 
   onMajorChange(): void {
@@ -125,7 +140,68 @@ export class ReferenceEditorComponent implements OnInit {
 
     if (this.selectedMajorId) {
       this.loading = true;
-      this.api.get<Topic[]>(`references/majors/${this.selectedMajorId}/topics`).subscribe({
+      this.api.get<Topic[]>(`references/majors/${this.selectedMajorId}/topics`)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (topics) => {
+            this.topics = topics;
+            this.loading = false;
+          },
+          error: (err) => {
+            console.error('Error loading topics:', err);
+            this.loading = false;
+          }
+        });
+    }
+  }
+
+  loadReference(id: number): void {
+    this.loading = true;
+    this.api.get<any>(`references/${id}`)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (reference) => {
+          this.referenceTitle = reference.title;
+          this.referenceDescription = reference.description || '';
+          this.selectedTopicId = reference.topicId;
+          this.selectedMajorId = reference.topic?.majorId;
+
+          // Load content blocks
+          if (reference.contentBlocks && reference.contentBlocks.length > 0) {
+            this.contentBlocks = reference.contentBlocks.map((block: any) => ({
+              id: block.id,
+              blockType: block.blockType,
+              content: block.content,
+              styling: block.styling,
+              blockData: block.blockData,
+              blockOrder: block.blockOrder,
+              topicName: block.topicName
+            }));
+          }
+
+          // Load topics for selected major (this will also set loading to false when done)
+          if (this.selectedMajorId) {
+            this.loadTopicsForMajor(this.selectedMajorId);
+          } else {
+            this.loading = false;
+          }
+        },
+        error: (err) => {
+          console.error('Error loading reference:', err);
+          alert('Failed to load reference');
+          this.router.navigate(['/admin']);
+          this.loading = false;
+        }
+      });
+  }
+
+  /**
+   * Load topics for a major
+   */
+  private loadTopicsForMajor(majorId: number): void {
+    this.api.get<Topic[]>(`references/majors/${majorId}/topics`)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
         next: (topics) => {
           this.topics = topics;
           this.loading = false;
@@ -135,61 +211,6 @@ export class ReferenceEditorComponent implements OnInit {
           this.loading = false;
         }
       });
-    }
-  }
-
-  loadReference(id: number): void {
-    this.loading = true;
-    this.api.get<any>(`references/${id}`).subscribe({
-      next: (reference) => {
-        this.referenceTitle = reference.title;
-        this.referenceDescription = reference.description || '';
-        this.selectedTopicId = reference.topicId;
-        this.selectedMajorId = reference.topic?.majorId;
-
-        // Load content blocks
-        if (reference.contentBlocks && reference.contentBlocks.length > 0) {
-          this.contentBlocks = reference.contentBlocks.map((block: any) => ({
-            id: block.id,
-            blockType: block.blockType,
-            content: block.content,
-            styling: block.styling,
-            blockData: block.blockData,
-            blockOrder: block.blockOrder,
-            topicName: block.topicName
-          }));
-        }
-
-        // Load topics for selected major (this will also set loading to false when done)
-        if (this.selectedMajorId) {
-          this.loadTopicsForMajor(this.selectedMajorId);
-        } else {
-          this.loading = false;
-        }
-      },
-      error: (err) => {
-        console.error('Error loading reference:', err);
-        alert('Failed to load reference');
-        this.router.navigate(['/admin']);
-        this.loading = false;
-      }
-    });
-  }
-
-  /**
-   * Load topics for a major
-   */
-  private loadTopicsForMajor(majorId: number): void {
-    this.api.get<Topic[]>(`references/majors/${majorId}/topics`).subscribe({
-      next: (topics) => {
-        this.topics = topics;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading topics:', err);
-        this.loading = false;
-      }
-    });
   }
 
   // ===== CONTENT BLOCK MANAGEMENT =====
@@ -633,23 +654,17 @@ export class ReferenceEditorComponent implements OnInit {
    */
   private listenForThemeChanges(): void {
     // Use MutationObserver to watch for data-theme attribute changes on document root
-    const observer = new MutationObserver(() => {
+    this.themeObserver = new MutationObserver(() => {
       this.detectTheme();
     });
 
-    observer.observe(document.documentElement, {
+    this.themeObserver.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['data-theme']
     });
 
     // Also listen for storage changes (in case theme changes in different tab)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'theme') {
-        this.detectTheme();
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('storage', this.storageChangeHandler);
   }
 
   /**
@@ -675,5 +690,19 @@ export class ReferenceEditorComponent implements OnInit {
     }
 
     return themeAwareStyle;
+  }
+
+  ngOnDestroy(): void {
+    // Clean up subscriptions
+    this.destroy$.next();
+    this.destroy$.complete();
+
+    // Disconnect MutationObserver
+    if (this.themeObserver) {
+      this.themeObserver.disconnect();
+    }
+
+    // Remove storage event listener
+    window.removeEventListener('storage', this.storageChangeHandler);
   }
 }

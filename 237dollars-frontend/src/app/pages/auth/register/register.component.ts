@@ -182,11 +182,17 @@ export class RegisterComponent implements OnDestroy {
 
     this.api.post('auth/register', registerData).subscribe({
       next: (response: any) => {
+        // SECURITY: Clear passwords from memory after registration
+        this.registerForm.patchValue({ password: '', confirmPassword: '' });
+
         this.loading = false;
         this.registeredEmail = formValue.email;
         this.showVerificationModal = true;
       },
       error: (error) => {
+        // SECURITY: Clear passwords from memory even on error
+        this.registerForm.patchValue({ password: '', confirmPassword: '' });
+
         this.errorMessage = error.error?.message || 'Registration failed. Please try again.';
         this.loading = false;
       }
@@ -194,10 +200,9 @@ export class RegisterComponent implements OnDestroy {
   }
 
   onVerified(response: any): void {
-    // User verified their email, save tokens and redirect
+    // SECURITY: Use auth service to properly handle tokens (centralized management)
     if (response.accessToken) {
-      localStorage.setItem('accessToken', response.accessToken);
-      localStorage.setItem('refreshToken', response.refreshToken);
+      this.authService.handleAuthResponse(response);
     }
     this.showVerificationModal = false;
     this.router.navigate(['/']);

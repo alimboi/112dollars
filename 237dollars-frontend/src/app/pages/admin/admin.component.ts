@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
 import { AdminService, Admin, AdminStats, ActivityLog, CreateAdminDto, UpdateAdminDto } from '../../core/services/admin.service';
@@ -55,7 +57,10 @@ interface ReferenceResponse {
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss']
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent implements OnInit, OnDestroy {
+  // Memory leak prevention
+  private destroy$ = new Subject<void>();
+
   // Tab navigation
   activeTab: 'references' | 'blog' | 'admins' = 'references';
 
@@ -143,39 +148,43 @@ export class AdminComponent implements OnInit {
   }
 
   loadMajors(): void {
-    this.api.get<Major[]>('references/majors').subscribe({
-      next: (majors) => {
-        this.majors = majors;
-      },
-      error: (err) => {
-        console.error('Error loading majors:', err);
-      }
-    });
+    this.api.get<Major[]>('references/majors')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (majors) => {
+          this.majors = majors;
+        },
+        error: (err) => {
+          console.error('Error loading majors:', err);
+        }
+      });
   }
 
   loadTopics(): void {
     // Load all topics by fetching from all majors
-    this.api.get<Major[]>('references/majors').subscribe({
-      next: (majors) => {
-        // Fetch topics for each major
-        const topicRequests = majors.map(major =>
-          this.api.get<Topic[]>(`references/majors/${major.id}/topics`)
-        );
+    this.api.get<Major[]>('references/majors')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (majors) => {
+          // Fetch topics for each major
+          const topicRequests = majors.map(major =>
+            this.api.get<Topic[]>(`references/majors/${major.id}/topics`)
+          );
 
-        // Wait for all topic requests to complete
-        Promise.all(topicRequests.map(req => req.toPromise()))
-          .then(topicArrays => {
-            this.topics = topicArrays.flat().filter(t => t != null) as Topic[];
-            this.filteredTopics = this.topics;
-          })
-          .catch(err => {
-            console.error('Error loading topics:', err);
-          });
-      },
-      error: (err) => {
-        console.error('Error loading majors for topics:', err);
-      }
-    });
+          // Wait for all topic requests to complete
+          Promise.all(topicRequests.map(req => req.toPromise()))
+            .then(topicArrays => {
+              this.topics = topicArrays.flat().filter(t => t != null) as Topic[];
+              this.filteredTopics = this.topics;
+            })
+            .catch(err => {
+              console.error('Error loading topics:', err);
+            });
+        },
+        error: (err) => {
+          console.error('Error loading majors for topics:', err);
+        }
+      });
   }
 
   onMajorFilterChange(): void {
@@ -199,14 +208,16 @@ export class AdminComponent implements OnInit {
   }
 
   loadGalleries(): void {
-    this.api.get<any>('blog/galleries?page=1&limit=100').subscribe({
-      next: (response) => {
-        this.galleries = response.galleries || [];
-      },
-      error: (err) => {
-        console.error('Error loading galleries:', err);
-      }
-    });
+    this.api.get<any>('blog/galleries?page=1&limit=100')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.galleries = response.galleries || [];
+        },
+        error: (err) => {
+          console.error('Error loading galleries:', err);
+        }
+      });
   }
 
   loadReferences(): void {
@@ -224,19 +235,21 @@ export class AdminComponent implements OnInit {
       queryParams += `&topicId=${this.topicFilter}`;
     }
 
-    this.api.get<ReferenceResponse>(`references/admin/all?${queryParams}`).subscribe({
-      next: (response) => {
-        this.references = response.references;
-        this.totalPages = response.totalPages;
-        this.totalReferences = response.total;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading references:', err);
-        this.error = err?.error?.message || err?.message || 'Failed to load references';
-        this.loading = false;
-      }
-    });
+    this.api.get<ReferenceResponse>(`references/admin/all?${queryParams}`)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.references = response.references;
+          this.totalPages = response.totalPages;
+          this.totalReferences = response.total;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Error loading references:', err);
+          this.error = err?.error?.message || err?.message || 'Failed to load references';
+          this.loading = false;
+        }
+      });
   }
 
   onFilterChange(): void {
@@ -259,15 +272,17 @@ export class AdminComponent implements OnInit {
       return;
     }
 
-    this.api.put(`references/${reference.id}/${endpoint}`, {}).subscribe({
-      next: () => {
-        reference.isPublished = !reference.isPublished;
-      },
-      error: (err) => {
-        console.error(`Error ${action} reference:`, err);
-        alert(`Failed to ${action === 'unpublishing' ? 'unpublish' : 'publish'} reference: ${err.error?.message || 'Unknown error'}`);
-      }
-    });
+    this.api.put(`references/${reference.id}/${endpoint}`, {})
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          reference.isPublished = !reference.isPublished;
+        },
+        error: (err) => {
+          console.error(`Error ${action} reference:`, err);
+          alert(`Failed to ${action === 'unpublishing' ? 'unpublish' : 'publish'} reference: ${err.error?.message || 'Unknown error'}`);
+        }
+      });
   }
 
   deleteReference(reference: Reference): void {
@@ -275,15 +290,17 @@ export class AdminComponent implements OnInit {
       return;
     }
 
-    this.api.delete(`references/${reference.id}`).subscribe({
-      next: () => {
-        this.loadReferences();
-      },
-      error: (err) => {
-        console.error('Error deleting reference:', err);
-        alert(`Failed to delete reference: ${err.error?.message || 'Unknown error'}`);
-      }
-    });
+    this.api.delete(`references/${reference.id}`)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.loadReferences();
+        },
+        error: (err) => {
+          console.error('Error deleting reference:', err);
+          alert(`Failed to delete reference: ${err.error?.message || 'Unknown error'}`);
+        }
+      });
   }
 
   getPageNumbers(): number[] {
@@ -321,37 +338,43 @@ export class AdminComponent implements OnInit {
 
   // Admin Management Methods
   loadAdmins(): void {
-    this.adminService.getAllAdmins().subscribe({
-      next: (admins) => {
-        this.admins = admins;
-      },
-      error: (err) => {
-        console.error('Error loading admins:', err);
-        alert('Failed to load admins');
-      }
-    });
+    this.adminService.getAllAdmins()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (admins) => {
+          this.admins = admins;
+        },
+        error: (err) => {
+          console.error('Error loading admins:', err);
+          alert('Failed to load admins');
+        }
+      });
   }
 
   loadAdminStats(): void {
-    this.adminService.getAdminStats().subscribe({
-      next: (stats) => {
-        this.adminStats = stats;
-      },
-      error: (err) => {
-        console.error('Error loading admin stats:', err);
-      }
-    });
+    this.adminService.getAdminStats()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (stats) => {
+          this.adminStats = stats;
+        },
+        error: (err) => {
+          console.error('Error loading admin stats:', err);
+        }
+      });
   }
 
   loadActivityLogs(): void {
-    this.adminService.getActivityLogs(1, 20).subscribe({
-      next: (response) => {
-        this.activityLogs = response.logs;
-      },
-      error: (err) => {
-        console.error('Error loading activity logs:', err);
-      }
-    });
+    this.adminService.getActivityLogs(1, 20)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.activityLogs = response.logs;
+        },
+        error: (err) => {
+          console.error('Error loading activity logs:', err);
+        }
+      });
   }
 
   createAdmin(): void {
@@ -365,21 +388,23 @@ export class AdminComponent implements OnInit {
       return;
     }
 
-    this.adminService.createAdmin(this.newAdmin).subscribe({
-      next: (admin) => {
-        const message = 'Admin saved successfully! If the user already existed, they have been promoted to admin.';
-        alert(message);
-        this.showCreateAdminForm = false;
-        this.newAdmin = { email: '', password: '', role: 'admin', telegramUsername: '' };
-        this.loadAdmins();
-        this.loadAdminStats();
-        this.loadActivityLogs();
-      },
-      error: (err) => {
-        console.error('Error creating admin:', err);
-        alert(err.error?.message || 'Failed to create admin');
-      }
-    });
+    this.adminService.createAdmin(this.newAdmin)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (admin) => {
+          const message = 'Admin saved successfully! If the user already existed, they have been promoted to admin.';
+          alert(message);
+          this.showCreateAdminForm = false;
+          this.newAdmin = { email: '', password: '', role: 'admin', telegramUsername: '' };
+          this.loadAdmins();
+          this.loadAdminStats();
+          this.loadActivityLogs();
+        },
+        error: (err) => {
+          console.error('Error creating admin:', err);
+          alert(err.error?.message || 'Failed to create admin');
+        }
+      });
   }
 
   openEditAdmin(admin: Admin): void {
@@ -415,20 +440,22 @@ export class AdminComponent implements OnInit {
       updateData.telegramUsername = this.editAdmin.telegramUsername.trim() || undefined;
     }
 
-    this.adminService.updateAdmin(this.editingAdminId, updateData).subscribe({
-      next: (updatedAdmin) => {
-        alert('Admin updated successfully!');
-        this.showEditAdminForm = false;
-        this.editingAdminId = null;
-        this.loadAdmins();
-        this.loadAdminStats();
-        this.loadActivityLogs();
-      },
-      error: (err) => {
-        console.error('Error updating admin:', err);
-        alert(err.error?.message || 'Failed to update admin');
-      }
-    });
+    this.adminService.updateAdmin(this.editingAdminId, updateData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (updatedAdmin) => {
+          alert('Admin updated successfully!');
+          this.showEditAdminForm = false;
+          this.editingAdminId = null;
+          this.loadAdmins();
+          this.loadAdminStats();
+          this.loadActivityLogs();
+        },
+        error: (err) => {
+          console.error('Error updating admin:', err);
+          alert(err.error?.message || 'Failed to update admin');
+        }
+      });
   }
 
   cancelEdit(): void {
@@ -442,17 +469,19 @@ export class AdminComponent implements OnInit {
       return;
     }
 
-    this.adminService.updateAdminRole(admin.id, newRole).subscribe({
-      next: () => {
-        admin.role = newRole;
-        alert('Admin role updated successfully!');
-        this.loadAdminStats();
-      },
-      error: (err) => {
-        console.error('Error updating admin role:', err);
-        alert(err.error?.message || 'Failed to update admin role');
-      }
-    });
+    this.adminService.updateAdminRole(admin.id, newRole)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          admin.role = newRole;
+          alert('Admin role updated successfully!');
+          this.loadAdminStats();
+        },
+        error: (err) => {
+          console.error('Error updating admin role:', err);
+          alert(err.error?.message || 'Failed to update admin role');
+        }
+      });
   }
 
   deactivateAdmin(admin: Admin): void {
@@ -460,17 +489,19 @@ export class AdminComponent implements OnInit {
       return;
     }
 
-    this.adminService.deleteAdmin(admin.id).subscribe({
-      next: () => {
-        admin.isActive = false;
-        alert('Admin deactivated successfully!');
-        this.loadAdminStats();
-      },
-      error: (err) => {
-        console.error('Error deactivating admin:', err);
-        alert(err.error?.message || 'Failed to deactivate admin');
-      }
-    });
+    this.adminService.deleteAdmin(admin.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          admin.isActive = false;
+          alert('Admin deactivated successfully!');
+          this.loadAdminStats();
+        },
+        error: (err) => {
+          console.error('Error deactivating admin:', err);
+          alert(err.error?.message || 'Failed to deactivate admin');
+        }
+      });
   }
 
   reactivateAdmin(admin: Admin): void {
@@ -478,17 +509,19 @@ export class AdminComponent implements OnInit {
       return;
     }
 
-    this.adminService.reactivateAdmin(admin.id).subscribe({
-      next: () => {
-        admin.isActive = true;
-        alert('Admin reactivated successfully!');
-        this.loadAdminStats();
-      },
-      error: (err) => {
-        console.error('Error reactivating admin:', err);
-        alert(err.error?.message || 'Failed to reactivate admin');
-      }
-    });
+    this.adminService.reactivateAdmin(admin.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          admin.isActive = true;
+          alert('Admin reactivated successfully!');
+          this.loadAdminStats();
+        },
+        error: (err) => {
+          console.error('Error reactivating admin:', err);
+          alert(err.error?.message || 'Failed to reactivate admin');
+        }
+      });
   }
 
   formatRole(role: string): string {
@@ -528,14 +561,16 @@ export class AdminComponent implements OnInit {
       return;
     }
 
-    this.api.delete(`blog/galleries/${id}`).subscribe({
-      next: () => {
-        this.galleries = this.galleries.filter(g => g.id !== id);
-      },
-      error: (err) => {
-        alert(`Failed to delete gallery: ${err.error?.message || 'Unknown error'}`);
-      }
-    });
+    this.api.delete(`blog/galleries/${id}`)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.galleries = this.galleries.filter(g => g.id !== id);
+        },
+        error: (err) => {
+          alert(`Failed to delete gallery: ${err.error?.message || 'Unknown error'}`);
+        }
+      });
   }
 
   // Gallery drag and drop handlers
@@ -580,15 +615,17 @@ export class AdminComponent implements OnInit {
       }))
     };
 
-    this.api.put('blog/galleries/reorder', orderData).subscribe({
-      next: () => {
-        console.log('Gallery order saved successfully');
-      },
-      error: (err) => {
-        console.error('Failed to save gallery order:', err);
-        alert('Failed to save gallery order');
-      }
-    });
+    this.api.put('blog/galleries/reorder', orderData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          console.log('Gallery order saved successfully');
+        },
+        error: (err) => {
+          console.error('Failed to save gallery order:', err);
+          alert('Failed to save gallery order');
+        }
+      });
 
     this.draggedGalleryIndex = null;
     this.dragOverGalleryIndex = null;
@@ -641,15 +678,17 @@ export class AdminComponent implements OnInit {
       }))
     };
 
-    this.api.put('references/reorder', orderData).subscribe({
-      next: () => {
-        console.log('Reference order saved successfully');
-      },
-      error: (err) => {
-        console.error('Failed to save reference order:', err);
-        alert('Failed to save reference order');
-      }
-    });
+    this.api.put('references/reorder', orderData)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          console.log('Reference order saved successfully');
+        },
+        error: (err) => {
+          console.error('Failed to save reference order:', err);
+          alert('Failed to save reference order');
+        }
+      });
 
     this.draggedReferenceIndex = null;
     this.dragOverReferenceIndex = null;
@@ -658,5 +697,10 @@ export class AdminComponent implements OnInit {
   onReferenceDragEnd(): void {
     this.draggedReferenceIndex = null;
     this.dragOverReferenceIndex = null;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -15,6 +15,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       clientSecret,
       callbackURL,
       scope: ['email', 'profile'],
+      // SECURITY FIX #9: Enable state parameter for CSRF protection
+      state: true, // Passport will automatically validate state parameter
     });
 
     if (!configService.get<string>('GOOGLE_CLIENT_ID')) {

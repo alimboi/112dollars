@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
-import { AdminService, Admin, AdminStats, ActivityLog, CreateAdminDto } from '../../core/services/admin.service';
+import { AdminService, Admin, AdminStats, ActivityLog, CreateAdminDto, UpdateAdminDto } from '../../core/services/admin.service';
 import { BlogGalleryManagerComponent } from './blog-gallery-manager/blog-gallery-manager.component';
 import { environment } from '../../../environments/environment';
 
@@ -64,11 +64,20 @@ export class AdminComponent implements OnInit {
   adminStats: AdminStats | null = null;
   activityLogs: ActivityLog[] = [];
   showCreateAdminForm = false;
+  showEditAdminForm = false;
+  editingAdminId: number | null = null;
   currentUser: any = null;
   newAdmin: CreateAdminDto = {
     email: '',
     password: '',
-    role: 'admin'
+    role: 'admin',
+    telegramUsername: ''
+  };
+  editAdmin: UpdateAdminDto = {
+    email: '',
+    password: '',
+    role: '',
+    telegramUsername: ''
   };
   adminRoles = [
     { value: 'admin', label: 'Admin' },
@@ -361,7 +370,7 @@ export class AdminComponent implements OnInit {
         const message = 'Admin saved successfully! If the user already existed, they have been promoted to admin.';
         alert(message);
         this.showCreateAdminForm = false;
-        this.newAdmin = { email: '', password: '', role: 'admin' };
+        this.newAdmin = { email: '', password: '', role: 'admin', telegramUsername: '' };
         this.loadAdmins();
         this.loadAdminStats();
         this.loadActivityLogs();
@@ -371,6 +380,61 @@ export class AdminComponent implements OnInit {
         alert(err.error?.message || 'Failed to create admin');
       }
     });
+  }
+
+  openEditAdmin(admin: Admin): void {
+    this.editingAdminId = admin.id;
+    this.editAdmin = {
+      email: admin.email,
+      role: admin.role,
+      telegramUsername: admin.telegramUsername || '',
+      password: '' // Leave password empty unless user wants to change it
+    };
+    this.showEditAdminForm = true;
+    this.showCreateAdminForm = false;
+  }
+
+  saveEditAdmin(): void {
+    if (!this.editingAdminId) {
+      return;
+    }
+
+    // Only send fields that are filled in
+    const updateData: UpdateAdminDto = {};
+
+    if (this.editAdmin.email && this.editAdmin.email.trim()) {
+      updateData.email = this.editAdmin.email;
+    }
+    if (this.editAdmin.password && this.editAdmin.password.trim()) {
+      updateData.password = this.editAdmin.password;
+    }
+    if (this.editAdmin.role) {
+      updateData.role = this.editAdmin.role;
+    }
+    if (this.editAdmin.telegramUsername !== undefined) {
+      updateData.telegramUsername = this.editAdmin.telegramUsername.trim() || undefined;
+    }
+
+    this.adminService.updateAdmin(this.editingAdminId, updateData).subscribe({
+      next: (updatedAdmin) => {
+        alert('Admin updated successfully!');
+        this.showEditAdminForm = false;
+        this.editingAdminId = null;
+        this.loadAdmins();
+        this.loadAdminStats();
+        this.loadActivityLogs();
+      },
+      error: (err) => {
+        console.error('Error updating admin:', err);
+        alert(err.error?.message || 'Failed to update admin');
+      }
+    });
+  }
+
+  cancelEdit(): void {
+    this.showEditAdminForm = false;
+    this.editingAdminId = null;
+    this.editAdmin = { email: '', password: '', role: '', telegramUsername: '' };
   }
 
   updateAdminRole(admin: Admin, newRole: string): void {

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsEmail, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsString, IsEmail, IsEnum, IsOptional } from 'class-validator';
 import { UserRole } from '../../../types/user-role.enum';
 
 export class CreateAdminDto {
@@ -13,4 +13,8 @@ export class CreateAdminDto {
   @IsNotEmpty()
   @IsEnum(UserRole)
   role: UserRole;
+
+  @IsOptional()
+  @IsString()
+  telegramUsername?: string;
 }

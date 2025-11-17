@@ -32,7 +32,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     TypeOrmModule.forRoot(typeOrmConfig),
     ThrottlerModule.forRoot([{
       ttl: 60000, // 60 seconds
-      limit: 10, // 10 requests per minute (global default)
+      limit: 100, // 100 requests per minute (increased for admin operations)
     }]),
     AuthModule,
     UsersModule,

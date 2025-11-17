@@ -986,6 +986,12 @@ export class TelegramBotService implements OnModuleInit {
         const currentBlock = state.referenceData?.currentBlock;
         if (currentBlock && currentBlock.blockType === ContentBlockType.IMAGE) {
           currentBlock.content = imageUrl;
+          // Also set blockData.url for frontend compatibility
+          if (!currentBlock.blockData) {
+            currentBlock.blockData = {};
+          }
+          currentBlock.blockData.url = imageUrl;
+          currentBlock.blockData.alt = 'Content image';
           await this.saveContentBlock(ctx, state);
         }
       } else if (state.flow === ConversationFlow.CREATE_GALLERY) {
@@ -1038,6 +1044,12 @@ export class TelegramBotService implements OnModuleInit {
         const currentBlock = state.referenceData?.currentBlock;
         if (currentBlock && currentBlock.blockType === ContentBlockType.IMAGE) {
           currentBlock.content = imageUrl;
+          // Also set blockData.url for frontend compatibility
+          if (!currentBlock.blockData) {
+            currentBlock.blockData = {};
+          }
+          currentBlock.blockData.url = imageUrl;
+          currentBlock.blockData.alt = 'Content image';
           await this.saveContentBlock(ctx, state);
         }
       } else if (state.flow === ConversationFlow.CREATE_GALLERY) {

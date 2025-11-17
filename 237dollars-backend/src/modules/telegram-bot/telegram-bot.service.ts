@@ -61,6 +61,13 @@ export class TelegramBotService implements OnModuleInit {
     process.once('SIGTERM', () => this.bot.stop('SIGTERM'));
   }
 
+  /**
+   * Escape special characters for MarkdownV2
+   */
+  private escapeMarkdown(text: string): string {
+    return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+  }
+
   private setupCommands() {
     // Start command
     this.bot.command('start', (ctx) => this.handleStart(ctx));
@@ -220,9 +227,9 @@ export class TelegramBotService implements OnModuleInit {
       return;
     }
 
-    let message = `📖 *Topics in ${major.name}:*\n\n`;
+    let message = `📖 *Topics in ${this.escapeMarkdown(major.name)}:*\n\n`;
     topics.forEach((topic) => {
-      message += `• ${topic.name} (ID: ${topic.id})\n`;
+      message += `• ${this.escapeMarkdown(topic.name)} \\(ID: ${topic.id}\\)\n`;
     });
 
     await ctx.reply(message, { parse_mode: 'MarkdownV2' });
@@ -286,9 +293,9 @@ export class TelegramBotService implements OnModuleInit {
     let message = '📚 *Your References:*\n\n';
     references.forEach((ref) => {
       const status = ref.isPublished ? '✅' : '⏸';
-      message += `${status} *${ref.title}* (ID: ${ref.id})\n`;
-      message += `   📖 ${ref.topic.major.name} > ${ref.topic.name}\n`;
-      message += `   📅 ${ref.createdAt.toLocaleDateString()}\n\n`;
+      message += `${status} *${this.escapeMarkdown(ref.title)}* \\(ID: ${ref.id}\\)\n`;
+      message += `   📖 ${this.escapeMarkdown(ref.topic.major.name)} > ${this.escapeMarkdown(ref.topic.name)}\n`;
+      message += `   📅 ${this.escapeMarkdown(ref.createdAt.toLocaleDateString())}\n\n`;
     });
 
     await ctx.reply(message, { parse_mode: 'MarkdownV2' });
@@ -379,9 +386,9 @@ export class TelegramBotService implements OnModuleInit {
     let message = '🖼 *Your Galleries:*\n\n';
     galleries.forEach((gallery) => {
       const status = gallery.isPublished ? '✅' : '⏸';
-      message += `${status} *${gallery.title}* (ID: ${gallery.id})\n`;
+      message += `${status} *${this.escapeMarkdown(gallery.title)}* \\(ID: ${gallery.id}\\)\n`;
       message += `   🖼 ${gallery.images.length} images\n`;
-      message += `   📅 ${gallery.createdAt.toLocaleDateString()}\n\n`;
+      message += `   📅 ${this.escapeMarkdown(gallery.createdAt.toLocaleDateString())}\n\n`;
     });
 
     await ctx.reply(message, { parse_mode: 'MarkdownV2' });
@@ -623,9 +630,9 @@ export class TelegramBotService implements OnModuleInit {
       );
 
       await ctx.reply(
-        `✅ *Reference created successfully!*\n\n` +
+        `✅ *Reference created successfully\\!*\n\n` +
         `ID: ${reference.id}\n` +
-        `Title: ${reference.title}\n` +
+        `Title: ${this.escapeMarkdown(reference.title)}\n` +
         `Status: Unpublished\n\n` +
         `Use /publish\\_ref ${reference.id} to publish it\\.`,
         { parse_mode: 'MarkdownV2' }
@@ -650,9 +657,9 @@ export class TelegramBotService implements OnModuleInit {
       );
 
       await ctx.reply(
-        `✅ *Gallery created successfully!*\n\n` +
+        `✅ *Gallery created successfully\\!*\n\n` +
         `ID: ${gallery.id}\n` +
-        `Title: ${gallery.title}\n` +
+        `Title: ${this.escapeMarkdown(gallery.title)}\n` +
         `Images: ${state.galleryData.images.length}\n` +
         `Status: Unpublished\n\n` +
         `Use /publish\\_gallery ${gallery.id} to publish it\\.`,
@@ -683,10 +690,9 @@ export class TelegramBotService implements OnModuleInit {
       return;
     }
 
-    let message = `📖 *Topics in ${major.name.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&')}:*\n\n`;
+    let message = `📖 *Topics in ${this.escapeMarkdown(major.name)}:*\n\n`;
     topics.forEach((topic) => {
-      const escapedName = topic.name.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
-      message += `• ${escapedName} \\(ID: ${topic.id}\\)\n`;
+      message += `• ${this.escapeMarkdown(topic.name)} \\(ID: ${topic.id}\\)\n`;
     });
 
     await ctx.reply(message, { parse_mode: 'MarkdownV2' });

@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { Telegraf, Context, Markup } from 'telegraf';
 import { User } from '../../database/entities/user.entity';
 import { Major } from '../../database/entities/major.entity';
@@ -700,7 +700,7 @@ export class TelegramBotService implements OnModuleInit {
     return this.userRepository.findOne({
       where: {
         telegramUsername: normalizedUsername,
-        role: UserRole.SUPER_ADMIN || UserRole.ADMIN || UserRole.CONTENT_MANAGER,
+        role: In([UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER, UserRole.STUDENT_MANAGER]),
         isActive: true,
       },
     });

@@ -744,6 +744,16 @@ export class TelegramBotService implements OnModuleInit {
 
     switch (blockStep) {
       case ContentBlockStep.ENTER_CONTENT:
+        // For IMAGE blocks, only accept file uploads (not text)
+        if (currentBlock.blockType === ContentBlockType.IMAGE) {
+          await ctx.reply(
+            '❌ Please send an image file, not text\\.\n\n' +
+            'You can send the image as a photo or as a document \\(any format\\)\\.',
+            { parse_mode: 'MarkdownV2' }
+          );
+          return;
+        }
+
         currentBlock.content = text;
 
         // Check if we need styling/additional info
@@ -992,7 +1002,11 @@ export class TelegramBotService implements OnModuleInit {
         }
       }
     } catch (error) {
-      await ctx.reply(`❌ Error uploading image: ${error.message}`);
+      this.logger.error('Error in handlePhotoMessage:', error);
+      await ctx.reply(
+        `❌ Error uploading image: ${this.escapeMarkdown(error.message)}`,
+        { parse_mode: 'MarkdownV2' }
+      );
     }
   }
 
@@ -1040,27 +1054,38 @@ export class TelegramBotService implements OnModuleInit {
         }
       }
     } catch (error) {
-      await ctx.reply(`❌ Error uploading image: ${error.message}`);
+      this.logger.error('Error in handleDocumentMessage:', error);
+      await ctx.reply(
+        `❌ Error uploading image: ${this.escapeMarkdown(error.message)}`,
+        { parse_mode: 'MarkdownV2' }
+      );
     }
   }
 
   private async downloadAndSaveFile(fileId: string, mimeType: string, fileName?: string): Promise<string> {
     try {
       // Get file URL from Telegram
+      this.logger.log(`Getting file link for file ID: ${fileId}`);
       const fileLink = await this.bot.telegram.getFileLink(fileId);
 
       // Download file
+      this.logger.log(`Downloading file from: ${fileLink.href}`);
       const buffer = await this.downloadFile(fileLink.href);
+      this.logger.log(`Downloaded ${buffer.length} bytes`);
 
       // Save using upload service
+      this.logger.log(`Saving file with mimetype: ${mimeType}`);
       const result = await this.uploadService.saveImageFromBuffer(buffer, mimeType, fileName);
+      this.logger.log(`File saved: ${result.filename}`);
 
       // Return full URL (assuming the backend serves from same domain)
       const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
-      return `${baseUrl}${result.url}`;
+      const fullUrl = `${baseUrl}${result.url}`;
+      this.logger.log(`Generated URL: ${fullUrl}`);
+      return fullUrl;
     } catch (error) {
       this.logger.error('Error downloading file from Telegram:', error);
-      throw new Error('Failed to download and save file');
+      throw new Error(`Failed to download and save file: ${error.message}`);
     }
   }
 

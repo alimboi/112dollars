@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
+import { AdminService, Admin, AdminStats, ActivityLog, CreateAdminDto } from '../../core/services/admin.service';
 import { BlogGalleryManagerComponent } from './blog-gallery-manager/blog-gallery-manager.component';
 import { environment } from '../../../environments/environment';
 
@@ -56,7 +57,23 @@ interface ReferenceResponse {
 })
 export class AdminComponent implements OnInit {
   // Tab navigation
-  activeTab: 'references' | 'blog' = 'references';
+  activeTab: 'references' | 'blog' | 'admins' = 'references';
+
+  // Admin management data
+  admins: Admin[] = [];
+  adminStats: AdminStats | null = null;
+  activityLogs: ActivityLog[] = [];
+  showCreateAdminForm = false;
+  newAdmin: CreateAdminDto = {
+    email: '',
+    password: '',
+    role: 'admin'
+  };
+  adminRoles = [
+    { value: 'admin', label: 'Admin' },
+    { value: 'student_manager', label: 'Student Manager' },
+    { value: 'content_manager', label: 'Content Manager' }
+  ];
 
   // References data
   references: Reference[] = [];
@@ -90,7 +107,8 @@ export class AdminComponent implements OnInit {
 
   constructor(
     private api: ApiService,
-    public authService: AuthService
+    public authService: AuthService,
+    private adminService: AdminService
   ) {}
 
   ngOnInit(): void {
@@ -98,6 +116,17 @@ export class AdminComponent implements OnInit {
     this.loadTopics();
     this.loadReferences();
     this.loadGalleries();
+
+    // Load admin data if user is super admin
+    if (this.isSuperAdmin()) {
+      this.loadAdmins();
+      this.loadAdminStats();
+      this.loadActivityLogs();
+    }
+  }
+
+  isSuperAdmin(): boolean {
+    return this.authService.currentUser?.role === 'super_admin';
   }
 
   loadMajors(): void {
@@ -273,8 +302,122 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  switchTab(tab: 'references' | 'blog'): void {
+  switchTab(tab: 'references' | 'blog' | 'admins'): void {
     this.activeTab = tab;
+  }
+
+  // Admin Management Methods
+  loadAdmins(): void {
+    this.adminService.getAllAdmins().subscribe({
+      next: (admins) => {
+        this.admins = admins;
+      },
+      error: (err) => {
+        console.error('Error loading admins:', err);
+        alert('Failed to load admins');
+      }
+    });
+  }
+
+  loadAdminStats(): void {
+    this.adminService.getAdminStats().subscribe({
+      next: (stats) => {
+        this.adminStats = stats;
+      },
+      error: (err) => {
+        console.error('Error loading admin stats:', err);
+      }
+    });
+  }
+
+  loadActivityLogs(): void {
+    this.adminService.getActivityLogs(1, 20).subscribe({
+      next: (response) => {
+        this.activityLogs = response.logs;
+      },
+      error: (err) => {
+        console.error('Error loading activity logs:', err);
+      }
+    });
+  }
+
+  createAdmin(): void {
+    if (!this.newAdmin.email || !this.newAdmin.password) {
+      alert('Email and password are required');
+      return;
+    }
+
+    this.adminService.createAdmin(this.newAdmin).subscribe({
+      next: () => {
+        alert('Admin created successfully!');
+        this.showCreateAdminForm = false;
+        this.newAdmin = { email: '', password: '', role: 'admin' };
+        this.loadAdmins();
+        this.loadAdminStats();
+      },
+      error: (err) => {
+        console.error('Error creating admin:', err);
+        alert(err.error?.message || 'Failed to create admin');
+      }
+    });
+  }
+
+  updateAdminRole(admin: Admin, newRole: string): void {
+    if (!confirm(`Change ${admin.email}'s role to ${newRole}?`)) {
+      return;
+    }
+
+    this.adminService.updateAdminRole(admin.id, newRole).subscribe({
+      next: () => {
+        admin.role = newRole;
+        alert('Admin role updated successfully!');
+        this.loadAdminStats();
+      },
+      error: (err) => {
+        console.error('Error updating admin role:', err);
+        alert(err.error?.message || 'Failed to update admin role');
+      }
+    });
+  }
+
+  deactivateAdmin(admin: Admin): void {
+    if (!confirm(`Are you sure you want to deactivate ${admin.email}?`)) {
+      return;
+    }
+
+    this.adminService.deleteAdmin(admin.id).subscribe({
+      next: () => {
+        admin.isActive = false;
+        alert('Admin deactivated successfully!');
+        this.loadAdminStats();
+      },
+      error: (err) => {
+        console.error('Error deactivating admin:', err);
+        alert(err.error?.message || 'Failed to deactivate admin');
+      }
+    });
+  }
+
+  reactivateAdmin(admin: Admin): void {
+    if (!confirm(`Reactivate ${admin.email}?`)) {
+      return;
+    }
+
+    this.adminService.reactivateAdmin(admin.id).subscribe({
+      next: () => {
+        admin.isActive = true;
+        alert('Admin reactivated successfully!');
+        this.loadAdminStats();
+      },
+      error: (err) => {
+        console.error('Error reactivating admin:', err);
+        alert(err.error?.message || 'Failed to reactivate admin');
+      }
+    });
+  }
+
+  formatRole(role: string): string {
+    return role.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   }
 
   getMainGalleryImage(gallery: any): string {

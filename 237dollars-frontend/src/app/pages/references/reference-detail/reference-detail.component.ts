@@ -49,8 +49,11 @@ export class ReferenceDetailComponent implements OnInit, OnDestroy {
   loadReference(id: number): void {
     const sub = this.referencesService.getReference(id).subscribe({
       next: (reference) => {
+        console.log('Reference loaded:', reference);
+        console.log('Content blocks before sanitization:', reference.contentBlocks);
         this.reference = reference;
         this.sanitizeContentBlocks();
+        console.log('Content blocks after sanitization:', this.reference.contentBlocks);
         this.loading = false;
       },
       error: () => {
@@ -63,12 +66,38 @@ export class ReferenceDetailComponent implements OnInit, OnDestroy {
 
   private sanitizeContentBlocks(): void {
     if (this.reference?.contentBlocks) {
-      this.reference.contentBlocks = this.reference.contentBlocks.map(block => ({
-        ...block,
-        content: block.blockType === 'text'
-          ? (this.sanitizer.sanitize(1, block.content) || '')
-          : block.content
-      }));
+      this.reference.contentBlocks = this.reference.contentBlocks.map(block => {
+        // For image blocks, ensure blockData has default values
+        if (block.blockType === 'image') {
+          console.log('Processing image block:', block);
+          console.log('Block content:', block.content);
+          return {
+            ...block,
+            content: block.content || '', // Explicitly preserve content
+            blockData: {
+              url: block.blockData?.url || '',
+              alt: block.blockData?.alt || 'Content image',
+              width: block.blockData?.width || '100%',
+              height: block.blockData?.height || 'auto',
+              alignment: block.blockData?.alignment || 'center',
+              borderRadius: block.blockData?.borderRadius || 0,
+              boxShadow: block.blockData?.boxShadow || 'none',
+              ...block.blockData
+            }
+          };
+        }
+
+        // For text blocks, sanitize content
+        if (block.blockType === 'text') {
+          return {
+            ...block,
+            content: this.sanitizer.sanitize(1, block.content) || ''
+          };
+        }
+
+        // For other blocks, return as-is
+        return block;
+      });
     }
   }
 

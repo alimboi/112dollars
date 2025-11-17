@@ -294,7 +294,7 @@ export class TelegramBotService implements OnModuleInit {
     references.forEach((ref) => {
       const status = ref.isPublished ? '✅' : '⏸';
       message += `${status} *${this.escapeMarkdown(ref.title)}* \\(ID: ${ref.id}\\)\n`;
-      message += `   📖 ${this.escapeMarkdown(ref.topic.major.name)} > ${this.escapeMarkdown(ref.topic.name)}\n`;
+      message += `   📖 ${this.escapeMarkdown(ref.topic.major.name)} \\> ${this.escapeMarkdown(ref.topic.name)}\n`;
       message += `   📅 ${this.escapeMarkdown(ref.createdAt.toLocaleDateString())}\n\n`;
     });
 

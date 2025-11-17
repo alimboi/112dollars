@@ -9,8 +9,11 @@ import { Reference } from '../../database/entities/reference.entity';
 import { BlogImageGallery } from '../../database/entities/blog-image-gallery.entity';
 import { ReferencesService } from '../references/references.service';
 import { BlogGalleryService } from '../blog/blog-gallery.service';
+import { UploadService } from '../upload/upload.service';
 import { UserRole } from '../../types/user-role.enum';
 import { ContentBlockType } from '../../types/content-block-type.enum';
+import * as https from 'https';
+import * as http from 'http';
 import {
   ConversationState,
   ConversationFlow,
@@ -38,6 +41,7 @@ export class TelegramBotService implements OnModuleInit {
     private galleryRepository: Repository<BlogImageGallery>,
     private referencesService: ReferencesService,
     private blogGalleryService: BlogGalleryService,
+    private uploadService: UploadService,
   ) {}
 
   async onModuleInit() {
@@ -103,6 +107,12 @@ export class TelegramBotService implements OnModuleInit {
 
     // Handle text messages (for conversation flows)
     this.bot.on('text', (ctx) => this.handleTextMessage(ctx));
+
+    // Handle photo uploads
+    this.bot.on('photo', (ctx) => this.handlePhotoMessage(ctx));
+
+    // Handle document uploads (for any file type including images)
+    this.bot.on('document', (ctx) => this.handleDocumentMessage(ctx));
 
     // Handle callback queries (inline buttons)
     this.bot.on('callback_query', (ctx) => this.handleCallbackQuery(ctx));
@@ -531,7 +541,7 @@ export class TelegramBotService implements OnModuleInit {
     const prompts = {
       [ContentBlockType.TEXT]: 'Enter text content\\:',
       [ContentBlockType.HEADING]: 'Enter heading text\\:',
-      [ContentBlockType.IMAGE]: 'Enter image URL\\:',
+      [ContentBlockType.IMAGE]: 'Send an image file \\(any format\\)\\:',
       [ContentBlockType.VIDEO]: 'Enter video URL\\:',
       [ContentBlockType.CODE_BLOCK]: 'Enter code content\\:',
     };
@@ -645,27 +655,28 @@ export class TelegramBotService implements OnModuleInit {
       case GalleryCreationStep.ENTER_DESCRIPTION:
         state.galleryData.description = text;
         state.galleryData.step = GalleryCreationStep.ENTER_IMAGES;
+        state.galleryData.images = [];
         await ctx.reply(
           '🖼 *Gallery Creation \\- Step 3/4*\n\n' +
-          'Please enter image URLs \\(one per line, minimum 1 image\\)\\:\n\n' +
-          'Example\\:\n' +
-          'https\\://example\\.com/image1\\.jpg\n' +
-          'https\\://example\\.com/image2\\.jpg\n\n' +
+          'Send image files \\(any format, minimum 1 image\\)\\.\n\n' +
+          'Send multiple images one by one\\.\n' +
+          'Type /done when finished\\.\n\n' +
           '\\(Use /cancel to abort\\)',
           { parse_mode: 'MarkdownV2' }
         );
         break;
 
       case GalleryCreationStep.ENTER_IMAGES:
-        const imageUrls = text.split('\n').map(url => url.trim()).filter(url => url);
-
-        if (imageUrls.length === 0) {
-          await ctx.reply('❌ Please provide at least one image URL.');
-          return;
+        // Check if user typed /done
+        if (text.toLowerCase() === '/done') {
+          if (!state.galleryData.images || state.galleryData.images.length === 0) {
+            await ctx.reply('❌ Please send at least one image before finishing\\.',  { parse_mode: 'MarkdownV2' });
+            return;
+          }
+          await this.createGalleryFromState(ctx, state);
+        } else {
+          await ctx.reply('Please send images as files\\. Type /done when finished\\.',  { parse_mode: 'MarkdownV2' });
         }
-
-        state.galleryData.images = imageUrls;
-        await this.createGalleryFromState(ctx, state);
         break;
     }
   }
@@ -939,6 +950,147 @@ export class TelegramBotService implements OnModuleInit {
       await ctx.reply(`❌ Error creating gallery: ${error.message}`);
       this.conversationStates.delete(ctx.from.id);
     }
+  }
+
+  private async handlePhotoMessage(ctx: Context) {
+    const admin = await this.checkAdminAuth(ctx);
+    if (!admin) return;
+
+    const state = this.conversationStates.get(ctx.from.id);
+    if (!state) return;
+
+    const photos = (ctx.message as any).photo;
+    if (!photos || photos.length === 0) return;
+
+    // Get the highest resolution photo (last in array)
+    const photo = photos[photos.length - 1];
+
+    try {
+      await ctx.reply('⏳ Uploading image\\.\\.\\.',  { parse_mode: 'MarkdownV2' });
+
+      // Download and save the image
+      const imageUrl = await this.downloadAndSaveFile(photo.file_id, 'image/jpeg');
+
+      // Handle based on current flow
+      if (state.flow === ConversationFlow.CREATE_REFERENCE || state.flow === ConversationFlow.ADD_CONTENT_BLOCK) {
+        const currentBlock = state.referenceData?.currentBlock;
+        if (currentBlock && currentBlock.blockType === ContentBlockType.IMAGE) {
+          currentBlock.content = imageUrl;
+          await this.saveContentBlock(ctx, state);
+        }
+      } else if (state.flow === ConversationFlow.CREATE_GALLERY) {
+        if (state.galleryData.step === GalleryCreationStep.ENTER_IMAGES) {
+          if (!state.galleryData.images) {
+            state.galleryData.images = [];
+          }
+          state.galleryData.images.push(imageUrl);
+          await ctx.reply(
+            `✅ Image ${state.galleryData.images.length} added\\!\n\n` +
+            'Send more images or type /done to finish\\.',
+            { parse_mode: 'MarkdownV2' }
+          );
+        }
+      }
+    } catch (error) {
+      await ctx.reply(`❌ Error uploading image: ${error.message}`);
+    }
+  }
+
+  private async handleDocumentMessage(ctx: Context) {
+    const admin = await this.checkAdminAuth(ctx);
+    if (!admin) return;
+
+    const state = this.conversationStates.get(ctx.from.id);
+    if (!state) return;
+
+    const document = (ctx.message as any).document;
+    if (!document) return;
+
+    // Check if it's an image
+    const isImage = document.mime_type?.startsWith('image/');
+    if (!isImage) {
+      await ctx.reply('❌ Please send an image file\\.',  { parse_mode: 'MarkdownV2' });
+      return;
+    }
+
+    try {
+      await ctx.reply('⏳ Uploading image\\.\\.\\.',  { parse_mode: 'MarkdownV2' });
+
+      // Download and save the image
+      const imageUrl = await this.downloadAndSaveFile(document.file_id, document.mime_type, document.file_name);
+
+      // Handle based on current flow
+      if (state.flow === ConversationFlow.CREATE_REFERENCE || state.flow === ConversationFlow.ADD_CONTENT_BLOCK) {
+        const currentBlock = state.referenceData?.currentBlock;
+        if (currentBlock && currentBlock.blockType === ContentBlockType.IMAGE) {
+          currentBlock.content = imageUrl;
+          await this.saveContentBlock(ctx, state);
+        }
+      } else if (state.flow === ConversationFlow.CREATE_GALLERY) {
+        if (state.galleryData.step === GalleryCreationStep.ENTER_IMAGES) {
+          if (!state.galleryData.images) {
+            state.galleryData.images = [];
+          }
+          state.galleryData.images.push(imageUrl);
+          await ctx.reply(
+            `✅ Image ${state.galleryData.images.length} added\\!\n\n` +
+            'Send more images or type /done to finish\\.',
+            { parse_mode: 'MarkdownV2' }
+          );
+        }
+      }
+    } catch (error) {
+      await ctx.reply(`❌ Error uploading image: ${error.message}`);
+    }
+  }
+
+  private async downloadAndSaveFile(fileId: string, mimeType: string, fileName?: string): Promise<string> {
+    try {
+      // Get file URL from Telegram
+      const fileLink = await this.bot.telegram.getFileLink(fileId);
+
+      // Download file
+      const buffer = await this.downloadFile(fileLink.href);
+
+      // Save using upload service
+      const result = await this.uploadService.saveImageFromBuffer(buffer, mimeType, fileName);
+
+      // Return full URL (assuming the backend serves from same domain)
+      const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+      return `${baseUrl}${result.url}`;
+    } catch (error) {
+      this.logger.error('Error downloading file from Telegram:', error);
+      throw new Error('Failed to download and save file');
+    }
+  }
+
+  private downloadFile(url: string): Promise<Buffer> {
+    return new Promise((resolve, reject) => {
+      const protocol = url.startsWith('https') ? https : http;
+
+      protocol.get(url, (response) => {
+        if (response.statusCode !== 200) {
+          reject(new Error(`Failed to download file: ${response.statusCode}`));
+          return;
+        }
+
+        const chunks: Buffer[] = [];
+
+        response.on('data', (chunk) => {
+          chunks.push(chunk);
+        });
+
+        response.on('end', () => {
+          resolve(Buffer.concat(chunks));
+        });
+
+        response.on('error', (error) => {
+          reject(error);
+        });
+      }).on('error', (error) => {
+        reject(error);
+      });
+    });
   }
 
   private async showTopicsForMajor(ctx: Context, majorId: number) {

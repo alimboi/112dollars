@@ -10,6 +10,7 @@ import { BlogGalleryImage } from '../../database/entities/blog-gallery-image.ent
 import { ReferencesService } from '../references/references.service';
 import { BlogGalleryService } from '../blog/blog-gallery.service';
 import { ContentBlock } from '../../database/entities/content-block.entity';
+import { UploadService } from '../upload/upload.service';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { ContentBlock } from '../../database/entities/content-block.entity';
       BlogGalleryImage,
     ]),
   ],
-  providers: [TelegramBotService, ReferencesService, BlogGalleryService],
+  providers: [TelegramBotService, ReferencesService, BlogGalleryService, UploadService],
   exports: [TelegramBotService],
 })
 export class TelegramBotModule {}

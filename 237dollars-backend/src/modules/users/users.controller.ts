@@ -12,6 +12,7 @@ import {
 import { UsersService } from './users.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UpdatePreferencesDto } from './dto/update-preferences.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../../types/user-role.enum';
 
@@ -38,6 +39,19 @@ export class UsersController {
       req.user.userId,
       updatePreferencesDto,
     );
+  }
+
+  @Put('change-password')
+  async changePassword(
+    @Request() req,
+    @Body() changePasswordDto: ChangePasswordDto,
+  ) {
+    return this.usersService.changePassword(req.user.userId, changePasswordDto);
+  }
+
+  @Get('stats')
+  async getUserStats(@Request() req) {
+    return this.usersService.getUserStats(req.user.userId);
   }
 
   @Delete(':id')

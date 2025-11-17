@@ -28,6 +28,7 @@ async function seed() {
       password: hashedPassword,
       role: UserRole.SUPER_ADMIN,
       isActive: true,
+      emailVerified: true, // Skip email verification for seeded admin
     });
     await userRepository.save(superAdmin);
     console.log('✅ Super Admin created: admin@237dollars.com / Admin@237dollars');

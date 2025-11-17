@@ -11,6 +11,9 @@ export interface User {
   firstName?: string;
   lastName?: string;
   role: string;
+  emailVerified?: boolean;
+  language?: string;
+  darkMode?: boolean;
 }
 
 export interface AuthResponse {
@@ -108,5 +111,14 @@ export class AuthService {
     this.storage.setItem('accessToken', response.accessToken);
     this.storage.setItem('refreshToken', response.refreshToken);
     this.currentUserSubject.next(response.user);
+  }
+
+  updateUserData(user: Partial<User>): void {
+    const currentUser = this.getCurrentUser();
+    if (currentUser) {
+      const updatedUser = { ...currentUser, ...user };
+      this.storage.setItem('user', updatedUser);
+      this.currentUserSubject.next(updatedUser);
+    }
   }
 }

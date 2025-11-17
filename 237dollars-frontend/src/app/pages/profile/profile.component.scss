@@ -352,6 +352,15 @@
       stroke: var(--danger-700);
     }
   }
+
+  &.icon-purple {
+    background: linear-gradient(135deg, #F3E8FF 0%, #E9D5FF 100%);
+    border: 1px solid #D8B4FE;
+
+    svg {
+      stroke: #7C3AED;
+    }
+  }
 }
 
 .card-title {
@@ -423,6 +432,15 @@
     opacity: 0.7;
     cursor: not-allowed;
   }
+
+  &.input-error {
+    border-color: var(--danger-500);
+
+    &:focus {
+      border-color: var(--danger-600);
+      box-shadow: 0 0 0 4px var(--danger-100);
+    }
+  }
 }
 
 .input-wrapper {
@@ -447,6 +465,19 @@
   font-size: 0.75rem;
   font-weight: 600;
   font-family: var(--font-sans);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  &.badge-verified {
+    background: linear-gradient(135deg, var(--secondary-50) 0%, var(--secondary-100) 100%);
+    color: var(--secondary-700);
+    border: 1px solid var(--secondary-300);
+
+    svg {
+      stroke: var(--secondary-700);
+    }
+  }
 }
 
 .input-hint {
@@ -454,6 +485,21 @@
   font-size: 0.8125rem;
   color: var(--text-tertiary);
   font-family: var(--font-body);
+
+  &.input-error-text {
+    color: var(--danger-600);
+  }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
 }
 
 /* Select Dropdown */
@@ -614,6 +660,14 @@
   grid-template-columns: repeat(2, 1fr);
   gap: var(--spacing-lg);
 
+  &.stats-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
   @media (max-width: 640px) {
     grid-template-columns: 1fr;
   }
@@ -697,6 +751,27 @@
   font-weight: 700;
   color: var(--text-primary);
   font-family: var(--font-sans);
+}
+
+.stats-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-3xl);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+
+  p {
+    margin: 0;
+    font-size: 0.9375rem;
+  }
+
+  .spinner {
+    width: 32px;
+    height: 32px;
+  }
 }
 
 /* ========================================

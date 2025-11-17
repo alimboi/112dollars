@@ -73,6 +73,7 @@ export class AdminService {
       password: hashedPassword,
       role: createAdminDto.role,
       isActive: true,
+      emailVerified: true, // Skip email verification for admin accounts
     });
 
     const saved = await this.userRepository.save(admin);
@@ -138,5 +139,267 @@ export class AdminService {
     });
 
     return await this.activityLogRepository.save(log);
+  }
+
+  /**
+   * Get all admin users (Super Admin only)
+   */
+  async getAllAdmins(requestingUserId: number): Promise<User[]> {
+    const requestingUser = await this.userRepository.findOne({
+      where: { id: requestingUserId },
+    });
+
+    if (!requestingUser || requestingUser.role !== UserRole.SUPER_ADMIN) {
+      throw new ForbiddenException('Only super admins can view all admins');
+    }
+
+    const adminRoles = [
+      UserRole.SUPER_ADMIN,
+      UserRole.ADMIN,
+      UserRole.STUDENT_MANAGER,
+      UserRole.CONTENT_MANAGER,
+    ];
+
+    const admins = await this.userRepository.find({
+      where: adminRoles.map((role) => ({ role })),
+      select: [
+        'id',
+        'email',
+        'username',
+        'firstName',
+        'lastName',
+        'role',
+        'isActive',
+        'createdAt',
+        'lastLogin',
+      ],
+      order: { createdAt: 'DESC' },
+    });
+
+    return admins;
+  }
+
+  /**
+   * Get specific admin details
+   */
+  async getAdminById(
+    requestingUserId: number,
+    adminId: number,
+  ): Promise<User> {
+    const requestingUser = await this.userRepository.findOne({
+      where: { id: requestingUserId },
+    });
+
+    if (!requestingUser || requestingUser.role !== UserRole.SUPER_ADMIN) {
+      throw new ForbiddenException('Only super admins can view admin details');
+    }
+
+    const admin = await this.userRepository.findOne({
+      where: { id: adminId },
+      select: [
+        'id',
+        'email',
+        'username',
+        'firstName',
+        'lastName',
+        'role',
+        'isActive',
+        'createdAt',
+        'lastLogin',
+        'emailVerified',
+      ],
+    });
+
+    if (!admin) {
+      throw new NotFoundException('Admin not found');
+    }
+
+    return admin;
+  }
+
+  /**
+   * Update admin role
+   */
+  async updateAdminRole(
+    requestingUserId: number,
+    adminId: number,
+    newRole: UserRole,
+  ): Promise<User> {
+    const requestingUser = await this.userRepository.findOne({
+      where: { id: requestingUserId },
+    });
+
+    if (!requestingUser || requestingUser.role !== UserRole.SUPER_ADMIN) {
+      throw new ForbiddenException('Only super admins can update admin roles');
+    }
+
+    // Cannot update your own role
+    if (requestingUserId === adminId) {
+      throw new BadRequestException('Cannot update your own role');
+    }
+
+    const admin = await this.userRepository.findOne({
+      where: { id: adminId },
+    });
+
+    if (!admin) {
+      throw new NotFoundException('Admin not found');
+    }
+
+    // Validate role
+    const allowedRoles = [
+      UserRole.ADMIN,
+      UserRole.STUDENT_MANAGER,
+      UserRole.CONTENT_MANAGER,
+    ];
+
+    if (!allowedRoles.includes(newRole)) {
+      throw new BadRequestException('Invalid admin role');
+    }
+
+    const oldRole = admin.role;
+    admin.role = newRole;
+    const updated = await this.userRepository.save(admin);
+
+    // Log activity
+    await this.logActivity(
+      requestingUserId,
+      ActivityType.UPDATE,
+      `Updated admin ${admin.email} role from ${oldRole} to ${newRole}`,
+    );
+
+    return updated;
+  }
+
+  /**
+   * Delete/Deactivate admin
+   */
+  async deleteAdmin(requestingUserId: number, adminId: number): Promise<void> {
+    const requestingUser = await this.userRepository.findOne({
+      where: { id: requestingUserId },
+    });
+
+    if (!requestingUser || requestingUser.role !== UserRole.SUPER_ADMIN) {
+      throw new ForbiddenException('Only super admins can delete admins');
+    }
+
+    // Cannot delete yourself
+    if (requestingUserId === adminId) {
+      throw new BadRequestException('Cannot delete your own account');
+    }
+
+    const admin = await this.userRepository.findOne({
+      where: { id: adminId },
+    });
+
+    if (!admin) {
+      throw new NotFoundException('Admin not found');
+    }
+
+    // Don't allow deleting other super admins
+    if (admin.role === UserRole.SUPER_ADMIN) {
+      throw new ForbiddenException('Cannot delete other super admins');
+    }
+
+    // Soft delete - deactivate instead of removing
+    admin.isActive = false;
+    await this.userRepository.save(admin);
+
+    // Log activity
+    await this.logActivity(
+      requestingUserId,
+      ActivityType.DELETE,
+      `Deactivated admin: ${admin.email} (${admin.role})`,
+    );
+  }
+
+  /**
+   * Reactivate admin
+   */
+  async reactivateAdmin(
+    requestingUserId: number,
+    adminId: number,
+  ): Promise<User> {
+    const requestingUser = await this.userRepository.findOne({
+      where: { id: requestingUserId },
+    });
+
+    if (!requestingUser || requestingUser.role !== UserRole.SUPER_ADMIN) {
+      throw new ForbiddenException('Only super admins can reactivate admins');
+    }
+
+    const admin = await this.userRepository.findOne({
+      where: { id: adminId },
+    });
+
+    if (!admin) {
+      throw new NotFoundException('Admin not found');
+    }
+
+    admin.isActive = true;
+    const updated = await this.userRepository.save(admin);
+
+    // Log activity
+    await this.logActivity(
+      requestingUserId,
+      ActivityType.UPDATE,
+      `Reactivated admin: ${admin.email} (${admin.role})`,
+    );
+
+    return updated;
+  }
+
+  /**
+   * Get admin statistics
+   */
+  async getAdminStats(requestingUserId: number) {
+    const requestingUser = await this.userRepository.findOne({
+      where: { id: requestingUserId },
+    });
+
+    if (!requestingUser || requestingUser.role !== UserRole.SUPER_ADMIN) {
+      throw new ForbiddenException('Only super admins can view admin stats');
+    }
+
+    const totalAdmins = await this.userRepository.count({
+      where: [
+        { role: UserRole.SUPER_ADMIN },
+        { role: UserRole.ADMIN },
+        { role: UserRole.STUDENT_MANAGER },
+        { role: UserRole.CONTENT_MANAGER },
+      ],
+    });
+
+    const activeAdmins = await this.userRepository.count({
+      where: [
+        { role: UserRole.SUPER_ADMIN, isActive: true },
+        { role: UserRole.ADMIN, isActive: true },
+        { role: UserRole.STUDENT_MANAGER, isActive: true },
+        { role: UserRole.CONTENT_MANAGER, isActive: true },
+      ],
+    });
+
+    const studentManagers = await this.userRepository.count({
+      where: { role: UserRole.STUDENT_MANAGER },
+    });
+
+    const contentManagers = await this.userRepository.count({
+      where: { role: UserRole.CONTENT_MANAGER },
+    });
+
+    const recentActivities = await this.activityLogRepository.find({
+      take: 10,
+      order: { createdAt: 'DESC' },
+      relations: ['admin'],
+    });
+
+    return {
+      totalAdmins,
+      activeAdmins,
+      inactiveAdmins: totalAdmins - activeAdmins,
+      studentManagers,
+      contentManagers,
+      recentActivities,
+    };
   }
 }

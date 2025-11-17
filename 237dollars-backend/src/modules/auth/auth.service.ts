@@ -472,11 +472,17 @@ export class AuthService {
   async generateTokens(userId: number, role: string) {
     const payload = { sub: userId, role };
 
-    const accessToken = this.jwtService.sign(payload);
+    // ADMIN FIX: Admins get much longer token expiration (365 days)
+    const isAdmin = role === 'admin' || role === 'super_admin' || role === 'content_manager' || role === 'student_manager';
+    const accessTokenExpiration = isAdmin ? '365d' : '1h';
+
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: accessTokenExpiration,
+    });
 
     const refreshToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_REFRESH_SECRET,
-      expiresIn: '30d', // 30 days for refresh token
+      expiresIn: '365d', // 365 days for refresh token (increased from 30d)
     });
 
     return {

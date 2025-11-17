@@ -5,7 +5,7 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { DiscountEligibility } from '../../database/entities/discount-eligibility.entity';
 import { DiscountApplication } from '../../database/entities/discount-application.entity';
 import { ApplyDiscountDto } from './dto/apply-discount.dto';
@@ -23,6 +23,7 @@ export class DiscountsService {
     private applicationRepository: Repository<DiscountApplication>,
     private emailService: EmailService,
     private telegramService: TelegramService,
+    private dataSource: DataSource,
   ) {}
 
   async applyForDiscount(
@@ -172,14 +173,21 @@ export class DiscountsService {
   }
 
   async markCodeAsUsed(code: string): Promise<void> {
-    const eligibility = await this.eligibilityRepository.findOne({
-      where: { discountCode: code },
-    });
+    // Use transaction with pessimistic write lock to prevent race conditions
+    await this.dataSource.transaction(async (manager) => {
+      const eligibility = await manager.findOne(DiscountEligibility, {
+        where: { discountCode: code, isUsed: false },
+        lock: { mode: 'pessimistic_write' },
+      });
 
-    if (eligibility) {
+      if (!eligibility) {
+        throw new BadRequestException('Discount code already used or invalid');
+      }
+
       eligibility.isUsed = true;
-      await this.eligibilityRepository.save(eligibility);
-    }
+      eligibility.usedAt = new Date();
+      await manager.save(eligibility);
+    });
   }
 
   private generateDiscountCode(): string {

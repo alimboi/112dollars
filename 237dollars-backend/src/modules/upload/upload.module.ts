@@ -28,8 +28,9 @@ import { existsSync, mkdirSync } from 'fs';
         fileSize: 5 * 1024 * 1024, // 5MB limit per file
       },
       fileFilter: (req, file, callback) => {
-        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp|svg\+xml)$/)) {
-          return callback(new Error('Only image files are allowed (jpg, jpeg, png, gif, webp, svg)!'), false);
+        // SVG blocked due to XSS vulnerability
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
+          return callback(new Error('Only image files are allowed (jpg, jpeg, png, gif, webp). SVG is not allowed due to security risks.'), false);
         }
         callback(null, true);
       },

@@ -112,9 +112,10 @@ export class AuthController {
     // Handle Google OAuth callback
     const result = await this.authService.googleLogin(req.user);
 
-    // Redirect to frontend with tokens in URL params
+    // SECURITY: Use hash fragment instead of query params to prevent token leakage
+    // Hash fragments are not sent to server in HTTP requests (not logged, not in referer header)
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:4200';
-    const redirectUrl = `${frontendUrl}/auth/google/callback?accessToken=${result.accessToken}&refreshToken=${result.refreshToken}`;
+    const redirectUrl = `${frontendUrl}/auth/google/callback#accessToken=${result.accessToken}&refreshToken=${result.refreshToken}`;
 
     return res.redirect(redirectUrl);
   }

@@ -271,9 +271,7 @@ export class AuthService {
   async refreshToken(refreshToken: string) {
     try {
       const payload = this.jwtService.verify(refreshToken, {
-        secret:
-          process.env.JWT_REFRESH_SECRET ||
-          '237dollars-refresh-secret-key-development-only',
+        secret: process.env.JWT_REFRESH_SECRET,
       });
 
       const user = await this.userRepository.findOne({
@@ -356,9 +354,11 @@ export class AuthService {
     const hashedPassword = await this.passwordService.hashPassword(newPassword);
     user.password = hashedPassword;
 
-    // If user can verify password reset via email, their email is verified
-    user.emailVerified = true;
-    user.isActive = true;
+    // SECURITY: Only activate if email was already verified
+    // Don't auto-verify on password reset - this could bypass email verification
+    if (user.emailVerified) {
+      user.isActive = true;
+    }
 
     await this.userRepository.save(user);
 
@@ -378,17 +378,16 @@ export class AuthService {
 
     // If not found by Google ID, check by email
     if (!user) {
-      user = await this.userRepository.findOne({
+      const existingUser = await this.userRepository.findOne({
         where: { email },
       });
 
-      // If user exists with email but no Google ID, link Google account
-      if (user) {
-        user.googleId = googleId;
-        user.profilePicture = picture;
-        user.emailVerified = true; // Google already verified the email
-        user.isActive = true;
-        await this.userRepository.save(user);
+      // SECURITY: Do NOT auto-link accounts - this is an account takeover vulnerability
+      // If user exists with this email but different auth method, deny login
+      if (existingUser) {
+        throw new BadRequestException(
+          'An account with this email already exists. Please login with your password or contact support to link your Google account.',
+        );
       }
     }
 
@@ -449,9 +448,7 @@ export class AuthService {
     const accessToken = this.jwtService.sign(payload);
 
     const refreshToken = this.jwtService.sign(payload, {
-      secret:
-        process.env.JWT_REFRESH_SECRET ||
-        '237dollars-refresh-secret-key-development-only',
+      secret: process.env.JWT_REFRESH_SECRET,
       expiresIn: '30d', // 30 days for refresh token
     });
 

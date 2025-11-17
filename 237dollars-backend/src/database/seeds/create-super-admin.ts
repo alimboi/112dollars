@@ -10,6 +10,19 @@ async function createSuperAdmin() {
 
   console.log('🔧 Creating new Super Admin...');
 
+  // Check for required environment variables
+  const superAdminEmail = process.env.SUPER_ADMIN_EMAIL;
+  const superAdminPassword = process.env.SUPER_ADMIN_PASSWORD;
+
+  if (!superAdminEmail || !superAdminPassword) {
+    console.error('❌ ERROR: Missing required environment variables:');
+    if (!superAdminEmail) console.error('   - SUPER_ADMIN_EMAIL');
+    if (!superAdminPassword) console.error('   - SUPER_ADMIN_PASSWORD');
+    console.error('\n💡 Please set these in your .env file or environment.\n');
+    await dataSource.destroy();
+    process.exit(1);
+  }
+
   const userRepository = dataSource.getRepository(User);
 
   // Remove old seeded admin if exists
@@ -22,21 +35,20 @@ async function createSuperAdmin() {
     console.log('✅ Removed old seeded admin (admin@237dollars.com)');
   }
 
-  // Create new super admin
-  const newSuperAdminEmail = '1995udba@gmail.com';
+  // Check if super admin already exists
   const existingSuperAdmin = await userRepository.findOne({
-    where: { email: newSuperAdminEmail },
+    where: { email: superAdminEmail },
   });
 
   if (existingSuperAdmin) {
-    console.log('ℹ️  Super Admin already exists: ' + newSuperAdminEmail);
+    console.log('ℹ️  Super Admin already exists');
     await dataSource.destroy();
     return;
   }
 
-  const hashedPassword = await bcrypt.hash('SuperAdmin@2024', 12);
+  const hashedPassword = await bcrypt.hash(superAdminPassword, 12);
   const superAdmin = userRepository.create({
-    email: newSuperAdminEmail,
+    email: superAdminEmail,
     username: 'superadmin',
     firstName: 'Super',
     lastName: 'Admin',
@@ -49,8 +61,8 @@ async function createSuperAdmin() {
   await userRepository.save(superAdmin);
   console.log('\n✅ Super Admin Created Successfully!');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log('📧 Email: ' + newSuperAdminEmail);
-  console.log('🔑 Password: SuperAdmin@2024');
+  console.log('📧 Email: ' + superAdminEmail);
+  console.log('🔑 Password: ********** (hidden for security)');
   console.log('👤 Username: superadmin');
   console.log('🛡️  Role: SUPER_ADMIN');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');

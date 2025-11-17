@@ -5,16 +5,41 @@ import * as bodyParser from 'body-parser';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 
+function validateRequiredEnvVars() {
+  const requiredVars = [
+    'JWT_SECRET',
+    'JWT_REFRESH_SECRET',
+    'DATABASE_HOST',
+    'DATABASE_PORT',
+    'DATABASE_USERNAME',
+    'DATABASE_PASSWORD',
+    'DATABASE_NAME',
+  ];
+
+  const missing = requiredVars.filter(varName => !process.env[varName]);
+
+  if (missing.length > 0) {
+    console.error('❌ CRITICAL: Missing required environment variables:');
+    missing.forEach(varName => {
+      console.error(`   - ${varName}`);
+    });
+    console.error('\n🛑 Application cannot start without these variables.');
+    console.error('💡 Please set them in your .env file or environment.\n');
+    process.exit(1);
+  }
+}
+
 async function bootstrap() {
+  // Validate environment variables before starting
+  validateRequiredEnvVars();
+
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // Global prefix
   app.setGlobalPrefix('api');
 
-  // Serve static files (uploaded images)
-  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
-    prefix: '/uploads/',
-  });
+  // NOTE: Static file serving removed for security
+  // All uploaded files now require authentication via /api/upload/file/:filename
 
   // Increase payload size limit for image uploads (50MB)
   app.use(bodyParser.json({ limit: '50mb' }));

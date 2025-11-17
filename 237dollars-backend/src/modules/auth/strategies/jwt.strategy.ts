@@ -14,21 +14,25 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || '237dollars-jwt-secret-key-development-only',
+      secretOrKey: process.env.JWT_SECRET,
     });
   }
 
   async validate(payload: any) {
     const user = await this.userRepository.findOne({
-      where: { id: payload.sub, isActive: true },
+      where: {
+        id: payload.sub,
+        isActive: true,
+        emailVerified: true, // SECURITY: Only allow verified users
+      },
     });
 
     if (!user) {
-      throw new UnauthorizedException('User not found or inactive');
+      throw new UnauthorizedException('User not found, inactive, or email not verified');
     }
 
     return {
-      userId: user.id,
+      sub: user.id, // Use 'sub' for consistency with JWT spec
       email: user.email,
       role: user.role,
     };

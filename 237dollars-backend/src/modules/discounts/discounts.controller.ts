@@ -20,7 +20,7 @@ export class DiscountsController {
 
   @Post('apply')
   applyForDiscount(@Request() req, @Body() applyDto: ApplyDiscountDto) {
-    return this.discountsService.applyForDiscount(req.user.userId, applyDto);
+    return this.discountsService.applyForDiscount(req.user.sub, applyDto);
   }
 
   @Roles(UserRole.SUPER_ADMIN, UserRole.STUDENT_MANAGER)

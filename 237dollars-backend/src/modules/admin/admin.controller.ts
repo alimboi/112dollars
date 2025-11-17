@@ -26,7 +26,7 @@ export class AdminController {
   @Roles(UserRole.SUPER_ADMIN)
   @Post('create-admin')
   createAdmin(@Request() req, @Body() createAdminDto: CreateAdminDto) {
-    return this.adminService.createAdmin(req.user.userId, createAdminDto);
+    return this.adminService.createAdmin(req.user.sub, createAdminDto);
   }
 
   /**
@@ -35,7 +35,7 @@ export class AdminController {
   @Roles(UserRole.SUPER_ADMIN)
   @Get('admins')
   getAllAdmins(@Request() req) {
-    return this.adminService.getAllAdmins(req.user.userId);
+    return this.adminService.getAllAdmins(req.user.sub);
   }
 
   /**
@@ -44,7 +44,7 @@ export class AdminController {
   @Roles(UserRole.SUPER_ADMIN)
   @Get('admins/:id')
   getAdminById(@Request() req, @Param('id') id: string) {
-    return this.adminService.getAdminById(req.user.userId, +id);
+    return this.adminService.getAdminById(req.user.sub, +id);
   }
 
   /**
@@ -57,7 +57,7 @@ export class AdminController {
     @Param('id') id: string,
     @Body() updateAdminDto: UpdateAdminDto,
   ) {
-    return this.adminService.updateAdmin(req.user.userId, +id, updateAdminDto);
+    return this.adminService.updateAdmin(req.user.sub, +id, updateAdminDto);
   }
 
   /**
@@ -70,7 +70,7 @@ export class AdminController {
     @Param('id') id: string,
     @Body() body: { role: UserRole },
   ) {
-    return this.adminService.updateAdminRole(req.user.userId, +id, body.role);
+    return this.adminService.updateAdminRole(req.user.sub, +id, body.role);
   }
 
   /**
@@ -79,7 +79,7 @@ export class AdminController {
   @Roles(UserRole.SUPER_ADMIN)
   @Delete('admins/:id')
   deleteAdmin(@Request() req, @Param('id') id: string) {
-    return this.adminService.deleteAdmin(req.user.userId, +id);
+    return this.adminService.deleteAdmin(req.user.sub, +id);
   }
 
   /**
@@ -88,7 +88,7 @@ export class AdminController {
   @Roles(UserRole.SUPER_ADMIN)
   @Put('admins/:id/reactivate')
   reactivateAdmin(@Request() req, @Param('id') id: string) {
-    return this.adminService.reactivateAdmin(req.user.userId, +id);
+    return this.adminService.reactivateAdmin(req.user.sub, +id);
   }
 
   /**
@@ -97,7 +97,7 @@ export class AdminController {
   @Roles(UserRole.SUPER_ADMIN)
   @Get('stats')
   getAdminStats(@Request() req) {
-    return this.adminService.getAdminStats(req.user.userId);
+    return this.adminService.getAdminStats(req.user.sub);
   }
 
   /**
@@ -118,6 +118,6 @@ export class AdminController {
   @Roles(UserRole.SUPER_ADMIN, UserRole.STUDENT_MANAGER)
   @Post('mark-real-test-passed')
   markRealTestPassed(@Request() req, @Body() markTestDto: MarkTestPassedDto) {
-    return this.adminService.markRealTestPassed(req.user.userId, markTestDto);
+    return this.adminService.markRealTestPassed(req.user.sub, markTestDto);
   }
 }

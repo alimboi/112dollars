@@ -22,12 +22,12 @@ export class UsersController {
 
   @Get('profile')
   async getProfile(@Request() req) {
-    return this.usersService.getUserProfile(req.user.userId);
+    return this.usersService.getUserProfile(req.user.sub);
   }
 
   @Put('profile')
   async updateProfile(@Request() req, @Body() updateProfileDto: UpdateProfileDto) {
-    return this.usersService.updateProfile(req.user.userId, updateProfileDto);
+    return this.usersService.updateProfile(req.user.sub, updateProfileDto);
   }
 
   @Put('preferences')
@@ -36,7 +36,7 @@ export class UsersController {
     @Body() updatePreferencesDto: UpdatePreferencesDto,
   ) {
     return this.usersService.updatePreferences(
-      req.user.userId,
+      req.user.sub,
       updatePreferencesDto,
     );
   }
@@ -46,17 +46,17 @@ export class UsersController {
     @Request() req,
     @Body() changePasswordDto: ChangePasswordDto,
   ) {
-    return this.usersService.changePassword(req.user.userId, changePasswordDto);
+    return this.usersService.changePassword(req.user.sub, changePasswordDto);
   }
 
   @Get('stats')
   async getUserStats(@Request() req) {
-    return this.usersService.getUserStats(req.user.userId);
+    return this.usersService.getUserStats(req.user.sub);
   }
 
   @Delete(':id')
   async deleteUser(@Request() req, @Param('id') id: string) {
-    return this.usersService.deleteUser(+id, req.user.userId);
+    return this.usersService.deleteUser(+id, req.user.sub);
   }
 
   @Roles(UserRole.SUPER_ADMIN, UserRole.STUDENT_MANAGER)

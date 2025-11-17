@@ -7,7 +7,7 @@ export class ReadingProgressController {
 
   @Post('start')
   startReading(@Body() body: { referenceId: number }, @Request() req) {
-    return this.progressService.startReading(req.user.userId, body.referenceId);
+    return this.progressService.startReading(req.user.sub, body.referenceId);
   }
 
   @Put(':referenceId')
@@ -17,7 +17,7 @@ export class ReadingProgressController {
     @Request() req,
   ) {
     return this.progressService.updateProgress(
-      req.user.userId,
+      req.user.sub,
       +referenceId,
       body.percentageRead,
       body.readingTime,
@@ -26,11 +26,11 @@ export class ReadingProgressController {
 
   @Post(':referenceId/complete')
   completeReading(@Param('referenceId') referenceId: string, @Request() req) {
-    return this.progressService.completeReading(req.user.userId, +referenceId);
+    return this.progressService.completeReading(req.user.sub, +referenceId);
   }
 
   @Get('user')
   getUserProgress(@Request() req) {
-    return this.progressService.getUserProgress(req.user.userId);
+    return this.progressService.getUserProgress(req.user.sub);
   }
 }

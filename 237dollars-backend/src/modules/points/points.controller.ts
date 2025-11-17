@@ -7,16 +7,16 @@ export class PointsController {
 
   @Get('user')
   getUserPoints(@Request() req) {
-    return this.pointsService.getUserPoints(req.user.userId);
+    return this.pointsService.getUserPoints(req.user.sub);
   }
 
   @Get('user/total')
   getTotalPoints(@Request() req) {
-    return this.pointsService.getTotalPoints(req.user.userId);
+    return this.pointsService.getTotalPoints(req.user.sub);
   }
 
   @Get('user/breakdown')
   getPointsBreakdown(@Request() req) {
-    return this.pointsService.getPointsBreakdown(req.user.userId);
+    return this.pointsService.getPointsBreakdown(req.user.sub);
   }
 }

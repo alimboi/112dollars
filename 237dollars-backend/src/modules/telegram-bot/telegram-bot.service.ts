@@ -1102,6 +1102,8 @@ export class TelegramBotService implements OnModuleInit {
   }
 
   private downloadFile(url: string): Promise<Buffer> {
+    const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB limit (Telegram's max is 20MB for bots)
+
     return new Promise((resolve, reject) => {
       const protocol = url.startsWith('https') ? https : http;
 
@@ -1112,8 +1114,18 @@ export class TelegramBotService implements OnModuleInit {
         }
 
         const chunks: Buffer[] = [];
+        let downloadedSize = 0;
 
         response.on('data', (chunk) => {
+          downloadedSize += chunk.length;
+
+          // SECURITY: Prevent DoS via large file downloads
+          if (downloadedSize > MAX_FILE_SIZE) {
+            response.destroy();
+            reject(new Error(`File too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024}MB`));
+            return;
+          }
+
           chunks.push(chunk);
         });
 

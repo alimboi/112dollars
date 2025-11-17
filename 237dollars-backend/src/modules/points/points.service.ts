@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { UserPoints } from '../../database/entities/user-points.entity';
 
 @Injectable()
@@ -8,6 +8,7 @@ export class PointsService {
   constructor(
     @InjectRepository(UserPoints)
     private pointsRepository: Repository<UserPoints>,
+    private dataSource: DataSource,
   ) {}
 
   async addReadingPoints(
@@ -15,25 +16,29 @@ export class PointsService {
     topicId: number,
     points: number,
   ): Promise<UserPoints> {
-    let userPoints = await this.pointsRepository.findOne({
-      where: { userId, topicId },
-    });
-
-    if (!userPoints) {
-      userPoints = this.pointsRepository.create({
-        userId,
-        topicId,
-        readingPoints: points,
-        quizPoints: 0,
-        totalPoints: points,
-        topicsCompleted: 0,
+    // SECURITY: Use transaction with pessimistic locking to prevent race conditions
+    return await this.dataSource.transaction(async (manager) => {
+      let userPoints = await manager.findOne(UserPoints, {
+        where: { userId, topicId },
+        lock: { mode: 'pessimistic_write' },
       });
-    } else {
-      userPoints.readingPoints += points;
-      userPoints.totalPoints = userPoints.readingPoints + userPoints.quizPoints;
-    }
 
-    return await this.pointsRepository.save(userPoints);
+      if (!userPoints) {
+        userPoints = manager.create(UserPoints, {
+          userId,
+          topicId,
+          readingPoints: points,
+          quizPoints: 0,
+          totalPoints: points,
+          topicsCompleted: 0,
+        });
+      } else {
+        userPoints.readingPoints += points;
+        userPoints.totalPoints = userPoints.readingPoints + userPoints.quizPoints;
+      }
+
+      return await manager.save(userPoints);
+    });
   }
 
   async addQuizPoints(
@@ -41,25 +46,29 @@ export class PointsService {
     topicId: number,
     points: number,
   ): Promise<UserPoints> {
-    let userPoints = await this.pointsRepository.findOne({
-      where: { userId, topicId },
-    });
-
-    if (!userPoints) {
-      userPoints = this.pointsRepository.create({
-        userId,
-        topicId,
-        readingPoints: 0,
-        quizPoints: points,
-        totalPoints: points,
-        topicsCompleted: 0,
+    // SECURITY: Use transaction with pessimistic locking to prevent race conditions
+    return await this.dataSource.transaction(async (manager) => {
+      let userPoints = await manager.findOne(UserPoints, {
+        where: { userId, topicId },
+        lock: { mode: 'pessimistic_write' },
       });
-    } else {
-      userPoints.quizPoints += points;
-      userPoints.totalPoints = userPoints.readingPoints + userPoints.quizPoints;
-    }
 
-    return await this.pointsRepository.save(userPoints);
+      if (!userPoints) {
+        userPoints = manager.create(UserPoints, {
+          userId,
+          topicId,
+          readingPoints: 0,
+          quizPoints: points,
+          totalPoints: points,
+          topicsCompleted: 0,
+        });
+      } else {
+        userPoints.quizPoints += points;
+        userPoints.totalPoints = userPoints.readingPoints + userPoints.quizPoints;
+      }
+
+      return await manager.save(userPoints);
+    });
   }
 
   async getUserPoints(userId: number): Promise<UserPoints[]> {

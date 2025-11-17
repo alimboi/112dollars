@@ -45,17 +45,21 @@ export class ReferencesController {
     @Query('majorId') majorId?: string,
     @Query('topicId') topicId?: string,
   ) {
+    // SECURITY: Cap maximum limit to prevent DoS
+    const MAX_LIMIT = 100;
+    const validatedLimit = Math.min(+limit, MAX_LIMIT);
+
     const publishedFilter = published === 'true' ? true : published === 'false' ? false : undefined;
     const majorIdFilter = majorId ? +majorId : undefined;
     const topicIdFilter = topicId ? +topicId : undefined;
-    return this.referencesService.findAll(+page, +limit, publishedFilter, majorIdFilter, topicIdFilter);
+    return this.referencesService.findAll(+page, validatedLimit, publishedFilter, majorIdFilter, topicIdFilter);
   }
 
   // References
   @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Post()
   create(@Body() createReferenceDto: CreateReferenceDto, @Request() req) {
-    return this.referencesService.create(createReferenceDto, req.user.userId);
+    return this.referencesService.create(createReferenceDto, req.user.sub);
   }
 
   @Public()
@@ -65,7 +69,10 @@ export class ReferencesController {
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '10',
   ) {
-    return this.referencesService.findByTopic(+topicId, +page, +limit);
+    // SECURITY: Cap maximum limit to prevent DoS
+    const MAX_LIMIT = 100;
+    const validatedLimit = Math.min(+limit, MAX_LIMIT);
+    return this.referencesService.findByTopic(+topicId, +page, validatedLimit);
   }
 
   @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
@@ -77,32 +84,32 @@ export class ReferencesController {
   @Public()
   @Get(':id')
   findOne(@Param('id') id: string, @Request() req) {
-    const userId = req.user?.userId;
+    const userId = req.user?.sub;
     return this.referencesService.findOne(+id, userId);
   }
 
   @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateReferenceDto: UpdateReferenceDto) {
-    return this.referencesService.update(+id, updateReferenceDto);
+  update(@Param('id') id: string, @Body() updateReferenceDto: UpdateReferenceDto, @Request() req) {
+    return this.referencesService.update(+id, updateReferenceDto, req.user.sub, req.user.role);
   }
 
   @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put(':id/publish')
-  publish(@Param('id') id: string) {
-    return this.referencesService.publish(+id);
+  publish(@Param('id') id: string, @Request() req) {
+    return this.referencesService.publish(+id, req.user.sub, req.user.role);
   }
 
   @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put(':id/unpublish')
-  unpublish(@Param('id') id: string) {
-    return this.referencesService.unpublish(+id);
+  unpublish(@Param('id') id: string, @Request() req) {
+    return this.referencesService.unpublish(+id, req.user.sub, req.user.role);
   }
 
   @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.referencesService.remove(+id);
+  remove(@Param('id') id: string, @Request() req) {
+    return this.referencesService.remove(+id, req.user.sub, req.user.role);
   }
 
   // Content Blocks

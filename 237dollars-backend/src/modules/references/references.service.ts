@@ -164,8 +164,13 @@ export class ReferencesService {
     };
   }
 
-  async update(id: number, updateReferenceDto: UpdateReferenceDto) {
+  async update(id: number, updateReferenceDto: UpdateReferenceDto, userId: number, userRole: string) {
     const reference = await this.findOne(id);
+
+    // SECURITY: Check resource ownership (unless SUPER_ADMIN)
+    if (userRole !== 'SUPER_ADMIN' && reference.createdBy !== userId) {
+      throw new ForbiddenException('You can only update your own references');
+    }
 
     // Recalculate reading time if totalWords changed
     if (updateReferenceDto.totalWords) {
@@ -176,20 +181,38 @@ export class ReferencesService {
     return await this.referenceRepository.save(reference);
   }
 
-  async publish(id: number) {
+  async publish(id: number, userId: number, userRole: string) {
     const reference = await this.findOne(id);
+
+    // SECURITY: Check resource ownership (unless SUPER_ADMIN)
+    if (userRole !== 'SUPER_ADMIN' && reference.createdBy !== userId) {
+      throw new ForbiddenException('You can only publish your own references');
+    }
+
     reference.isPublished = true;
     return await this.referenceRepository.save(reference);
   }
 
-  async unpublish(id: number) {
+  async unpublish(id: number, userId: number, userRole: string) {
     const reference = await this.findOne(id);
+
+    // SECURITY: Check resource ownership (unless SUPER_ADMIN)
+    if (userRole !== 'SUPER_ADMIN' && reference.createdBy !== userId) {
+      throw new ForbiddenException('You can only unpublish your own references');
+    }
+
     reference.isPublished = false;
     return await this.referenceRepository.save(reference);
   }
 
-  async remove(id: number) {
+  async remove(id: number, userId: number, userRole: string) {
     const reference = await this.findOne(id);
+
+    // SECURITY: Check resource ownership (unless SUPER_ADMIN)
+    if (userRole !== 'SUPER_ADMIN' && reference.createdBy !== userId) {
+      throw new ForbiddenException('You can only delete your own references');
+    }
+
     await this.referenceRepository.remove(reference);
     return { message: 'Reference deleted' };
   }

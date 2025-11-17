@@ -34,7 +34,7 @@ export class BlogController {
   @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Post('posts')
   create(@Body() createBlogPostDto: CreateBlogPostDto, @Request() req) {
-    return this.blogService.create(createBlogPostDto, req.user.userId);
+    return this.blogService.create(createBlogPostDto, req.user.sub);
   }
 
   @Public()
@@ -82,7 +82,7 @@ export class BlogController {
   @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Post('images')
   createImage(@Body() createBlogImageDto: CreateBlogImageDto, @Request() req) {
-    return this.blogImageService.create(createBlogImageDto, req.user.userId);
+    return this.blogImageService.create(createBlogImageDto, req.user.sub);
   }
 
   @Public()
@@ -130,7 +130,7 @@ export class BlogController {
   @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Post('galleries')
   createGallery(@Body() createGalleryDto: CreateBlogGalleryDto, @Request() req) {
-    return this.blogGalleryService.create(createGalleryDto, req.user.userId);
+    return this.blogGalleryService.create(createGalleryDto, req.user.sub);
   }
 
   @Public()

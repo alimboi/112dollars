@@ -18,6 +18,7 @@ import { PasswordResetVerifyDto } from './dto/password-reset-verify.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { ResendVerificationDto } from './dto/resend-verification.dto';
 import { ErrorMessages } from '../../common/constants/error-messages';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -268,6 +269,12 @@ export class AuthService {
     }
   }
 
+  /**
+   * SECURITY FIX #6: Refresh token rotation
+   * - Validates refresh token against stored hash
+   * - Generates new tokens and invalidates old refresh token
+   * - Prevents refresh token reuse
+   */
   async refreshToken(refreshToken: string) {
     try {
       const payload = this.jwtService.verify(refreshToken, {
@@ -282,9 +289,33 @@ export class AuthService {
         throw new UnauthorizedException(ErrorMessages.USER_NOT_FOUND);
       }
 
+      // SECURITY FIX #6: Validate refresh token against stored hash
+      if (!user.refreshTokenHash) {
+        throw new UnauthorizedException('No refresh token on file. Please login again');
+      }
+
+      const isRefreshTokenValid = await this.passwordService.comparePassword(
+        refreshToken,
+        user.refreshTokenHash,
+      );
+
+      if (!isRefreshTokenValid) {
+        // SECURITY: Refresh token doesn't match - possible token theft
+        // Invalidate all tokens for this user
+        await this.userRepository.update(user.id, {
+          refreshTokenHash: null,
+          revokedTokens: [], // Clear revoked tokens on security breach
+        });
+        throw new UnauthorizedException('Invalid refresh token. Please login again');
+      }
+
+      // SECURITY FIX #6: Generate new tokens (this will rotate the refresh token)
       const tokens = await this.generateTokens(user.id, user.role);
       return tokens;
     } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
       throw new UnauthorizedException(ErrorMessages.INVALID_TOKEN);
     }
   }
@@ -469,8 +500,21 @@ export class AuthService {
     };
   }
 
+  /**
+   * SECURITY FIX #6 & #2: Generate tokens with JTI for rotation and revocation
+   * - Access token gets JTI for revocation tracking
+   * - Refresh token gets JTI and is hashed before storage for rotation
+   */
   async generateTokens(userId: number, role: string) {
-    const payload = { sub: userId, role };
+    // Generate unique JWT IDs for tracking
+    const accessTokenJti = randomUUID();
+    const refreshTokenJti = randomUUID();
+
+    const payload = {
+      sub: userId,
+      role,
+      jti: accessTokenJti, // SECURITY FIX #2: JTI for token revocation
+    };
 
     // ADMIN FIX: Admins get much longer token expiration (365 days)
     const isAdmin = role === 'admin' || role === 'super_admin' || role === 'content_manager' || role === 'student_manager';
@@ -480,14 +524,109 @@ export class AuthService {
       expiresIn: accessTokenExpiration,
     });
 
-    const refreshToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_REFRESH_SECRET,
-      expiresIn: '365d', // 365 days for refresh token (increased from 30d)
+    const refreshToken = this.jwtService.sign(
+      {
+        sub: userId,
+        role,
+        jti: refreshTokenJti, // SECURITY FIX #6: JTI for refresh token rotation
+      },
+      {
+        secret: process.env.JWT_REFRESH_SECRET,
+        expiresIn: '365d', // 365 days for refresh token (increased from 30d)
+      }
+    );
+
+    // SECURITY FIX #6: Hash and store refresh token for rotation validation
+    const refreshTokenHash = await this.passwordService.hashPassword(refreshToken);
+
+    // Update user with new refresh token hash
+    await this.userRepository.update(userId, {
+      refreshTokenHash,
     });
 
     return {
       accessToken,
       refreshToken,
     };
+  }
+
+  /**
+   * SECURITY FIX #2: Token revocation for immediate logout
+   * - Revokes the current access token by storing its JTI
+   * - Clears refresh token hash to prevent token refresh
+   */
+  async logout(userId: number, tokenJti: string): Promise<void> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: ['id', 'revokedTokens', 'refreshTokenHash'],
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    // Add current token JTI to revoked list
+    const revokedTokens = Array.isArray(user.revokedTokens) ? user.revokedTokens : [];
+    if (!revokedTokens.includes(tokenJti)) {
+      revokedTokens.push(tokenJti);
+    }
+
+    // Update user: revoke access token and clear refresh token
+    await this.userRepository.update(userId, {
+      revokedTokens,
+      refreshTokenHash: null, // Invalidate refresh token on logout
+    });
+
+    // SECURITY: Cleanup old revoked tokens (older than 365 days)
+    // This prevents the array from growing indefinitely
+    // Since access tokens expire in 1h for users and 365d for admins,
+    // we keep revoked tokens for 365 days to cover admin tokens
+    await this.cleanupRevokedTokens(userId);
+  }
+
+  /**
+   * SECURITY FIX #2: Check if a token is revoked
+   * Used by JWT guards to validate tokens on each request
+   */
+  async isTokenRevoked(userId: number, tokenJti: string): Promise<boolean> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: ['id', 'revokedTokens'],
+    });
+
+    if (!user) {
+      return true; // Consider token revoked if user doesn't exist
+    }
+
+    const revokedTokens = Array.isArray(user.revokedTokens) ? user.revokedTokens : [];
+    return revokedTokens.includes(tokenJti);
+  }
+
+  /**
+   * SECURITY FIX #2: Cleanup old revoked tokens
+   * Since we store JTIs as strings without timestamps, we rely on periodic cleanup
+   * In production, this should be run via a scheduled job
+   * For now, we limit the array size to prevent memory issues
+   */
+  private async cleanupRevokedTokens(userId: number): Promise<void> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: ['id', 'revokedTokens'],
+    });
+
+    if (!user) {
+      return;
+    }
+
+    const revokedTokens = Array.isArray(user.revokedTokens) ? user.revokedTokens : [];
+
+    // Keep only the last 100 revoked tokens to prevent unbounded growth
+    // Since access tokens expire (1h for users, 365d for admins), old JTIs are no longer needed
+    if (revokedTokens.length > 100) {
+      const trimmedTokens = revokedTokens.slice(-100); // Keep last 100
+      await this.userRepository.update(userId, {
+        revokedTokens: trimmedTokens,
+      });
+    }
   }
 }

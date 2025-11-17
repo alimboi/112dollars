@@ -139,7 +139,7 @@ export class DiscountsService {
     await this.emailService.sendEmail(
       application.email,
       'Discount Application Approved!',
-      `Dear ${application.fullName},\n\nCongratulations! Your discount application has been approved.\n\nYour discount code: ${discountCode}\nDiscount: 50%\n\nPlease use this code during enrollment.\n\nBest regards,\n237Dollars Team`,
+      `Dear ${application.fullName},\n\nCongratulations! Your discount application has been approved.\n\nYour discount code: ${application.discountCode}\nDiscount: 50%\n\nPlease use this code during enrollment.\n\nBest regards,\n237Dollars Team`,
     );
 
     return updated;

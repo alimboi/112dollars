@@ -79,6 +79,14 @@ export class User {
   @Column({ name: 'last_password_reset_request', type: 'timestamp', nullable: true })
   lastPasswordResetRequest: Date;
 
+  // SECURITY FIX #6: Refresh token rotation
+  @Column({ name: 'refresh_token_hash', type: 'text', nullable: true })
+  refreshTokenHash: string;
+
+  // SECURITY FIX #2: Token revocation
+  @Column({ name: 'revoked_tokens', type: 'jsonb', default: '[]' })
+  revokedTokens: string[]; // Array of revoked access token JTIs
+
   @Column({
     type: 'enum',
     enum: UserRole,

@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
 import * as crypto from 'crypto';
-import { fileTypeFromBuffer } from 'file-type';
+import { fromBuffer as fileTypeFromBuffer } from 'file-type';
 
 const writeFile = promisify(fs.writeFile);
 const mkdir = promisify(fs.mkdir);

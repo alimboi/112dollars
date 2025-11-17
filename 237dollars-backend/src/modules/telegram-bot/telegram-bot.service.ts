@@ -336,7 +336,7 @@ export class TelegramBotService implements OnModuleInit {
     }
 
     try {
-      await this.referencesService.publish(refId);
+      await this.referencesService.publish(refId, admin.id, admin.role);
       await ctx.reply(`✅ Reference ${refId} published successfully!`);
     } catch (error) {
       await ctx.reply(`❌ Error: ${error.message}`);
@@ -356,7 +356,7 @@ export class TelegramBotService implements OnModuleInit {
     }
 
     try {
-      await this.referencesService.unpublish(refId);
+      await this.referencesService.unpublish(refId, admin.id, admin.role);
       await ctx.reply(`⏸ Reference ${refId} unpublished successfully!`);
     } catch (error) {
       await ctx.reply(`❌ Error: ${error.message}`);

@@ -22,6 +22,7 @@ import { VerifyEmailDto } from './dto/verify-email.dto';
 import { ResendVerificationDto } from './dto/resend-verification.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Public } from '../../common/decorators/public.decorator';
 
 @Controller('auth')
@@ -95,6 +96,22 @@ export class AuthController {
   @Get('check-email')
   async checkEmail(@Query('email') email: string) {
     return this.authService.checkEmailAvailability(email);
+  }
+
+  /**
+   * SECURITY FIX #2: Logout endpoint for token revocation
+   * Requires authentication - extracts user ID and JTI from token
+   */
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  @Post('logout')
+  async logout(@Request() req) {
+    const userId = req.user.sub; // User ID from JWT payload
+    const tokenJti = req.user.jti; // JWT ID from JWT payload
+
+    await this.authService.logout(userId, tokenJti);
+
+    return { message: 'Logged out successfully' };
   }
 
   // Google OAuth endpoints

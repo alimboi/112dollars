@@ -346,18 +346,25 @@ export class AdminComponent implements OnInit {
   }
 
   createAdmin(): void {
-    if (!this.newAdmin.email || !this.newAdmin.password) {
-      alert('Email and password are required');
+    if (!this.newAdmin.email) {
+      alert('Email is required');
+      return;
+    }
+
+    if (!this.newAdmin.password) {
+      alert('Password is required');
       return;
     }
 
     this.adminService.createAdmin(this.newAdmin).subscribe({
-      next: () => {
-        alert('Admin created successfully!');
+      next: (admin) => {
+        const message = 'Admin saved successfully! If the user already existed, they have been promoted to admin.';
+        alert(message);
         this.showCreateAdminForm = false;
         this.newAdmin = { email: '', password: '', role: 'admin' };
         this.loadAdmins();
         this.loadAdminStats();
+        this.loadActivityLogs();
       },
       error: (err) => {
         console.error('Error creating admin:', err);

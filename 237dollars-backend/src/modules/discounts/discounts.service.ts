@@ -26,34 +26,42 @@ export class DiscountsService {
     private dataSource: DataSource,
   ) {}
 
+  /**
+   * SECURITY FIX #25: Use transaction to prevent duplicate discount applications
+   * Two simultaneous requests could both check, not find, and both create applications
+   */
   async applyForDiscount(
     userId: number,
     applyDto: ApplyDiscountDto,
   ): Promise<DiscountApplication> {
-    // Check if user already has a pending or approved application
-    const existingApplication = await this.applicationRepository.findOne({
-      where: [
-        { userId, status: ApplicationStatus.PENDING },
-        { userId, status: ApplicationStatus.APPROVED },
-      ],
+    // Use transaction to ensure atomic check-and-create
+    const saved = await this.dataSource.transaction(async (manager) => {
+      // Check if user already has a pending or approved application
+      const existingApplication = await manager.findOne(DiscountApplication, {
+        where: [
+          { userId, status: ApplicationStatus.PENDING },
+          { userId, status: ApplicationStatus.APPROVED },
+        ],
+        lock: { mode: 'pessimistic_write' }, // Lock to prevent concurrent inserts
+      });
+
+      if (existingApplication) {
+        throw new ConflictException(
+          'You already have a pending or approved discount application',
+        );
+      }
+
+      const application = manager.create(DiscountApplication, {
+        userId,
+        fullName: applyDto.fullName,
+        email: applyDto.email,
+        phone: applyDto.phone,
+        reason: applyDto.reason,
+        status: ApplicationStatus.PENDING,
+      });
+
+      return await manager.save(application);
     });
-
-    if (existingApplication) {
-      throw new ConflictException(
-        'You already have a pending or approved discount application',
-      );
-    }
-
-    const application = this.applicationRepository.create({
-      userId,
-      fullName: applyDto.fullName,
-      email: applyDto.email,
-      phone: applyDto.phone,
-      reason: applyDto.reason,
-      status: ApplicationStatus.PENDING,
-    });
-
-    const saved = await this.applicationRepository.save(application);
 
     // Send notifications
     await this.emailService.sendEmail(
@@ -84,38 +92,48 @@ export class DiscountsService {
     return { applications, total };
   }
 
+  /**
+   * SECURITY FIX #26: Use transaction to prevent double approval
+   * Two admins could simultaneously approve the same application
+   */
   async approveApplication(applicationId: number): Promise<DiscountApplication> {
-    const application = await this.applicationRepository.findOne({
-      where: { id: applicationId },
+    const updated = await this.dataSource.transaction(async (manager) => {
+      // Lock the application row for update
+      const application = await manager.findOne(DiscountApplication, {
+        where: { id: applicationId },
+        lock: { mode: 'pessimistic_write' },
+      });
+
+      if (!application) {
+        throw new NotFoundException('Application not found');
+      }
+
+      if (application.status !== ApplicationStatus.PENDING) {
+        throw new BadRequestException('Application is not pending');
+      }
+
+      // Generate discount code
+      const discountCode = this.generateDiscountCode();
+
+      // Create eligibility record
+      const eligibility = manager.create(DiscountEligibility, {
+        userId: application.userId,
+        discountCode,
+        discountPercentage: 50, // Default 50% discount
+        isUsed: false,
+      });
+
+      await manager.save(eligibility);
+
+      // Update application
+      application.status = ApplicationStatus.APPROVED;
+      application.discountCode = discountCode;
+      application.reviewedAt = new Date();
+
+      return await manager.save(application);
     });
 
-    if (!application) {
-      throw new NotFoundException('Application not found');
-    }
-
-    if (application.status !== ApplicationStatus.PENDING) {
-      throw new BadRequestException('Application is not pending');
-    }
-
-    // Generate discount code
-    const discountCode = this.generateDiscountCode();
-
-    // Create eligibility record
-    const eligibility = this.eligibilityRepository.create({
-      userId: application.userId,
-      discountCode,
-      discountPercentage: 50, // Default 50% discount
-      isUsed: false,
-    });
-
-    await this.eligibilityRepository.save(eligibility);
-
-    // Update application
-    application.status = ApplicationStatus.APPROVED;
-    application.discountCode = discountCode;
-    application.reviewedAt = new Date();
-
-    const updated = await this.applicationRepository.save(application);
+    const application = updated;
 
     // Send approval email
     await this.emailService.sendEmail(

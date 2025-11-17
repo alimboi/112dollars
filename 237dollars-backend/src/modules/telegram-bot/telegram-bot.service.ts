@@ -138,26 +138,26 @@ export class TelegramBotService implements OnModuleInit {
 🤖 *Admin Bot Commands*
 
 *Navigation:*
-/majors - List all majors
-/topics [major\\_id] - List topics for a major
+/majors \\- List all majors
+/topics \\[major\\_id\\] \\- List topics for a major
 
 *Reference Management:*
-/create\\_reference - Create new reference
-/my\\_references - View your references
-/publish\\_ref [id] - Publish a reference
-/unpublish\\_ref [id] - Unpublish a reference
+/create\\_reference \\- Create new reference
+/my\\_references \\- View your references
+/publish\\_ref \\[id\\] \\- Publish a reference
+/unpublish\\_ref \\[id\\] \\- Unpublish a reference
 
 *Gallery Management:*
-/create\\_gallery - Create new gallery
-/my\\_galleries - View your galleries
-/publish\\_gallery [id] - Publish a gallery
-/unpublish\\_gallery [id] - Unpublish a gallery
+/create\\_gallery \\- Create new gallery
+/my\\_galleries \\- View your galleries
+/publish\\_gallery \\[id\\] \\- Publish a gallery
+/unpublish\\_gallery \\[id\\] \\- Unpublish a gallery
 
 *Other:*
-/help - Show this help message
-/cancel - Cancel current operation
+/help \\- Show this help message
+/cancel \\- Cancel current operation
 
-💡 Tip: Use the inline buttons for easier navigation!
+💡 Tip: Use the inline buttons for easier navigation\\!
     `;
 
     await ctx.reply(helpText, { parse_mode: 'MarkdownV2' });

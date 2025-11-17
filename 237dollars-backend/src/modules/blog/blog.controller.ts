@@ -31,7 +31,7 @@ export class BlogController {
     private blogGalleryService: BlogGalleryService,
   ) {}
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Post('posts')
   create(@Body() createBlogPostDto: CreateBlogPostDto, @Request() req) {
     return this.blogService.create(createBlogPostDto, req.user.userId);
@@ -54,32 +54,32 @@ export class BlogController {
     return this.blogService.findOne(+id);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put('posts/:id')
   update(@Param('id') id: string, @Body() updateBlogPostDto: UpdateBlogPostDto) {
     return this.blogService.update(+id, updateBlogPostDto);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put('posts/:id/publish')
   publish(@Param('id') id: string) {
     return this.blogService.publish(+id);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put('posts/:id/unpublish')
   unpublish(@Param('id') id: string) {
     return this.blogService.unpublish(+id);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Delete('posts/:id')
   remove(@Param('id') id: string) {
     return this.blogService.remove(+id);
   }
 
   // Blog Images
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Post('images')
   createImage(@Body() createBlogImageDto: CreateBlogImageDto, @Request() req) {
     return this.blogImageService.create(createBlogImageDto, req.user.userId);
@@ -102,32 +102,32 @@ export class BlogController {
     return this.blogImageService.findOne(+id);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put('images/:id')
   updateImage(@Param('id') id: string, @Body() updateBlogImageDto: UpdateBlogImageDto) {
     return this.blogImageService.update(+id, updateBlogImageDto);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put('images/:id/publish')
   publishImage(@Param('id') id: string) {
     return this.blogImageService.publish(+id);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put('images/:id/unpublish')
   unpublishImage(@Param('id') id: string) {
     return this.blogImageService.unpublish(+id);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Delete('images/:id')
   removeImage(@Param('id') id: string) {
     return this.blogImageService.remove(+id);
   }
 
   // Blog Image Galleries (Multiple images per gallery)
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Post('galleries')
   createGallery(@Body() createGalleryDto: CreateBlogGalleryDto, @Request() req) {
     return this.blogGalleryService.create(createGalleryDto, req.user.userId);
@@ -150,31 +150,31 @@ export class BlogController {
     return this.blogGalleryService.findOne(+id);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put('galleries/reorder')
   updateGalleryOrder(@Body() dto: ReorderGalleriesDto) {
     return this.blogGalleryService.updateOrder(dto.galleries);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put('galleries/:id')
   updateGallery(@Param('id') id: string, @Body() updateGalleryDto: UpdateBlogGalleryDto) {
     return this.blogGalleryService.update(+id, updateGalleryDto);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put('galleries/:id/publish')
   publishGallery(@Param('id') id: string) {
     return this.blogGalleryService.publish(+id);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put('galleries/:id/unpublish')
   unpublishGallery(@Param('id') id: string) {
     return this.blogGalleryService.unpublish(+id);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Delete('galleries/:id')
   removeGallery(@Param('id') id: string) {
     return this.blogGalleryService.remove(+id);

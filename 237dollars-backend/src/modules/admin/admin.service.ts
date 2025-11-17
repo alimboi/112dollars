@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { User } from '../../database/entities/user.entity';
 import { AdminActivityLog } from '../../database/entities/admin-activity-log.entity';
 import { CreateAdminDto } from './dto/create-admin.dto';
+import { UpdateAdminDto } from './dto/update-admin.dto';
 import { MarkTestPassedDto } from './dto/mark-test-passed.dto';
 import { PasswordService } from '../../common/utils/password.service';
 import { UserRole } from '../../types/user-role.enum';
@@ -37,15 +38,6 @@ export class AdminService {
       throw new ForbiddenException('Only super admins can create admin users');
     }
 
-    // Check if email already exists
-    const existingUser = await this.userRepository.findOne({
-      where: { email: createAdminDto.email },
-    });
-
-    if (existingUser) {
-      throw new BadRequestException('Email already in use');
-    }
-
     // Validate role (only admin roles)
     const allowedRoles = [
       UserRole.ADMIN,
@@ -57,6 +49,51 @@ export class AdminService {
       throw new BadRequestException('Invalid admin role');
     }
 
+    // Check if email already exists
+    const existingUser = await this.userRepository.findOne({
+      where: { email: createAdminDto.email },
+    });
+
+    if (existingUser) {
+      // User exists - promote them to admin role
+      const oldRole = existingUser.role;
+      existingUser.role = createAdminDto.role;
+      existingUser.isActive = true;
+      existingUser.emailVerified = true;
+
+      // Update telegram username if provided
+      if (createAdminDto.telegramUsername) {
+        const normalizedTelegramUsername = createAdminDto.telegramUsername.startsWith('@')
+          ? createAdminDto.telegramUsername.substring(1)
+          : createAdminDto.telegramUsername;
+        existingUser.telegramUsername = normalizedTelegramUsername;
+      }
+
+      // Update password if provided
+      if (createAdminDto.password) {
+        if (!this.passwordService.validatePasswordStrength(createAdminDto.password)) {
+          throw new BadRequestException(
+            'Password must be at least 8 characters with uppercase, lowercase, and number',
+          );
+        }
+        existingUser.password = await this.passwordService.hashPassword(
+          createAdminDto.password,
+        );
+      }
+
+      const saved = await this.userRepository.save(existingUser);
+
+      // Log activity
+      await this.logActivity(
+        superAdminId,
+        ActivityType.UPDATE,
+        `Promoted existing user ${createAdminDto.email} from ${oldRole} to ${createAdminDto.role}`,
+      );
+
+      return saved;
+    }
+
+    // User doesn't exist - create new admin
     // Validate password
     if (!this.passwordService.validatePasswordStrength(createAdminDto.password)) {
       throw new BadRequestException(
@@ -68,10 +105,16 @@ export class AdminService {
       createAdminDto.password,
     );
 
+    // Normalize telegram username (remove @ if present)
+    const normalizedTelegramUsername = createAdminDto.telegramUsername?.startsWith('@')
+      ? createAdminDto.telegramUsername.substring(1)
+      : createAdminDto.telegramUsername;
+
     const admin = this.userRepository.create({
       email: createAdminDto.email,
       password: hashedPassword,
       role: createAdminDto.role,
+      telegramUsername: normalizedTelegramUsername,
       isActive: true,
       emailVerified: true, // Skip email verification for admin accounts
     });
@@ -169,6 +212,7 @@ export class AdminService {
         'firstName',
         'lastName',
         'role',
+        'telegramUsername',
         'isActive',
         'createdAt',
         'lastLogin',
@@ -203,6 +247,7 @@ export class AdminService {
         'firstName',
         'lastName',
         'role',
+        'telegramUsername',
         'isActive',
         'createdAt',
         'lastLogin',
@@ -215,6 +260,93 @@ export class AdminService {
     }
 
     return admin;
+  }
+
+  /**
+   * Update admin details
+   */
+  async updateAdmin(
+    requestingUserId: number,
+    adminId: number,
+    updateAdminDto: UpdateAdminDto,
+  ): Promise<User> {
+    const requestingUser = await this.userRepository.findOne({
+      where: { id: requestingUserId },
+    });
+
+    if (!requestingUser || requestingUser.role !== UserRole.SUPER_ADMIN) {
+      throw new ForbiddenException('Only super admins can update admin details');
+    }
+
+    const admin = await this.userRepository.findOne({
+      where: { id: adminId },
+    });
+
+    if (!admin) {
+      throw new NotFoundException('Admin not found');
+    }
+
+    // Update email if provided
+    if (updateAdminDto.email && updateAdminDto.email !== admin.email) {
+      const existingEmail = await this.userRepository.findOne({
+        where: { email: updateAdminDto.email },
+      });
+      if (existingEmail) {
+        throw new BadRequestException('Email already in use');
+      }
+      admin.email = updateAdminDto.email;
+    }
+
+    // Update telegram username if provided
+    if (updateAdminDto.telegramUsername !== undefined) {
+      const normalizedTelegramUsername = updateAdminDto.telegramUsername?.startsWith('@')
+        ? updateAdminDto.telegramUsername.substring(1)
+        : updateAdminDto.telegramUsername;
+      admin.telegramUsername = normalizedTelegramUsername || null;
+    }
+
+    // Update password if provided
+    if (updateAdminDto.password) {
+      if (!this.passwordService.validatePasswordStrength(updateAdminDto.password)) {
+        throw new BadRequestException(
+          'Password must be at least 8 characters with uppercase, lowercase, and number',
+        );
+      }
+      admin.password = await this.passwordService.hashPassword(
+        updateAdminDto.password,
+      );
+    }
+
+    // Update role if provided
+    if (updateAdminDto.role) {
+      // Cannot update super admin role or your own role
+      if (admin.role === UserRole.SUPER_ADMIN || requestingUserId === adminId) {
+        throw new ForbiddenException('Cannot update this admin role');
+      }
+
+      const allowedRoles = [
+        UserRole.ADMIN,
+        UserRole.STUDENT_MANAGER,
+        UserRole.CONTENT_MANAGER,
+      ];
+
+      if (!allowedRoles.includes(updateAdminDto.role)) {
+        throw new BadRequestException('Invalid admin role');
+      }
+
+      admin.role = updateAdminDto.role;
+    }
+
+    const updated = await this.userRepository.save(admin);
+
+    // Log activity
+    await this.logActivity(
+      requestingUserId,
+      ActivityType.UPDATE,
+      `Updated admin details for ${admin.email}`,
+    );
+
+    return updated;
   }
 
   /**

@@ -29,6 +29,15 @@
         <span class="tab-icon">🖼️</span>
         Blog Galleries
       </button>
+      <button
+        *ngIf="isSuperAdmin()"
+        class="tab-button"
+        [class.active]="activeTab === 'admins'"
+        (click)="switchTab('admins')"
+      >
+        <span class="tab-icon">👥</span>
+        Admin Management
+      </button>
     </div>
 
     <!-- Tab Content: References -->
@@ -304,6 +313,273 @@
           <button class="btn btn-primary" routerLink="/admin/galleries/new">
             Create Gallery
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Content: Admin Management -->
+    <div class="tab-content" *ngIf="activeTab === 'admins' && isSuperAdmin()">
+      <!-- Admin Statistics -->
+      <div class="stats-grid" *ngIf="adminStats">
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-content">
+            <div class="stat-value">{{ adminStats.totalAdmins }}</div>
+            <div class="stat-label">Total Admins</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-content">
+            <div class="stat-value">{{ adminStats.activeAdmins }}</div>
+            <div class="stat-label">Active Admins</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⏸️</div>
+          <div class="stat-content">
+            <div class="stat-value">{{ adminStats.inactiveAdmins }}</div>
+            <div class="stat-label">Inactive Admins</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🎓</div>
+          <div class="stat-content">
+            <div class="stat-value">{{ adminStats.studentManagers }}</div>
+            <div class="stat-label">Student Managers</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📝</div>
+          <div class="stat-content">
+            <div class="stat-value">{{ adminStats.contentManagers }}</div>
+            <div class="stat-label">Content Managers</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Create Admin Button -->
+      <div class="header-actions">
+        <button class="btn btn-primary" (click)="showCreateAdminForm = !showCreateAdminForm">
+          <span class="icon">{{ showCreateAdminForm ? '✖️' : '➕' }}</span>
+          {{ showCreateAdminForm ? 'Cancel' : 'Create New Admin' }}
+        </button>
+      </div>
+
+      <!-- Create Admin Form -->
+      <div class="create-admin-form" *ngIf="showCreateAdminForm && !showEditAdminForm">
+        <h3>Create New Admin</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="adminEmail">Email *</label>
+            <input
+              id="adminEmail"
+              type="email"
+              [(ngModel)]="newAdmin.email"
+              placeholder="admin@example.com"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="adminPassword">Password *</label>
+            <input
+              id="adminPassword"
+              type="password"
+              [(ngModel)]="newAdmin.password"
+              placeholder="At least 8 characters"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="adminRole">Role *</label>
+            <select id="adminRole" [(ngModel)]="newAdmin.role" class="form-control">
+              <option *ngFor="let role of adminRoles" [value]="role.value">
+                {{ role.label }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="adminTelegram">Telegram Username</label>
+            <input
+              id="adminTelegram"
+              type="text"
+              [(ngModel)]="newAdmin.telegramUsername"
+              placeholder="@username or username"
+              class="form-control"
+            />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" (click)="createAdmin()">
+            Create Admin
+          </button>
+          <button class="btn btn-outline" (click)="showCreateAdminForm = false">
+            Cancel
+          </button>
+        </div>
+      </div>
+
+      <!-- Edit Admin Form -->
+      <div class="create-admin-form" *ngIf="showEditAdminForm">
+        <h3>Edit Admin</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="editAdminEmail">Email</label>
+            <input
+              id="editAdminEmail"
+              type="email"
+              [(ngModel)]="editAdmin.email"
+              placeholder="admin@example.com"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="editAdminPassword">Password (leave empty to keep current)</label>
+            <input
+              id="editAdminPassword"
+              type="password"
+              [(ngModel)]="editAdmin.password"
+              placeholder="Enter new password to change"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="editAdminRole">Role</label>
+            <select id="editAdminRole" [(ngModel)]="editAdmin.role" class="form-control">
+              <option *ngFor="let role of adminRoles" [value]="role.value">
+                {{ role.label }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editAdminTelegram">Telegram Username</label>
+            <input
+              id="editAdminTelegram"
+              type="text"
+              [(ngModel)]="editAdmin.telegramUsername"
+              placeholder="@username or username"
+              class="form-control"
+            />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary" (click)="saveEditAdmin()">
+            Save Changes
+          </button>
+          <button class="btn btn-outline" (click)="cancelEdit()">
+            Cancel
+          </button>
+        </div>
+      </div>
+
+      <!-- Admins List -->
+      <div class="admins-section">
+        <h3>All Admins</h3>
+        <div class="admins-table">
+          <table *ngIf="admins.length > 0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Telegram</th>
+                <th>Status</th>
+                <th>Last Login</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let admin of admins" [class.inactive]="!admin.isActive">
+                <td>{{ admin.id }}</td>
+                <td>{{ admin.email }}</td>
+                <td>{{ admin.username || 'N/A' }}</td>
+                <td>
+                  <select
+                    *ngIf="admin.role !== 'super_admin' && currentUser?.id !== admin.id"
+                    [(ngModel)]="admin.role"
+                    (change)="updateAdminRole(admin, admin.role)"
+                    class="role-select"
+                  >
+                    <option *ngFor="let role of adminRoles" [value]="role.value">
+                      {{ role.label }}
+                    </option>
+                  </select>
+                  <span *ngIf="admin.role === 'super_admin' || currentUser?.id === admin.id" class="role-badge super-admin">
+                    {{ formatRole(admin.role) }}
+                  </span>
+                </td>
+                <td>
+                  <span class="telegram-username">{{ admin.telegramUsername ? '@' + admin.telegramUsername : 'N/A' }}</span>
+                </td>
+                <td>
+                  <span class="status-badge" [class.active]="admin.isActive">
+                    {{ admin.isActive ? '✓ Active' : '○ Inactive' }}
+                  </span>
+                </td>
+                <td>{{ admin.lastLogin ? formatDate(admin.lastLogin) : 'Never' }}</td>
+                <td class="actions-cell">
+                  <div class="action-buttons">
+                    <button
+                      class="btn-icon btn-edit"
+                      (click)="openEditAdmin(admin)"
+                      title="Edit Admin"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      *ngIf="admin.isActive && admin.role !== 'super_admin' && currentUser?.id !== admin.id"
+                      class="btn-icon btn-warning"
+                      (click)="deactivateAdmin(admin)"
+                      title="Deactivate"
+                    >
+                      ⏸️
+                    </button>
+                    <button
+                      *ngIf="!admin.isActive"
+                      class="btn-icon btn-success"
+                      (click)="reactivateAdmin(admin)"
+                      title="Reactivate"
+                    >
+                      ▶️
+                    </button>
+                    <span *ngIf="currentUser?.id === admin.id" class="you-badge">
+                      (You)
+                    </span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="empty-state" *ngIf="admins.length === 0">
+            <div class="empty-icon">👥</div>
+            <h3>No Admins Found</h3>
+            <p>Create your first admin to get started</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Logs -->
+      <div class="activity-logs-section">
+        <h3>Recent Activity</h3>
+        <div class="activity-logs">
+          <div class="activity-item" *ngFor="let log of activityLogs">
+            <div class="activity-icon">📝</div>
+            <div class="activity-content">
+              <div class="activity-description">{{ log.description }}</div>
+              <div class="activity-meta">
+                <span class="activity-admin">{{ log.admin.email }}</span>
+                <span class="activity-separator">•</span>
+                <span class="activity-date">{{ formatDate(log.createdAt) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="empty-state" *ngIf="activityLogs.length === 0">
+            <div class="empty-icon">📋</div>
+            <p>No recent activity</p>
+          </div>
         </div>
       </div>
     </div>

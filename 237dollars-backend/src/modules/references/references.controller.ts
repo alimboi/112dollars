@@ -52,7 +52,7 @@ export class ReferencesController {
   }
 
   // References
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Post()
   create(@Body() createReferenceDto: CreateReferenceDto, @Request() req) {
     return this.referencesService.create(createReferenceDto, req.user.userId);
@@ -68,7 +68,7 @@ export class ReferencesController {
     return this.referencesService.findByTopic(+topicId, +page, +limit);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put('reorder')
   updateReferenceOrder(@Body() dto: ReorderReferencesDto) {
     return this.referencesService.updateOrder(dto.references);
@@ -81,50 +81,50 @@ export class ReferencesController {
     return this.referencesService.findOne(+id, userId);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put(':id')
   update(@Param('id') id: string, @Body() updateReferenceDto: UpdateReferenceDto) {
     return this.referencesService.update(+id, updateReferenceDto);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put(':id/publish')
   publish(@Param('id') id: string) {
     return this.referencesService.publish(+id);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put(':id/unpublish')
   unpublish(@Param('id') id: string) {
     return this.referencesService.unpublish(+id);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.referencesService.remove(+id);
   }
 
   // Content Blocks
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Post(':id/content-blocks')
   addContentBlock(@Param('id') id: string, @Body() blockData: any) {
     return this.referencesService.addContentBlock(+id, blockData);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put('content-blocks/:blockId')
   updateContentBlock(@Param('blockId') blockId: string, @Body() blockData: any) {
     return this.referencesService.updateContentBlock(+blockId, blockData);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Delete('content-blocks/:blockId')
   deleteContentBlock(@Param('blockId') blockId: string) {
     return this.referencesService.deleteContentBlock(+blockId);
   }
 
-  @Roles(UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER)
   @Put(':id/reorder-blocks')
   reorderContentBlocks(@Param('id') id: string, @Body() body: { newOrder: number[] }) {
     return this.referencesService.reorderContentBlocks(+id, body.newOrder);

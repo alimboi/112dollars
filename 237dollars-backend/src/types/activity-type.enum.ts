@@ -9,4 +9,6 @@ export enum ActivityType {
   DISCOUNT_REJECTED = 'discount_rejected',
   USER_DELETED = 'user_deleted',
   SETTINGS_UPDATED = 'settings_updated',
+  UPDATE = 'update',
+  DELETE = 'delete',
 }

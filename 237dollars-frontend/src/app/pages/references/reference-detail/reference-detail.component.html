@@ -90,7 +90,7 @@
           <!-- Image Block -->
           <div *ngSwitchCase="'image'" class="image-block" [ngStyle]="{'text-align': block.blockData?.alignment}">
             <div class="image-wrapper">
-              <img [src]="block.blockData?.url"
+              <img [src]="block.content || block.blockData?.url"
                    [alt]="block.blockData?.alt || 'Content image'"
                    [ngStyle]="{
                      'width': block.blockData?.width,

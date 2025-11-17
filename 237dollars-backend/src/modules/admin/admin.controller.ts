@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
+import { UpdateAdminDto } from './dto/update-admin.dto';
 import { MarkTestPassedDto } from './dto/mark-test-passed.dto';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../../types/user-role.enum';
@@ -44,6 +45,19 @@ export class AdminController {
   @Get('admins/:id')
   getAdminById(@Request() req, @Param('id') id: string) {
     return this.adminService.getAdminById(req.user.userId, +id);
+  }
+
+  /**
+   * Update admin details (Super Admin only)
+   */
+  @Roles(UserRole.SUPER_ADMIN)
+  @Put('admins/:id')
+  updateAdmin(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() updateAdminDto: UpdateAdminDto,
+  ) {
+    return this.adminService.updateAdmin(req.user.userId, +id, updateAdminDto);
   }
 
   /**

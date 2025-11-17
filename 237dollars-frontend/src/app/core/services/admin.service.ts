@@ -9,6 +9,7 @@ export interface Admin {
   firstName?: string;
   lastName?: string;
   role: string;
+  telegramUsername?: string;
   isActive: boolean;
   createdAt: string;
   lastLogin?: string;
@@ -39,6 +40,14 @@ export interface CreateAdminDto {
   email: string;
   password: string;
   role: string;
+  telegramUsername?: string;
+}
+
+export interface UpdateAdminDto {
+  email?: string;
+  password?: string;
+  role?: string;
+  telegramUsername?: string;
 }
 
 @Injectable({
@@ -66,6 +75,13 @@ export class AdminService {
    */
   createAdmin(data: CreateAdminDto): Observable<Admin> {
     return this.api.post<Admin>('admin/create-admin', data);
+  }
+
+  /**
+   * Update admin details
+   */
+  updateAdmin(id: number, data: UpdateAdminDto): Observable<Admin> {
+    return this.api.put<Admin>(`admin/admins/${id}`, data);
   }
 
   /**

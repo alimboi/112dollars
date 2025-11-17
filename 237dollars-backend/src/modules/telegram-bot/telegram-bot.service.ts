@@ -822,7 +822,7 @@ export class TelegramBotService implements OnModuleInit {
     });
 
     if (!reference) {
-      await ctx.reply('❌ Reference not found or you don\\'t have permission\\.', {
+      await ctx.reply('❌ Reference not found or you don\'t have permission\\.', {
         parse_mode: 'MarkdownV2',
       });
       return;

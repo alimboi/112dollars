@@ -240,7 +240,7 @@ export class TelegramBotService implements OnModuleInit {
     if (!admin) return;
 
     // Check role permissions
-    if (![UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER].includes(admin.role as UserRole)) {
+    if (![UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER].includes(admin.role as UserRole)) {
       await ctx.reply('❌ You do not have permission to create references.');
       return;
     }
@@ -345,7 +345,7 @@ export class TelegramBotService implements OnModuleInit {
     const admin = await this.checkAdminAuth(ctx);
     if (!admin) return;
 
-    if (![UserRole.SUPER_ADMIN, UserRole.CONTENT_MANAGER].includes(admin.role as UserRole)) {
+    if (![UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.CONTENT_MANAGER].includes(admin.role as UserRole)) {
       await ctx.reply('❌ You do not have permission to create galleries.');
       return;
     }

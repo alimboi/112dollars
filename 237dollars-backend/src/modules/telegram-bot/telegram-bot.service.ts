@@ -266,7 +266,7 @@ export class TelegramBotService implements OnModuleInit {
     buttons.push([Markup.button.callback('❌ Cancel', 'cancel')]);
 
     await ctx.reply(
-      '📚 *Step 1/5: Select Major*\n\nChoose a major for this reference:',
+      '📚 *Step 1/5\\: Select Major*\n\nChoose a major for this reference\\:',
       {
         parse_mode: 'MarkdownV2',
         ...Markup.inlineKeyboard(buttons),
@@ -360,9 +360,9 @@ export class TelegramBotService implements OnModuleInit {
     });
 
     await ctx.reply(
-      '🖼 *Gallery Creation - Step 1/4*\n\n' +
-      'Please enter the gallery title:\n\n' +
-      '(Use /cancel to abort)',
+      '🖼 *Gallery Creation \\- Step 1/4*\n\n' +
+      'Please enter the gallery title\\:\n\n' +
+      '\\(Use /cancel to abort\\)',
       { parse_mode: 'MarkdownV2' }
     );
   }
@@ -509,7 +509,7 @@ export class TelegramBotService implements OnModuleInit {
     buttons.push([Markup.button.callback('❌ Cancel', 'cancel')]);
 
     await ctx.reply(
-      '📖 *Step 2/5: Select Topic*\n\nChoose a topic for this reference:',
+      '📖 *Step 2/5\\: Select Topic*\n\nChoose a topic for this reference\\:',
       {
         parse_mode: 'MarkdownV2',
         ...Markup.inlineKeyboard(buttons),
@@ -527,9 +527,9 @@ export class TelegramBotService implements OnModuleInit {
     state.referenceData.step = ReferenceCreationStep.ENTER_TITLE;
 
     await ctx.reply(
-      '✏️ *Step 3/5: Enter Title*\n\n' +
-      'Please enter the reference title:\n\n' +
-      '(Use /cancel to abort)',
+      '✏️ *Step 3/5\\: Enter Title*\n\n' +
+      'Please enter the reference title\\:\n\n' +
+      '\\(Use /cancel to abort\\)',
       { parse_mode: 'MarkdownV2' }
     );
   }
@@ -542,9 +542,9 @@ export class TelegramBotService implements OnModuleInit {
         state.referenceData.title = text;
         state.referenceData.step = ReferenceCreationStep.ENTER_DESCRIPTION;
         await ctx.reply(
-          '📝 *Step 4/5: Enter Description*\n\n' +
-          'Please enter the reference description:\n\n' +
-          '(Use /cancel to abort)',
+          '📝 *Step 4/5\\: Enter Description*\n\n' +
+          'Please enter the reference description\\:\n\n' +
+          '\\(Use /cancel to abort\\)',
           { parse_mode: 'MarkdownV2' }
         );
         break;
@@ -553,9 +553,9 @@ export class TelegramBotService implements OnModuleInit {
         state.referenceData.description = text;
         state.referenceData.step = ReferenceCreationStep.ENTER_CONTENT;
         await ctx.reply(
-          '📄 *Step 5/5: Enter Content*\n\n' +
-          'Please enter the reference content (can be text, JSON, or formatted content):\n\n' +
-          '(Use /cancel to abort)',
+          '📄 *Step 5/5\\: Enter Content*\n\n' +
+          'Please enter the reference content \\(can be text, JSON, or formatted content\\)\\:\n\n' +
+          '\\(Use /cancel to abort\\)',
           { parse_mode: 'MarkdownV2' }
         );
         break;
@@ -581,9 +581,9 @@ export class TelegramBotService implements OnModuleInit {
         state.galleryData.title = text;
         state.galleryData.step = GalleryCreationStep.ENTER_DESCRIPTION;
         await ctx.reply(
-          '📝 *Gallery Creation - Step 2/4*\n\n' +
-          'Please enter the gallery description:\n\n' +
-          '(Use /cancel to abort)',
+          '📝 *Gallery Creation \\- Step 2/4*\n\n' +
+          'Please enter the gallery description\\:\n\n' +
+          '\\(Use /cancel to abort\\)',
           { parse_mode: 'MarkdownV2' }
         );
         break;
@@ -592,12 +592,12 @@ export class TelegramBotService implements OnModuleInit {
         state.galleryData.description = text;
         state.galleryData.step = GalleryCreationStep.ENTER_IMAGES;
         await ctx.reply(
-          '🖼 *Gallery Creation - Step 3/4*\n\n' +
-          'Please enter image URLs (one per line, minimum 1 image):\n\n' +
-          'Example:\n' +
-          'https://example.com/image1.jpg\n' +
-          'https://example.com/image2.jpg\n\n' +
-          '(Use /cancel to abort)',
+          '🖼 *Gallery Creation \\- Step 3/4*\n\n' +
+          'Please enter image URLs \\(one per line, minimum 1 image\\)\\:\n\n' +
+          'Example\\:\n' +
+          'https\\://example\\.com/image1\\.jpg\n' +
+          'https\\://example\\.com/image2\\.jpg\n\n' +
+          '\\(Use /cancel to abort\\)',
           { parse_mode: 'MarkdownV2' }
         );
         break;

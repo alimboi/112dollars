@@ -1,7 +1,7 @@
 <div class="container py-5">
   <div class="row">
     <div class="col-12">
-      <h2 class="mb-4">{{ 'points.title' | translate }}</h2>
+      <h2 class="mb-4">Ballarim</h2>
 
       <!-- Error Message -->
       <div class="alert alert-danger" *ngIf="error">
@@ -11,7 +11,7 @@
       <!-- Loading State -->
       <div *ngIf="loading" class="text-center py-5">
         <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading...</span>
+          <span class="visually-hidden">Yuklanmoqda...</span>
         </div>
       </div>
 
@@ -24,7 +24,7 @@
             </div>
             <div class="stats-content">
               <h3>{{ totalPoints }}</h3>
-              <p>{{ 'points.totalPoints' | translate }}</p>
+              <p>Jami ballar</p>
             </div>
           </div>
         </div>
@@ -36,7 +36,7 @@
             </div>
             <div class="stats-content">
               <h3>{{ totalReadingPoints }}</h3>
-              <p>{{ 'points.readingPoints' | translate }}</p>
+              <p>O'qish ballari</p>
             </div>
           </div>
         </div>
@@ -48,7 +48,7 @@
             </div>
             <div class="stats-content">
               <h3>{{ totalQuizPoints }}</h3>
-              <p>{{ 'points.quizPoints' | translate }}</p>
+              <p>Test ballari</p>
             </div>
           </div>
         </div>
@@ -57,10 +57,10 @@
       <!-- My Rank Card -->
       <div class="card mb-4" *ngIf="!loading && myRank > 0">
         <div class="card-body text-center">
-          <h5 class="card-title">{{ 'points.rank' | translate }}</h5>
+          <h5 class="card-title">Mening reytingim</h5>
           <div class="rank-display">
             <span class="rank-number">{{ getRankIcon(myRank) }}</span>
-            <p class="text-muted">You are ranked #{{ myRank }} on the leaderboard!</p>
+            <p class="text-muted">Siz reytingda {{ myRank }}-o'rindasiz!</p>
           </div>
         </div>
       </div>
@@ -68,28 +68,28 @@
       <!-- My Points by Topic -->
       <div class="card mb-4" *ngIf="!loading">
         <div class="card-body">
-          <h5 class="card-title mb-4">Points by Topic</h5>
+          <h5 class="card-title mb-4">Mavzular bo'yicha ballar</h5>
 
           <div *ngIf="myPoints.length === 0" class="text-center py-5 text-muted">
             <i class="bi bi-inbox" style="font-size: 3rem;"></i>
-            <p class="mt-3">No points earned yet. Start reading and taking quizzes!</p>
+            <p class="mt-3">Hali ball to'planmagan. O'qishni boshlang va testlarni ishlang!</p>
           </div>
 
           <div *ngIf="myPoints.length > 0" class="points-list">
             <div class="point-item" *ngFor="let point of myPoints">
               <div class="point-header">
                 <h6>{{ point.topicName }}</h6>
-                <span class="point-total">{{ point.totalPoints }} pts</span>
+                <span class="point-total">{{ point.totalPoints }} ball</span>
               </div>
 
               <div class="point-breakdown">
                 <div class="point-type">
                   <i class="bi bi-book me-2"></i>
-                  <span>Reading: {{ point.readingPoints }}</span>
+                  <span>O'qish: {{ point.readingPoints }}</span>
                 </div>
                 <div class="point-type">
                   <i class="bi bi-award me-2"></i>
-                  <span>Quiz: {{ point.quizPoints }}</span>
+                  <span>Test: {{ point.quizPoints }}</span>
                 </div>
               </div>
 
@@ -108,23 +108,23 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title mb-4">
-            <i class="bi bi-bar-chart-fill me-2"></i>{{ 'points.leaderboard' | translate }}
+            <i class="bi bi-bar-chart-fill me-2"></i>Reyting jadvali
           </h5>
 
           <div *ngIf="leaderboard.length === 0" class="text-center py-5 text-muted">
             <i class="bi bi-people" style="font-size: 3rem;"></i>
-            <p class="mt-3">No leaderboard data available</p>
+            <p class="mt-3">Reyting ma'lumotlari mavjud emas</p>
           </div>
 
           <div *ngIf="leaderboard.length > 0" class="table-responsive">
             <table class="table leaderboard-table">
               <thead>
                 <tr>
-                  <th>{{ 'points.rank' | translate }}</th>
-                  <th>Student</th>
-                  <th>{{ 'points.totalPoints' | translate }}</th>
-                  <th>{{ 'points.readingPoints' | translate }}</th>
-                  <th>{{ 'points.quizPoints' | translate }}</th>
+                  <th>O'rin</th>
+                  <th>Talaba</th>
+                  <th>Jami ballar</th>
+                  <th>O'qish ballari</th>
+                  <th>Test ballari</th>
                 </tr>
               </thead>
               <tbody>

@@ -2,13 +2,13 @@
   <div class="row">
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>{{ 'discounts.title' | translate }}</h2>
+        <h2>Chegirmalar</h2>
         <button
           class="btn btn-primary"
           (click)="toggleApplyForm()"
           *ngIf="!showApplyForm && eligibleForDiscount"
         >
-          <i class="bi bi-plus-circle me-2"></i>{{ 'discounts.apply' | translate }}
+          <i class="bi bi-plus-circle me-2"></i>Chegirma uchun ariza topshirish
         </button>
       </div>
 
@@ -25,8 +25,8 @@
         <div class="card-body text-center">
           <div class="eligibility-info">
             <i class="bi bi-info-circle eligibility-icon"></i>
-            <h5 class="mt-3">Earn More Points to Unlock Discounts!</h5>
-            <p class="text-muted">You need at least {{ requiredPoints }} points to apply for discount codes.</p>
+            <h5 class="mt-3">Chegirmalarni ochish uchun ko'proq ball to'plang!</h5>
+            <p class="text-muted">Chegirma kodiga ariza topshirish uchun kamida {{ requiredPoints }} ball kerak.</p>
 
             <div class="points-progress">
               <div class="progress-wrapper">
@@ -37,13 +37,13 @@
                   ></div>
                 </div>
                 <p class="mt-2">
-                  <strong>{{ currentPoints }}</strong> / {{ requiredPoints }} points
+                  <strong>{{ currentPoints }}</strong> / {{ requiredPoints }} ball
                 </p>
               </div>
             </div>
 
             <a routerLink="/points" class="btn btn-outline-primary mt-3">
-              <i class="bi bi-trophy me-2"></i>View My Points
+              <i class="bi bi-trophy me-2"></i>Ballarimni ko'rish
             </a>
           </div>
         </div>
@@ -53,29 +53,29 @@
       <div class="card mb-4" *ngIf="showApplyForm">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="card-title mb-0">{{ 'discounts.apply' | translate }}</h5>
+            <h5 class="card-title mb-0">Chegirma uchun ariza topshirish</h5>
             <button type="button" class="btn-close" (click)="toggleApplyForm()"></button>
           </div>
 
           <div class="alert alert-info">
             <i class="bi bi-lightbulb me-2"></i>
-            <strong>Tip:</strong> Explain how you've contributed to the platform and why you deserve a discount.
-            Applications with detailed reasons are more likely to be approved!
+            <strong>Maslahat:</strong> Platformaga qo'shgan hissangizni va nima uchun chegirmaga loyiq ekanligingizni tushuntiring.
+            Batafsil sababli arizalar ko'proq tasdiqlash imkoniyatiga ega!
           </div>
 
           <form [formGroup]="applyForm" (ngSubmit)="applyForDiscount()">
             <div class="mb-3">
-              <label for="reason" class="form-label">Why do you deserve a discount?</label>
+              <label for="reason" class="form-label">Nega chegirmaga loyiqsiz?</label>
               <textarea
                 class="form-control"
                 id="reason"
                 rows="5"
                 formControlName="reason"
-                placeholder="Describe your achievements, dedication, quiz scores, or any other reasons..."
+                placeholder="Yutuqlaringiz, bag'ishlanganligingiz, test natijalari yoki boshqa sabablarni tavsiflang..."
               ></textarea>
-              <small class="form-text text-muted">Minimum 50 characters required</small>
+              <small class="form-text text-muted">Kamida 50 ta belgi talab qilinadi</small>
               <div class="invalid-feedback" *ngIf="applyForm.get('reason')?.invalid && applyForm.get('reason')?.touched">
-                Please provide a detailed reason (minimum 50 characters)
+                Iltimos, batafsil sabab kiriting (kamida 50 ta belgi)
               </div>
             </div>
 
@@ -86,10 +86,10 @@
                 [disabled]="applyForm.invalid || submitting"
               >
                 <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
-                {{ 'enrollment.form.submit' | translate }}
+                Yuborish
               </button>
               <button type="button" class="btn btn-secondary" (click)="toggleApplyForm()">
-                {{ 'common.cancel' | translate }}
+                Bekor qilish
               </button>
             </div>
           </form>
@@ -99,23 +99,23 @@
       <!-- Discount Codes List -->
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title mb-4">{{ 'discounts.myDiscounts' | translate }}</h5>
+          <h5 class="card-title mb-4">Mening chegirmalarim</h5>
 
           <div *ngIf="loading" class="text-center py-5">
             <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Loading...</span>
+              <span class="visually-hidden">Yuklanmoqda...</span>
             </div>
           </div>
 
           <div *ngIf="!loading && discountCodes.length === 0" class="text-center py-5 text-muted">
             <i class="bi bi-ticket-perforated" style="font-size: 3rem;"></i>
-            <p class="mt-3">{{ 'discounts.noDiscounts' | translate }}</p>
+            <p class="mt-3">Hozircha chegirmalar yo'q</p>
             <button
               class="btn btn-primary mt-2"
               (click)="toggleApplyForm()"
               *ngIf="eligibleForDiscount"
             >
-              {{ 'discounts.apply' | translate }}
+              Ariza topshirish
             </button>
           </div>
 
@@ -123,13 +123,13 @@
             <div class="discount-item" *ngFor="let discount of discountCodes">
               <div class="discount-header">
                 <div class="discount-info">
-                  <h6 class="mb-1">{{ 'discounts.code' | translate }}</h6>
+                  <h6 class="mb-1">Kod</h6>
                   <div class="code-display">
                     <code class="discount-code">{{ discount.code }}</code>
                     <button
                       class="btn btn-sm btn-outline-primary ms-2"
                       (click)="copyCode(discount.code)"
-                      title="Copy code"
+                      title="Kodni nusxalash"
                     >
                       <i class="bi bi-clipboard"></i>
                     </button>
@@ -138,7 +138,7 @@
 
                 <div class="discount-percentage">
                   <span [class]="getDiscountBadgeClass(discount.discountPercentage)">
-                    {{ discount.discountPercentage }}% OFF
+                    {{ discount.discountPercentage }}% CHEGIRMA
                   </span>
                 </div>
               </div>
@@ -147,15 +147,15 @@
                 <div class="discount-meta">
                   <div class="meta-item">
                     <i class="bi bi-calendar-check me-2"></i>
-                    <span class="text-muted">Generated: {{ discount.generatedAt | date:'medium' }}</span>
+                    <span class="text-muted">Yaratilgan: {{ discount.generatedAt | date:'medium' }}</span>
                   </div>
                   <div class="meta-item" *ngIf="discount.expiresAt">
                     <i class="bi bi-calendar-x me-2"></i>
-                    <span class="text-muted">Expires: {{ discount.expiresAt | date:'medium' }}</span>
+                    <span class="text-muted">Tugaydi: {{ discount.expiresAt | date:'medium' }}</span>
                   </div>
                   <div class="meta-item" *ngIf="discount.usedAt">
                     <i class="bi bi-check2-circle me-2"></i>
-                    <span class="text-muted">Used: {{ discount.usedAt | date:'medium' }}</span>
+                    <span class="text-muted">Ishlatilgan: {{ discount.usedAt | date:'medium' }}</span>
                   </div>
                 </div>
 

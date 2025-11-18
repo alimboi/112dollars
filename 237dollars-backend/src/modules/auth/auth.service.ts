@@ -516,9 +516,11 @@ export class AuthService {
       jti: accessTokenJti, // SECURITY FIX #2: JTI for token revocation
     };
 
-    // ADMIN FIX: Admins get much longer token expiration (365 days)
+    // ADMIN FIX: Admins get extended token expiration (30 days = 1 month)
+    // Regular users get 1 hour access tokens for tighter security
     const isAdmin = role === 'admin' || role === 'super_admin' || role === 'content_manager' || role === 'student_manager';
-    const accessTokenExpiration = isAdmin ? '365d' : '1h';
+    const accessTokenExpiration = isAdmin ? '30d' : '1h';
+    const refreshTokenExpiration = isAdmin ? '30d' : '7d';
 
     const accessToken = this.jwtService.sign(payload, {
       expiresIn: accessTokenExpiration,
@@ -532,7 +534,7 @@ export class AuthService {
       },
       {
         secret: process.env.JWT_REFRESH_SECRET,
-        expiresIn: '365d', // 365 days for refresh token (increased from 30d)
+        expiresIn: refreshTokenExpiration, // 30 days for admins, 7 days for users
       }
     );
 
@@ -577,10 +579,10 @@ export class AuthService {
       refreshTokenHash: null, // Invalidate refresh token on logout
     });
 
-    // SECURITY: Cleanup old revoked tokens (older than 365 days)
+    // SECURITY: Cleanup old revoked tokens
     // This prevents the array from growing indefinitely
-    // Since access tokens expire in 1h for users and 365d for admins,
-    // we keep revoked tokens for 365 days to cover admin tokens
+    // Since access tokens expire in 1h for users and 30d for admins,
+    // we keep only the last 100 revoked tokens
     await this.cleanupRevokedTokens(userId);
   }
 
@@ -621,7 +623,7 @@ export class AuthService {
     const revokedTokens = Array.isArray(user.revokedTokens) ? user.revokedTokens : [];
 
     // Keep only the last 100 revoked tokens to prevent unbounded growth
-    // Since access tokens expire (1h for users, 365d for admins), old JTIs are no longer needed
+    // Since access tokens expire (1h for users, 30d for admins), old JTIs are no longer needed
     if (revokedTokens.length > 100) {
       const trimmedTokens = revokedTokens.slice(-100); // Keep last 100
       await this.userRepository.update(userId, {

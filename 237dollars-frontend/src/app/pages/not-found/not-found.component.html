@@ -11,42 +11,42 @@
 
       <!-- Error Message -->
       <div class="error-message">
-        <h2>{{ 'notFound.title' | translate }}</h2>
-        <p class="lead">{{ 'notFound.message' | translate }}</p>
-        <p class="text-muted">{{ 'notFound.description' | translate }}</p>
+        <h2>Sahifa topilmadi</h2>
+        <p class="lead">Kechirasiz! Siz qidirayotgan sahifa mavjud emas.</p>
+        <p class="text-muted">Sahifa ko'chirilgan, o'chirilgan yoki URL manzilini noto'g'ri kiritgan bo'lishingiz mumkin.</p>
       </div>
 
       <!-- Action Buttons -->
       <div class="error-actions">
         <a routerLink="/" class="btn btn-primary btn-lg">
           <i class="bi bi-house-door me-2"></i>
-          {{ 'notFound.goHome' | translate }}
+          Bosh sahifaga o'tish
         </a>
         <button onclick="window.history.back()" class="btn btn-outline-light btn-lg">
           <i class="bi bi-arrow-left me-2"></i>
-          {{ 'notFound.goBack' | translate }}
+          Orqaga qaytish
         </button>
       </div>
 
       <!-- Helpful Links -->
       <div class="helpful-links">
-        <p class="mb-3">{{ 'notFound.helpfulLinks' | translate }}:</p>
+        <p class="mb-3">Foydali havolalar:</p>
         <div class="links-grid">
           <a routerLink="/dashboard" class="link-card">
             <i class="bi bi-speedometer2"></i>
-            <span>{{ 'nav.dashboard' | translate }}</span>
+            <span>Boshqaruv paneli</span>
           </a>
           <a routerLink="/references" class="link-card">
             <i class="bi bi-book"></i>
-            <span>{{ 'nav.references' | translate }}</span>
+            <span>Ma'lumotnomalar</span>
           </a>
           <a routerLink="/blog" class="link-card">
             <i class="bi bi-newspaper"></i>
-            <span>{{ 'nav.blog' | translate }}</span>
+            <span>Blog</span>
           </a>
           <a routerLink="/contact" class="link-card">
             <i class="bi bi-envelope"></i>
-            <span>{{ 'nav.contact' | translate }}</span>
+            <span>Aloqa</span>
           </a>
         </div>
       </div>

@@ -8,10 +8,10 @@
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
           </svg>
-          <span>Account Settings</span>
+          <span>Hisob sozlamalari</span>
         </div>
-        <h1 class="page-title">Profile Settings</h1>
-        <p class="page-subtitle">Manage your account information and preferences</p>
+        <h1 class="page-title">Profil sozlamalari</h1>
+        <p class="page-subtitle">Hisob ma'lumotlaringizni va sozlamalaringizni boshqaring</p>
       </div>
     </div>
 
@@ -45,8 +45,8 @@
             </svg>
           </div>
           <div>
-            <h3 class="card-title">Profile Information</h3>
-            <p class="card-subtitle">Update your personal details</p>
+            <h3 class="card-title">Profil ma'lumotlari</h3>
+            <p class="card-subtitle">Shaxsiy ma'lumotlaringizni yangilang</p>
           </div>
         </div>
 
@@ -57,7 +57,7 @@
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                 <polyline points="22,6 12,13 2,6"></polyline>
               </svg>
-              <span>Email Address</span>
+              <span>Elektron pochta manzili</span>
             </label>
             <div class="input-wrapper">
               <input
@@ -71,10 +71,10 @@
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                   <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
-                Verified
+                Tasdiqlangan
               </div>
             </div>
-            <p class="input-hint">Your email address cannot be changed</p>
+            <p class="input-hint">Elektron pochta manzilingizni o'zgartirib bo'lmaydi</p>
           </div>
 
           <div class="form-group">
@@ -83,7 +83,7 @@
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
-              <span>Username</span>
+              <span>Foydalanuvchi nomi</span>
             </label>
             <input
               type="text"
@@ -91,9 +91,9 @@
               formControlName="username"
               class="form-input"
               [class.input-error]="usernameInvalid"
-              placeholder="Enter your username">
+              placeholder="Foydalanuvchi nomingizni kiriting">
             <p class="input-hint input-error-text" *ngIf="usernameInvalid">
-              Username must be 3-50 characters and contain only letters, numbers, and underscores
+              Foydalanuvchi nomi 3-50 ta belgidan iborat bo'lishi va faqat harflar, raqamlar va pastki chiziq o'z ichiga olishi kerak
             </p>
           </div>
 
@@ -104,14 +104,14 @@
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                   <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                <span>First Name</span>
+                <span>Ism</span>
               </label>
               <input
                 type="text"
                 id="firstName"
                 formControlName="firstName"
                 class="form-input"
-                placeholder="Enter your first name">
+                placeholder="Ismingizni kiriting">
             </div>
 
             <div class="form-group">
@@ -120,14 +120,14 @@
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                   <circle cx="12" cy="7" r="4"></circle>
                 </svg>
-                <span>Last Name</span>
+                <span>Familiya</span>
               </label>
               <input
                 type="text"
                 id="lastName"
                 formControlName="lastName"
                 class="form-input"
-                placeholder="Enter your last name">
+                placeholder="Familiyangizni kiriting">
             </div>
           </div>
 
@@ -138,7 +138,7 @@
               <polyline points="17 21 17 13 7 13 7 21"></polyline>
               <polyline points="7 3 7 8 15 8"></polyline>
             </svg>
-            <span>{{ loading ? 'Updating...' : 'Update Profile' }}</span>
+            <span>{{ loading ? 'Yangilanmoqda...' : 'Profilni yangilash' }}</span>
           </button>
         </form>
       </div>
@@ -153,8 +153,8 @@
             </svg>
           </div>
           <div>
-            <h3 class="card-title">Change Password</h3>
-            <p class="card-subtitle">Update your password for security</p>
+            <h3 class="card-title">Parolni o'zgartirish</h3>
+            <p class="card-subtitle">Xavfsizlik uchun parolingizni yangilang</p>
           </div>
         </div>
 
@@ -183,16 +183,16 @@
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
-              <span>Current Password</span>
+              <span>Joriy parol</span>
             </label>
             <input
               type="password"
               id="currentPassword"
               formControlName="currentPassword"
               class="form-input"
-              placeholder="Enter your current password"
+              placeholder="Joriy parolingizni kiriting"
               required>
-            <p class="input-hint">You must enter your current password to change it</p>
+            <p class="input-hint">Parolni o'zgartirish uchun joriy parolingizni kiritishingiz kerak</p>
           </div>
 
           <div class="form-group">
@@ -201,7 +201,7 @@
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
-              <span>New Password</span>
+              <span>Yangi parol</span>
             </label>
             <input
               type="password"
@@ -209,13 +209,13 @@
               formControlName="newPassword"
               class="form-input"
               [class.input-error]="newPasswordInvalid"
-              placeholder="Enter new password"
+              placeholder="Yangi parolni kiriting"
               required>
             <p class="input-hint input-error-text" *ngIf="newPasswordInvalid">
-              Password must be at least 8 characters with uppercase, lowercase, and number
+              Parol kamida 8 ta belgidan, katta harf, kichik harf va raqamdan iborat bo'lishi kerak
             </p>
             <p class="input-hint" *ngIf="!newPasswordInvalid">
-              Minimum 8 characters, including uppercase, lowercase, and number
+              Kamida 8 ta belgi, katta harf, kichik harf va raqam o'z ichiga olishi kerak
             </p>
           </div>
 
@@ -225,14 +225,14 @@
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
-              <span>Confirm New Password</span>
+              <span>Yangi parolni tasdiqlang</span>
             </label>
             <input
               type="password"
               id="confirmNewPassword"
               formControlName="confirmNewPassword"
               class="form-input"
-              placeholder="Confirm new password"
+              placeholder="Yangi parolni tasdiqlang"
               required>
           </div>
 
@@ -243,7 +243,7 @@
               <polyline points="17 21 17 13 7 13 7 21"></polyline>
               <polyline points="7 3 7 8 15 8"></polyline>
             </svg>
-            <span>{{ passwordLoading ? 'Changing Password...' : 'Change Password' }}</span>
+            <span>{{ passwordLoading ? 'Parol o\'zgartirilmoqda...' : 'Parolni o\'zgartirish' }}</span>
           </button>
         </form>
       </div>
@@ -259,8 +259,8 @@
             </svg>
           </div>
           <div>
-            <h3 class="card-title">Preferences</h3>
-            <p class="card-subtitle">Customize your learning experience</p>
+            <h3 class="card-title">Sozlamalar</h3>
+            <p class="card-subtitle">O'quv tajribangizni moslashtiring</p>
           </div>
         </div>
 
@@ -271,20 +271,20 @@
                 <circle cx="12" cy="12" r="10"></circle>
                 <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
               </svg>
-              <span>Preferred Language</span>
+              <span>Afzal til</span>
             </label>
             <div class="select-wrapper">
               <select id="language" formControlName="language" class="form-select">
-                <option value="EN">English</option>
-                <option value="UZ">Uzbek</option>
-                <option value="RU">Russian</option>
-                <option value="KOR">Korean</option>
+                <option value="EN">Inglizcha</option>
+                <option value="UZ">O'zbekcha</option>
+                <option value="RU">Ruscha</option>
+                <option value="KOR">Koreyscha</option>
               </select>
               <svg class="select-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </div>
-            <p class="input-hint">Choose your preferred interface language</p>
+            <p class="input-hint">Interfeys tilini tanlang</p>
           </div>
 
           <div class="form-group">
@@ -294,8 +294,8 @@
                   <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                 </svg>
                 <div>
-                  <label for="darkMode" class="toggle-label">Dark Mode</label>
-                  <p class="toggle-description">Use dark theme across the platform</p>
+                  <label for="darkMode" class="toggle-label">Tungi rejim</label>
+                  <p class="toggle-description">Butun platformada tungi mavzudan foydalaning</p>
                 </div>
               </div>
               <div class="toggle-switch">
@@ -310,7 +310,7 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" *ngIf="!loading">
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
-            <span>{{ loading ? 'Saving...' : 'Save Preferences' }}</span>
+            <span>{{ loading ? 'Saqlanmoqda...' : 'Sozlamalarni saqlash' }}</span>
           </button>
         </form>
       </div>
@@ -326,8 +326,8 @@
             </svg>
           </div>
           <div>
-            <h3 class="card-title">Learning Statistics</h3>
-            <p class="card-subtitle">Track your progress and achievements</p>
+            <h3 class="card-title">O'quv statistikasi</h3>
+            <p class="card-subtitle">Taraqqiyotingizni va yutuqlaringizni kuzatib boring</p>
           </div>
         </div>
 
@@ -340,7 +340,7 @@
               </svg>
             </div>
             <div class="stat-content">
-              <p class="stat-label">References Read</p>
+              <p class="stat-label">O'qilgan ma'lumotnomalar</p>
               <p class="stat-value">{{ stats.referencesRead }}</p>
             </div>
           </div>
@@ -353,7 +353,7 @@
               </svg>
             </div>
             <div class="stat-content">
-              <p class="stat-label">Study Time</p>
+              <p class="stat-label">O'qish vaqti</p>
               <p class="stat-value">{{ stats.totalReadingTime.formatted }}</p>
             </div>
           </div>
@@ -365,15 +365,15 @@
               </svg>
             </div>
             <div class="stat-content">
-              <p class="stat-label">Current Streak</p>
-              <p class="stat-value">{{ stats.currentStreak }} days</p>
+              <p class="stat-label">Joriy ketma-ketlik</p>
+              <p class="stat-value">{{ stats.currentStreak }} kun</p>
             </div>
           </div>
         </div>
 
         <div class="stats-loading" *ngIf="statsLoading">
           <span class="spinner"></span>
-          <p>Loading statistics...</p>
+          <p>Statistika yuklanmoqda...</p>
         </div>
       </div>
 
@@ -388,17 +388,17 @@
             </svg>
           </div>
           <div>
-            <h3 class="card-title">Danger Zone</h3>
-            <p class="card-subtitle">Permanent account actions</p>
+            <h3 class="card-title">Xavfli zona</h3>
+            <p class="card-subtitle">Doimiy hisob harakatlari</p>
           </div>
         </div>
 
         <div class="danger-content">
           <div class="danger-info">
-            <h4 class="danger-title">Delete Your Account</h4>
+            <h4 class="danger-title">Hisobingizni o'chirish</h4>
             <p class="danger-description">
-              Once you delete your account, there is no going back. This action is permanent and cannot be undone.
-              All your data, progress, and achievements will be permanently removed.
+              Hisobingizni o'chirsangiz, ortga qaytish yo'q. Bu harakat doimiy va bekor qilib bo'lmaydi.
+              Barcha ma'lumotlaringiz, taraqqiyotingiz va yutuqlaringiz butunlay o'chiriladi.
             </p>
           </div>
           <button class="btn-modern btn-danger">
@@ -406,7 +406,7 @@
               <polyline points="3 6 5 6 21 6"></polyline>
               <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
             </svg>
-            <span>Delete Account</span>
+            <span>Hisobni o'chirish</span>
           </button>
         </div>
       </div>

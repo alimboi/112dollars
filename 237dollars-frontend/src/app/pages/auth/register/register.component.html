@@ -15,8 +15,8 @@
             </defs>
           </svg>
         </div>
-        <h1 class="auth-title">{{ 'auth.create_account' | translate }}</h1>
-        <p class="auth-subtitle">{{ 'auth.start_journey' | translate }}</p>
+        <h1 class="auth-title">Hisob yaratish</h1>
+        <p class="auth-subtitle">O'quv sayohatingizni boshlang</p>
       </div>
 
       <!-- Register Form -->
@@ -26,7 +26,7 @@
         <div class="form-row">
           <!-- First Name -->
           <div class="form-group">
-            <label for="firstName" class="form-label">{{ 'auth.first_name' | translate }}</label>
+            <label for="firstName" class="form-label">Ism</label>
             <div class="input-wrapper">
               <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -37,21 +37,21 @@
                 id="firstName"
                 formControlName="firstName"
                 class="form-input"
-                placeholder="{{ 'auth.first_name_placeholder' | translate }}"
+                placeholder="Ismingizni kiriting"
                 [class.is-invalid]="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched"
               />
             </div>
             <div class="error-message" *ngIf="registerForm.get('firstName')?.hasError('required') && registerForm.get('firstName')?.touched">
-              {{ 'auth.first_name_required' | translate }}
+              Ism talab qilinadi
             </div>
             <div class="error-message" *ngIf="registerForm.get('firstName')?.hasError('minlength') && registerForm.get('firstName')?.touched">
-              {{ 'auth.first_name_min_length' | translate }}
+              Ism kamida 1 ta belgidan iborat bo'lishi kerak
             </div>
           </div>
 
           <!-- Last Name -->
           <div class="form-group">
-            <label for="lastName" class="form-label">{{ 'auth.last_name' | translate }}</label>
+            <label for="lastName" class="form-label">Familiya</label>
             <div class="input-wrapper">
               <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -62,22 +62,22 @@
                 id="lastName"
                 formControlName="lastName"
                 class="form-input"
-                placeholder="{{ 'auth.last_name_placeholder' | translate }}"
+                placeholder="Familiyangizni kiriting"
                 [class.is-invalid]="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched"
               />
             </div>
             <div class="error-message" *ngIf="registerForm.get('lastName')?.hasError('required') && registerForm.get('lastName')?.touched">
-              {{ 'auth.last_name_required' | translate }}
+              Familiya talab qilinadi
             </div>
             <div class="error-message" *ngIf="registerForm.get('lastName')?.hasError('minlength') && registerForm.get('lastName')?.touched">
-              {{ 'auth.last_name_min_length' | translate }}
+              Familiya kamida 1 ta belgidan iborat bo'lishi kerak
             </div>
           </div>
         </div>
 
         <!-- Username Field -->
         <div class="form-group">
-          <label for="username" class="form-label">{{ 'auth.username' | translate }}</label>
+          <label for="username" class="form-label">Foydalanuvchi nomi</label>
           <div class="input-wrapper">
             <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -89,7 +89,7 @@
               id="username"
               formControlName="username"
               class="form-input"
-              placeholder="{{ 'auth.username_placeholder' | translate }}"
+              placeholder="Noyob foydalanuvchi nomini tanlang"
               [class.is-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched"
               [class.is-valid]="usernameAvailability.available === true"
             />
@@ -111,13 +111,13 @@
             </span>
           </div>
           <div class="form-hint">
-            {{ 'auth.username_hint' | translate }}
+            Faqat harflar, raqamlar va pastki chiziq (_)
           </div>
           <div class="error-message" *ngIf="registerForm.get('username')?.hasError('required') && registerForm.get('username')?.touched">
-            {{ 'auth.username_required' | translate }}
+            Foydalanuvchi nomi talab qilinadi
           </div>
           <div class="error-message" *ngIf="registerForm.get('username')?.hasError('pattern') && registerForm.get('username')?.touched">
-            {{ 'auth.username_pattern' | translate }}
+            Faqat harflar, raqamlar va pastki chiziq (_) ishlatish mumkin
           </div>
           <div class="availability-message success" *ngIf="usernameAvailability.available === true">
             {{ usernameAvailability.message }}
@@ -129,7 +129,7 @@
 
         <!-- Email Field -->
         <div class="form-group">
-          <label for="email" class="form-label">{{ 'auth.email' | translate }}</label>
+          <label for="email" class="form-label">Elektron pochta</label>
           <div class="input-wrapper">
             <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
@@ -140,7 +140,7 @@
               id="email"
               formControlName="email"
               class="form-input"
-              placeholder="{{ 'auth.email_placeholder' | translate }}"
+              placeholder="Elektron pochta manzilini kiriting"
               [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
               [class.is-valid]="emailAvailability.available === true"
             />
@@ -162,10 +162,10 @@
             </span>
           </div>
           <div class="error-message" *ngIf="registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched">
-            {{ 'auth.email_required' | translate }}
+            Elektron pochta talab qilinadi
           </div>
           <div class="error-message" *ngIf="registerForm.get('email')?.hasError('email') && registerForm.get('email')?.touched">
-            {{ 'auth.email_invalid' | translate }}
+            Noto'g'ri elektron pochta formati
           </div>
           <div class="availability-message success" *ngIf="emailAvailability.available === true">
             {{ emailAvailability.message }}
@@ -179,7 +179,7 @@
         <div class="form-row">
           <!-- Password Field -->
           <div class="form-group">
-            <label for="password" class="form-label">{{ 'auth.password' | translate }}</label>
+            <label for="password" class="form-label">Parol</label>
             <div class="input-wrapper">
               <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -190,27 +190,27 @@
                 id="password"
                 formControlName="password"
                 class="form-input"
-                placeholder="{{ 'auth.password_placeholder' | translate }}"
+                placeholder="Xavfsiz parol yarating"
                 [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
               />
             </div>
             <div class="form-hint">
-              {{ 'auth.password_hint' | translate }}
+              Kamida 8 ta belgi, 1 ta katta harf, 1 ta kichik harf va 1 ta raqam
             </div>
             <div class="error-message" *ngIf="registerForm.get('password')?.hasError('required') && registerForm.get('password')?.touched">
-              {{ 'auth.password_required' | translate }}
+              Parol talab qilinadi
             </div>
             <div class="error-message" *ngIf="registerForm.get('password')?.hasError('minlength') && registerForm.get('password')?.touched">
-              {{ 'auth.password_min_length' | translate }}
+              Parol kamida 8 ta belgidan iborat bo'lishi kerak
             </div>
             <div class="error-message" *ngIf="registerForm.get('password')?.hasError('pattern') && registerForm.get('password')?.touched">
-              {{ 'auth.password_pattern' | translate }}
+              Parol 1 ta katta harf, 1 ta kichik harf va 1 ta raqamni o'z ichiga olishi kerak
             </div>
           </div>
 
           <!-- Confirm Password Field -->
           <div class="form-group">
-            <label for="confirmPassword" class="form-label">{{ 'auth.confirm_password' | translate }}</label>
+            <label for="confirmPassword" class="form-label">Parolni tasdiqlang</label>
             <div class="input-wrapper">
               <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -222,27 +222,27 @@
                 id="confirmPassword"
                 formControlName="confirmPassword"
                 class="form-input"
-                placeholder="{{ 'auth.confirm_password_placeholder' | translate }}"
+                placeholder="Parolni qayta kiriting"
                 [class.is-invalid]="(registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched) || (registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched)"
               />
             </div>
             <div class="error-message" *ngIf="registerForm.get('confirmPassword')?.hasError('required') && registerForm.get('confirmPassword')?.touched">
-              {{ 'auth.confirm_password_required' | translate }}
+              Parolni tasdiqlash talab qilinadi
             </div>
             <div class="error-message" *ngIf="registerForm.hasError('mismatch') && registerForm.get('confirmPassword')?.touched">
-              {{ 'auth.passwords_mismatch' | translate }}
+              Parollar mos kelmayapti
             </div>
           </div>
         </div>
 
         <!-- Telegram Fields (Optional) -->
         <div class="optional-section">
-          <p class="section-label">{{ 'auth.telegram_optional' | translate }}</p>
+          <p class="section-label">Telegram ma'lumotlari (ixtiyoriy)</p>
 
           <div class="form-row">
             <!-- Telegram Username -->
             <div class="form-group">
-              <label for="telegramUsername" class="form-label">{{ 'auth.telegram_username' | translate }}</label>
+              <label for="telegramUsername" class="form-label">Telegram foydalanuvchi nomi</label>
               <div class="input-wrapper">
                 <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -257,13 +257,13 @@
                 />
               </div>
               <div class="error-message" *ngIf="registerForm.get('telegramUsername')?.hasError('pattern') && registerForm.get('telegramUsername')?.touched">
-                {{ 'auth.telegram_username_invalid' | translate }}
+                Noto'g'ri Telegram foydalanuvchi nomi
               </div>
             </div>
 
             <!-- Telegram Phone -->
             <div class="form-group">
-              <label for="telegramPhone" class="form-label">{{ 'auth.telegram_phone' | translate }}</label>
+              <label for="telegramPhone" class="form-label">Telegram telefon</label>
               <div class="input-wrapper">
                 <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
@@ -273,12 +273,12 @@
                   id="telegramPhone"
                   formControlName="telegramPhone"
                   class="form-input"
-                  placeholder="+1234567890"
+                  placeholder="+998901234567"
                   [class.is-invalid]="registerForm.get('telegramPhone')?.invalid && registerForm.get('telegramPhone')?.touched"
                 />
               </div>
               <div class="error-message" *ngIf="registerForm.get('telegramPhone')?.hasError('pattern') && registerForm.get('telegramPhone')?.touched">
-                {{ 'auth.telegram_phone_invalid' | translate }}
+                Noto'g'ri telefon raqami formati
               </div>
             </div>
           </div>
@@ -297,7 +297,7 @@
         <!-- Submit Button -->
         <button type="submit" class="btn-modern btn-primary btn-full" [disabled]="loading || registerForm.invalid || usernameAvailability.available === false || emailAvailability.available === false">
           <span *ngIf="loading" class="spinner"></span>
-          <span>{{ loading ? ('auth.creating_account' | translate) : ('auth.create_account' | translate) }}</span>
+          <span>{{ loading ? 'Hisob yaratilmoqda...' : 'Hisob yaratish' }}</span>
           <svg *ngIf="!loading" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
@@ -311,13 +311,13 @@
             <line x1="12" y1="16" x2="12" y2="12"></line>
             <line x1="12" y1="8" x2="12.01" y2="8"></line>
           </svg>
-          <span>{{ 'auth.terms_agreement' | translate }}</span>
+          <span>Ro'yxatdan o'tish orqali siz foydalanish shartlari va maxfiylik siyosatiga rozilik bildirasiz</span>
         </div>
       </form>
 
       <!-- Login Link -->
       <div class="auth-footer">
-        <p>{{ 'auth.already_have_account' | translate }} <a routerLink="/auth/login" class="text-link-primary">{{ 'auth.sign_in' | translate }}</a></p>
+        <p>Hisobingiz bormi? <a routerLink="/auth/login" class="text-link-primary">Kirish</a></p>
       </div>
     </div>
   </div>

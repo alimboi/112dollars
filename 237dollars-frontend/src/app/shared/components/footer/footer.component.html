@@ -3,7 +3,7 @@
     <div class="footer-content">
       <div class="footer-brand">
         <h3><span class="brand-main">237</span><span class="accent">DOLLARS</span></h3>
-        <p>Master Korean, English & Coding for just $237</p>
+        <p>Koreys, ingliz va dasturlashni atigi $237 ga o'rganing</p>
         <div class="social-links">
           <a href="#" class="social-link" aria-label="Facebook">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -30,38 +30,38 @@
 
       <div class="footer-links">
         <div class="footer-section">
-          <h4>Quick Links</h4>
+          <h4>Tezkor havolalar</h4>
           <ul>
-            <li><a routerLink="/">Home</a></li>
-            <li *ngIf="authService.isAuthenticated()"><a routerLink="/references">References</a></li>
+            <li><a routerLink="/">Bosh sahifa</a></li>
+            <li *ngIf="authService.isAuthenticated()"><a routerLink="/references">Ma'lumotnomalar</a></li>
             <li><a routerLink="/blog">Blog</a></li>
-            <li><a routerLink="/contact">Contact</a></li>
+            <li><a routerLink="/contact">Aloqa</a></li>
           </ul>
         </div>
 
         <div class="footer-section" *ngIf="authService.isAuthenticated()">
-          <h4>Student Features</h4>
+          <h4>Talaba imkoniyatlari</h4>
           <ul>
-            <li><a routerLink="/points">Points</a></li>
-            <li><a routerLink="/discounts">Discounts</a></li>
-            <li><a routerLink="/enrollment">Enrollment</a></li>
-            <li><a routerLink="/documents">Documents</a></li>
+            <li><a routerLink="/points">Ballar</a></li>
+            <li><a routerLink="/discounts">Chegirmalar</a></li>
+            <li><a routerLink="/enrollment">Ro'yxatdan o'tish</a></li>
+            <li><a routerLink="/documents">Hujjatlar</a></li>
           </ul>
         </div>
 
         <div class="footer-section">
-          <h4>Resources</h4>
+          <h4>Resurslar</h4>
           <ul>
-            <li *ngIf="!authService.isAuthenticated()"><a routerLink="/auth/register">Get Started</a></li>
-            <li *ngIf="authService.isAuthenticated()"><a routerLink="/profile">Profile</a></li>
-            <li *ngIf="!authService.isAuthenticated()"><a routerLink="/auth/login">Login</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
+            <li *ngIf="!authService.isAuthenticated()"><a routerLink="/auth/register">Boshlash</a></li>
+            <li *ngIf="authService.isAuthenticated()"><a routerLink="/profile">Profil</a></li>
+            <li *ngIf="!authService.isAuthenticated()"><a routerLink="/auth/login">Kirish</a></li>
+            <li><a href="#">Maxfiylik siyosati</a></li>
+            <li><a href="#">Foydalanish shartlari</a></li>
           </ul>
         </div>
 
         <div class="footer-section">
-          <h4>Contact Info</h4>
+          <h4>Aloqa ma'lumotlari</h4>
           <ul class="contact-list">
             <li>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -79,7 +79,7 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
               </svg>
-              Seoul, South Korea
+              Seul, Janubiy Koreya
             </li>
           </ul>
         </div>
@@ -87,11 +87,11 @@
     </div>
 
     <div class="footer-bottom">
-      <p>&copy; {{ currentYear }} 237Dollars. All rights reserved.</p>
+      <p>&copy; {{ currentYear }} 237Dollars. Barcha huquqlar himoyalangan.</p>
       <div class="footer-badges">
-        <span class="badge">Secure</span>
-        <span class="badge">Trusted</span>
-        <span class="badge">Certified</span>
+        <span class="badge">Xavfsiz</span>
+        <span class="badge">Ishonchli</span>
+        <span class="badge">Sertifikatlangan</span>
       </div>
     </div>
   </div>

@@ -17,18 +17,18 @@
       </div>
       <div class="brand-text">
         <span class="brand-title">237dollars</span>
-        <span class="brand-subtitle">Learn & Grow</span>
+        <span class="brand-subtitle">O'rganish va rivojlanish</span>
       </div>
     </a>
 
     <!-- Desktop Navigation -->
     <nav class="nav-menu" role="navigation">
       <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
-        Home
+        Bosh sahifa
       </a>
 
       <a routerLink="/references" routerLinkActive="active" class="nav-link">
-        References
+        Ma'lumotnomalar
       </a>
 
       <a routerLink="/admin" routerLinkActive="active" class="nav-link nav-admin" *ngIf="authService.isAdmin()">
@@ -37,15 +37,15 @@
       </a>
 
       <a routerLink="/blog-gallery" routerLinkActive="active" class="nav-link">
-        Gallery
+        Galereya
       </a>
 
       <a routerLink="/about" routerLinkActive="active" class="nav-link">
-        About
+        Biz haqimizda
       </a>
 
       <a routerLink="/contact" routerLinkActive="active" class="nav-link">
-        Contact
+        Aloqa
       </a>
     </nav>
 
@@ -53,7 +53,7 @@
     <div class="nav-actions">
       <!-- Theme Toggle -->
       <button class="action-btn theme-btn" (click)="toggleDarkMode()"
-        [attr.aria-label]="isDarkMode ? 'Light mode' : 'Dark mode'" title="Toggle theme">
+        [attr.aria-label]="isDarkMode ? 'Yorug\' rejim' : 'Tungi rejim'" title="Rejimni o'zgartirish">
         <svg *ngIf="!isDarkMode" viewBox="0 0 20 20" fill="none" stroke="currentColor">
           <circle cx="10" cy="10" r="4" />
           <path
@@ -90,10 +90,10 @@
       <div class="auth-section">
         <ng-container *ngIf="!authService.isAuthenticated()">
           <a routerLink="/auth/login" class="nav-btn nav-btn-ghost">
-            Sign in
+            Kirish
           </a>
           <a routerLink="/auth/register" class="nav-btn nav-btn-primary">
-            Get Started
+            Boshlash
           </a>
         </ng-container>
 
@@ -104,7 +104,7 @@
             </svg>
           </a>
           <button class="nav-btn nav-btn-ghost" (click)="logout()">
-            Sign out
+            Chiqish
           </button>
         </ng-container>
       </div>
@@ -114,7 +114,7 @@
     <button class="menu-trigger"
             [class.active]="isMenuOpen"
             (click)="toggleMenu()"
-            aria-label="Menu">
+            aria-label="Menyu">
       <span></span>
       <span></span>
     </button>
@@ -130,7 +130,7 @@
             <path d="M3 8l7-5 7 5v9a1 1 0 01-1 1H4a1 1 0 01-1-1V8z" />
             <path d="M8 18v-7h4v7" />
           </svg>
-          <span>Home</span>
+          <span>Bosh sahifa</span>
         </a>
 
         <a routerLink="/references" routerLinkActive="active" class="mobile-link"
@@ -139,7 +139,7 @@
             <path d="M4 5a1 1 0 011-1h10a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V5z" />
             <path d="M8 4v14M12 8h4" />
           </svg>
-          <span>References</span>
+          <span>Ma'lumotnomalar</span>
         </a>
 
         <a routerLink="/admin" routerLinkActive="active" class="mobile-link mobile-admin" *ngIf="authService.isAdmin()"
@@ -156,7 +156,7 @@
             <rect x="2" y="2" width="16" height="16" rx="1" />
             <path d="M2 12h16M8 6v2M12 8v4M15 10v3" />
           </svg>
-          <span>Gallery</span>
+          <span>Galereya</span>
         </a>
 
         <a routerLink="/about" routerLinkActive="active" class="mobile-link" (click)="closeMenu()">
@@ -164,14 +164,14 @@
             <circle cx="10" cy="10" r="8" />
             <path d="M10 7v4M10 14v1" />
           </svg>
-          <span>About</span>
+          <span>Biz haqimizda</span>
         </a>
 
         <a routerLink="/contact" routerLinkActive="active" class="mobile-link" (click)="closeMenu()">
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor">
             <path d="M2 4a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6l-4 3v-3a2 2 0 01-2-2V4z" />
           </svg>
-          <span>Contact</span>
+          <span>Aloqa</span>
         </a>
       </div>
 
@@ -185,12 +185,12 @@
           <svg *ngIf="isDarkMode" viewBox="0 0 20 20" fill="currentColor">
             <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
           </svg>
-          <span>{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
+          <span>{{ isDarkMode ? 'Yorug\' rejim' : 'Tungi rejim' }}</span>
         </button>
 
         <!-- Mobile Language Options -->
         <div class="mobile-lang">
-          <span class="mobile-lang-label">Language</span>
+          <span class="mobile-lang-label">Til</span>
           <div class="mobile-lang-grid">
             <button *ngFor="let lang of languages" class="mobile-lang-btn" [class.active]="currentLang === lang.code"
               (click)="switchLanguage(lang.code); closeMenu()">
@@ -203,8 +203,8 @@
         <!-- Mobile Auth -->
         <div class="mobile-auth">
           <ng-container *ngIf="!authService.isAuthenticated()">
-            <a routerLink="/auth/login" class="mobile-btn mobile-btn-ghost" (click)="closeMenu()">Sign in</a>
-            <a routerLink="/auth/register" class="mobile-btn mobile-btn-primary" (click)="closeMenu()">Get Started</a>
+            <a routerLink="/auth/login" class="mobile-btn mobile-btn-ghost" (click)="closeMenu()">Kirish</a>
+            <a routerLink="/auth/register" class="mobile-btn mobile-btn-primary" (click)="closeMenu()">Boshlash</a>
           </ng-container>
 
           <ng-container *ngIf="authService.isAuthenticated()">
@@ -213,16 +213,16 @@
                 <circle cx="8" cy="5" r="3" />
                 <path d="M2 15v-1a6 6 0 0112 0v1" />
               </svg>
-              Profile
+              Profil
             </a>
-            <button class="mobile-btn mobile-btn-primary" (click)="logout()">Sign out</button>
+            <button class="mobile-btn mobile-btn-primary" (click)="logout()">Chiqish</button>
           </ng-container>
         </div>
       </div>
 
       <div class="mobile-footer">
         <p>© 2025 237dollars</p>
-        <p>Premium Education Platform</p>
+        <p>Premium ta'lim platformasi</p>
       </div>
     </div>
   </div>

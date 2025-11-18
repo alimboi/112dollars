@@ -5,28 +5,28 @@
     </button>
 
     <div class="modal-header">
-      <h2>{{ 'auth.verify_email_title' | translate }}</h2>
+      <h2>Elektron pochtangizni tasdiqlang</h2>
       <p class="email-display">{{ email }}</p>
     </div>
 
     <div class="modal-body">
       <p class="instruction">
-        {{ 'auth.verify_email_instruction' | translate }}
+        Elektron pochtangizga 6 xonali tasdiqlash kodini yubordik. Iltimos, uni quyida kiriting.
       </p>
 
       <div class="timer" *ngIf="timeRemaining > 0">
         <span class="timer-icon">⏱️</span>
-        <span class="timer-text">{{ 'auth.code_expires_in' | translate }}: <strong>{{ getFormattedTime() }}</strong></span>
+        <span class="timer-text">Kod amal qilish muddati: <strong>{{ getFormattedTime() }}</strong></span>
       </div>
 
       <div class="timer expired" *ngIf="timeRemaining <= 0">
         <span class="timer-icon">⚠️</span>
-        <span class="timer-text">{{ 'auth.code_expired' | translate }}</span>
+        <span class="timer-text">Kod muddati tugagan</span>
       </div>
 
       <form [formGroup]="verificationForm" (ngSubmit)="verifyCode()">
         <div class="form-group">
-          <label for="code">{{ 'auth.verification_code' | translate }}</label>
+          <label for="code">Tasdiqlash kodi</label>
           <input
             id="code"
             type="text"
@@ -37,8 +37,8 @@
             [class.error]="verificationForm.get('code')?.invalid && verificationForm.get('code')?.touched"
           />
           <div class="error-message" *ngIf="verificationForm.get('code')?.invalid && verificationForm.get('code')?.touched">
-            <span *ngIf="verificationForm.get('code')?.errors?.['required']">{{ 'auth.code_required' | translate }}</span>
-            <span *ngIf="verificationForm.get('code')?.errors?.['pattern']">{{ 'auth.code_must_be_6_digits' | translate }}</span>
+            <span *ngIf="verificationForm.get('code')?.errors?.['required']">Tasdiqlash kodi talab qilinadi</span>
+            <span *ngIf="verificationForm.get('code')?.errors?.['pattern']">Kod 6 ta raqamdan iborat bo'lishi kerak</span>
           </div>
         </div>
 
@@ -55,20 +55,20 @@
           class="btn btn-primary"
           [disabled]="loading || verificationForm.invalid"
         >
-          <span *ngIf="!loading">{{ 'auth.verify' | translate }}</span>
-          <span *ngIf="loading">{{ 'auth.verifying' | translate }}...</span>
+          <span *ngIf="!loading">Tasdiqlash</span>
+          <span *ngIf="loading">Tasdiqlanmoqda...</span>
         </button>
       </form>
 
       <div class="resend-section">
-        <p class="resend-text">{{ 'auth.didnt_receive_code' | translate }}</p>
+        <p class="resend-text">Kod kelmadimi?</p>
         <button
           class="btn btn-secondary"
           (click)="resendCode()"
           [disabled]="!canResend || loading"
         >
-          <span *ngIf="canResend">{{ 'auth.resend_code' | translate }}</span>
-          <span *ngIf="!canResend">{{ 'auth.resend_in' | translate }} {{ getResendCountdown() }}</span>
+          <span *ngIf="canResend">Kodni qayta yuborish</span>
+          <span *ngIf="!canResend">Qayta yuborish {{ getResendCountdown() }}</span>
         </button>
       </div>
     </div>

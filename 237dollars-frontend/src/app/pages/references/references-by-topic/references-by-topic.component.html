@@ -7,7 +7,7 @@
         <line x1="3" y1="12" x2="21" y2="12"></line>
         <line x1="3" y1="18" x2="21" y2="18"></line>
       </svg>
-      <span>Contents</span>
+      <span>Mundarija</span>
     </button>
   </div>
 
@@ -25,12 +25,12 @@
               <line x1="19" y1="12" x2="5" y2="12"></line>
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
-            <span>Back to Topics</span>
+            <span>Mavzularga qaytish</span>
           </button>
         </div>
 
         <div class="contents-list">
-          <div class="list-title">Contents</div>
+          <div class="list-title">Mundarija</div>
           <nav class="nav-contents">
             <button *ngFor="let content of contents"
                     (click)="selectContent(content)"
@@ -47,11 +47,11 @@
               <div class="content-info">
                 <span class="content-name">{{ content.title }}</span>
                 <span class="content-meta" *ngIf="content.readingTimeMinutes">
-                  {{ content.readingTimeMinutes }} min
+                  {{ content.readingTimeMinutes }} daqiqa
                 </span>
               </div>
               <div class="content-badge" *ngIf="content.isFree">
-                <span class="badge-free">Free</span>
+                <span class="badge-free">Bepul</span>
               </div>
             </button>
           </nav>
@@ -59,8 +59,8 @@
 
         <div class="sidebar-footer">
           <div class="progress-info">
-            <p class="progress-label">Contents</p>
-            <p class="progress-count">{{ contents.length }} items</p>
+            <p class="progress-label">Mundarija</p>
+            <p class="progress-count">{{ contents.length }} ta element</p>
           </div>
         </div>
       </div>
@@ -71,7 +71,7 @@
       <!-- Loading State -->
       <div class="loading-state" *ngIf="loading">
         <div class="spinner-large"></div>
-        <p class="loading-text">Loading...</p>
+        <p class="loading-text">Yuklanmoqda...</p>
       </div>
 
       <!-- Error State -->
@@ -98,7 +98,7 @@
                 <svg *ngIf="!selectedContent.isFree" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                 </svg>
-                <span>{{ selectedContent.isFree ? 'Free' : 'Premium' }}</span>
+                <span>{{ selectedContent.isFree ? 'Bepul' : 'Premium' }}</span>
               </span>
             </div>
             <h1 class="detail-title">{{ selectedContent.title }}</h1>
@@ -110,7 +110,7 @@
                   <circle cx="12" cy="12" r="10"></circle>
                   <polyline points="12 6 12 12 16 14"></polyline>
                 </svg>
-                <span>{{ selectedContent.readingTimeMinutes }} min read</span>
+                <span>{{ selectedContent.readingTimeMinutes }} daqiqa o'qish</span>
               </div>
 
               <div class="meta-item" *ngIf="selectedContent.totalWords">
@@ -120,7 +120,7 @@
                   <line x1="16" y1="13" x2="8" y2="13"></line>
                   <line x1="16" y1="17" x2="8" y2="17"></line>
                 </svg>
-                <span>{{ selectedContent.totalWords }} words</span>
+                <span>{{ selectedContent.totalWords }} so'z</span>
               </div>
             </div>
           </div>
@@ -164,7 +164,7 @@
                 <!-- Image Block -->
                 <div *ngSwitchCase="'image'" class="image-block" [ngStyle]="{'text-align': block.blockData?.alignment}">
                   <img [src]="block.blockData?.url"
-                       [alt]="block.blockData?.alt || 'Content image'"
+                       [alt]="block.blockData?.alt || 'Kontent rasmi'"
                        [ngStyle]="{
                          'width': block.blockData?.width,
                          'height': block.blockData?.height,
@@ -198,7 +198,7 @@
                       <span class="dot dot-yellow"></span>
                       <span class="dot dot-green"></span>
                     </div>
-                    <span class="code-label">Code</span>
+                    <span class="code-label">Kod</span>
                   </div>
                   <pre><code>{{ block.content }}</code></pre>
                 </div>
@@ -207,7 +207,7 @@
 
             <!-- No Content Blocks -->
             <div class="no-blocks" *ngIf="(selectedContent?.contentBlocks?.length ?? 0) === 0">
-              <p>No content blocks available for this item.</p>
+              <p>Bu element uchun kontent bloklari mavjud emas.</p>
             </div>
           </div>
         </div>
@@ -220,9 +220,9 @@
               <polyline points="14 2 14 8 20 8"></polyline>
             </svg>
           </div>
-          <h3 class="empty-title">No Content Selected</h3>
+          <h3 class="empty-title">Kontent tanlanmagan</h3>
           <p class="empty-message">
-            Select a content from the left sidebar to view details.
+            Tafsilotlarini ko'rish uchun chap yon paneldan kontentni tanlang.
           </p>
         </div>
       </div>

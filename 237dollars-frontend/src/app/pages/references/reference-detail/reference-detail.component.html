@@ -3,7 +3,7 @@
     <!-- Loading State -->
     <div class="loading-state" *ngIf="loading">
       <div class="spinner-large"></div>
-      <p class="loading-text">Loading content...</p>
+      <p class="loading-text">Kontent yuklanmoqda...</p>
     </div>
 
     <!-- Error State -->
@@ -24,7 +24,7 @@
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
-        <span>Back to References</span>
+        <span>Ma'lumotnomaga qaytish</span>
       </button>
 
       <!-- Reference Header -->
@@ -38,7 +38,7 @@
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
-            <span>{{ reference.readingTimeMinutes }} min read</span>
+            <span>{{ reference.readingTimeMinutes }} daqiqa o'qish</span>
           </div>
 
           <div class="meta-badge" [ngClass]="reference.isFree ? 'badge-free' : 'badge-premium'">
@@ -50,7 +50,7 @@
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
             </svg>
-            <span>{{ reference.isFree ? 'Free' : 'Premium' }}</span>
+            <span>{{ reference.isFree ? 'Bepul' : 'Premium' }}</span>
           </div>
         </div>
       </div>
@@ -91,7 +91,7 @@
           <div *ngSwitchCase="'image'" class="image-block" [ngStyle]="{'text-align': block.blockData?.alignment}">
             <div class="image-wrapper">
               <img [src]="block.content || block.blockData?.url"
-                   [alt]="block.blockData?.alt || 'Content image'"
+                   [alt]="block.blockData?.alt || 'Kontent rasmi'"
                    [ngStyle]="{
                      'width': block.blockData?.width,
                      'height': block.blockData?.height,
@@ -128,7 +128,7 @@
                 <span class="dot dot-yellow"></span>
                 <span class="dot dot-green"></span>
               </div>
-              <span class="code-label">Code</span>
+              <span class="code-label">Kod</span>
             </div>
             <pre><code>{{ block.content }}</code></pre>
           </div>

@@ -2,10 +2,10 @@
   <div class="container">
     <!-- Header -->
     <div class="header">
-      <h1>{{ 'admin.blogGalleries' | translate }}</h1>
+      <h1>Blog Galereyalari</h1>
       <button class="btn-primary" (click)="openForm()" [disabled]="saving">
         <span class="icon">+</span>
-        {{ 'admin.addNewGallery' | translate }}
+        Yangi galereya qo'shish
       </button>
     </div>
 
@@ -23,14 +23,14 @@
     <div class="modal-overlay" *ngIf="isFormOpen" [@fadeIn] (click)="closeForm()">
       <div class="modal-content" [@slideUp] (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h2>{{ isEditMode ? ('admin.editGallery' | translate) : ('admin.addNewGallery' | translate) }}</h2>
+          <h2>{{ isEditMode ? 'Galereyani tahrirlash' : 'Yangi galereya qo'shish' }}</h2>
           <button class="btn-close" (click)="closeForm()">×</button>
         </div>
 
         <form (ngSubmit)="saveGallery()" #galleryForm="ngForm" class="gallery-form">
           <!-- Title Field -->
           <div class="form-group">
-            <label for="title">{{ 'admin.title' | translate }} <span class="required">*</span></label>
+            <label for="title">Sarlavha <span class="required">*</span></label>
             <input
               type="text"
               id="title"
@@ -38,20 +38,20 @@
               [(ngModel)]="formData.title"
               class="form-input"
               [disabled]="saving"
-              placeholder="Enter gallery title"
+              placeholder="Galereya sarlavhasini kiriting"
             />
           </div>
 
           <!-- Description Field -->
           <div class="form-group">
-            <label for="description">{{ 'admin.description' | translate }} <span class="required">*</span></label>
+            <label for="description">Tavsif <span class="required">*</span></label>
             <textarea
               id="description"
               name="description"
               [(ngModel)]="formData.description"
               class="form-textarea"
               [disabled]="saving"
-              placeholder="Enter gallery description"
+              placeholder="Galereya tavsifini kiriting"
               rows="4"
             ></textarea>
           </div>
@@ -59,14 +59,14 @@
           <!-- Images Section -->
           <div class="images-section">
             <div class="images-header">
-              <h3>{{ 'admin.images' | translate }} <span class="required">*</span></h3>
+              <h3>Rasmlar <span class="required">*</span></h3>
               <button
                 type="button"
                 class="btn-add-image"
                 (click)="addImageField()"
                 [disabled]="saving"
               >
-                <span class="icon">+</span> {{ 'admin.addImage' | translate }}
+                <span class="icon">+</span> Rasm qo'shish
               </button>
             </div>
 
@@ -89,7 +89,7 @@
                       [disabled]="saving"
                     />
                     <label [for]="'mainImage-' + i">
-                      {{ 'admin.setAsMain' | translate }}
+                      Asosiy qilib belgilash
                     </label>
                   </div>
 
@@ -111,7 +111,7 @@
                     class="btn-remove-image"
                     (click)="removeImageField(i)"
                     [disabled]="saving || formData.images.length === 1"
-                    title="Remove this image"
+                    title="Bu rasmni olib tashlash"
                   >
                     ✕
                   </button>
@@ -119,8 +119,8 @@
 
                 <!-- Image Preview -->
                 <div class="image-preview" *ngIf="image.imageUrl && i === formData.mainImageIndex">
-                  <p class="preview-label">{{ 'admin.mainImagePreview' | translate }}</p>
-                  <img [src]="getAbsoluteImageUrl(image.imageUrl)" alt="Main preview" class="preview-image" />
+                  <p class="preview-label">Asosiy rasm oldindan ko'rinishi</p>
+                  <img [src]="getAbsoluteImageUrl(image.imageUrl)" alt="Asosiy oldindan ko'rinish" class="preview-image" />
                 </div>
               </div>
             </div>
@@ -136,18 +136,18 @@
                 [(ngModel)]="formData.isPublished"
                 [disabled]="saving"
               />
-              {{ 'admin.publishGallery' | translate }}
+              Galereyani nashr qilish
             </label>
           </div>
 
           <!-- Form Actions -->
           <div class="form-actions">
             <button type="button" class="btn-secondary" (click)="closeForm()" [disabled]="saving">
-              {{ 'common.cancel' | translate }}
+              Bekor qilish
             </button>
             <button type="submit" class="btn-primary" [disabled]="saving">
               <span *ngIf="!saving">
-                {{ isEditMode ? ('admin.update' | translate) : ('admin.create' | translate) }}
+                {{ isEditMode ? 'Yangilash' : 'Yaratish' }}
               </span>
               <span *ngIf="saving" class="spinner"></span>
             </button>
@@ -159,7 +159,7 @@
     <!-- Loading State -->
     <div class="loading-container" *ngIf="loading && galleries.length === 0">
       <div class="spinner-large"></div>
-      <p>{{ 'common.loading' | translate }}</p>
+      <p>Yuklanmoqda...</p>
     </div>
 
     <!-- Galleries Grid -->
@@ -168,7 +168,7 @@
         <div class="gallery-image-wrapper">
           <img [src]="getAbsoluteImageUrl(gallery.images[gallery.mainImageIndex || 0].imageUrl)" alt="{{ gallery.title }}" class="gallery-image" />
           <div class="image-count" *ngIf="getImageCount(gallery) > 1">
-            <span class="count-text">{{ getImageCount(gallery) }} {{ 'admin.images' | translate }}</span>
+            <span class="count-text">{{ getImageCount(gallery) }} ta rasm</span>
           </div>
         </div>
 
@@ -178,7 +178,7 @@
 
           <div class="gallery-meta">
             <span class="status-badge" [ngClass]="gallery.isPublished ? 'published' : 'draft'">
-              {{ gallery.isPublished ? ('admin.published' | translate) : ('admin.draft' | translate) }}
+              {{ gallery.isPublished ? 'Nashr qilingan' : 'Qoralama' }}
             </span>
             <span class="date-text">{{ gallery.createdAt | date: 'short' }}</span>
           </div>
@@ -188,7 +188,7 @@
           <!-- Toggle Publish Button -->
           <button
             class="btn-icon btn-publish"
-            [title]="gallery.isPublished ? ('admin.unpublish' | translate) : ('admin.publish' | translate)"
+            [title]="gallery.isPublished ? 'Nashrdan olib tashlash' : 'Nashr qilish'"
             (click)="togglePublish(gallery, !gallery.isPublished)"
             [disabled]="saving"
           >
@@ -198,7 +198,7 @@
           <!-- Edit Button -->
           <button
             class="btn-icon btn-edit"
-            [title]="'admin.edit' | translate"
+            [title]="'Tahrirlash'"
             (click)="openForm(gallery)"
             [disabled]="saving"
           >
@@ -208,7 +208,7 @@
           <!-- Delete Button -->
           <button
             class="btn-icon btn-delete"
-            [title]="'admin.delete' | translate"
+            [title]="'O\'chirish'"
             (click)="deleteGallery(gallery.id!)"
             [disabled]="saving"
           >
@@ -220,10 +220,10 @@
       <!-- Empty State -->
       <div class="empty-state" *ngIf="galleries.length === 0 && !loading">
         <div class="empty-icon">🖼️</div>
-        <h3>{{ 'admin.noGalleries' | translate }}</h3>
-        <p>{{ 'admin.noGalleriesDescription' | translate }}</p>
+        <h3>Galereyalar yo'q</h3>
+        <p>Boshlash uchun birinchi galereyangizni yarating</p>
         <button class="btn-primary" (click)="openForm()">
-          {{ 'admin.createFirstGallery' | translate }}
+          Birinchi galereyani yaratish
         </button>
       </div>
     </div>
@@ -235,11 +235,11 @@
         (click)="goToPage(currentPage - 1)"
         [disabled]="currentPage === 1 || loading"
       >
-        ← {{ 'common.previous' | translate }}
+        ← Oldingi
       </button>
 
       <div class="page-info">
-        {{ 'common.page' | translate }}: <strong>{{ currentPage }}</strong> / <strong>{{ totalPages }}</strong>
+        Sahifa: <strong>{{ currentPage }}</strong> / <strong>{{ totalPages }}</strong>
       </div>
 
       <button
@@ -247,7 +247,7 @@
         (click)="goToPage(currentPage + 1)"
         [disabled]="currentPage === totalPages || loading"
       >
-        {{ 'common.next' | translate }} →
+        Keyingi →
       </button>
     </div>
   </div>

@@ -8,17 +8,17 @@
             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
           </svg>
-          <span>Educational Content</span>
+          <span>Ta'lim kontenti</span>
         </div>
-        <h1 class="page-title">Blog & News</h1>
-        <p class="page-subtitle">Insights, updates, and educational content for your learning journey</p>
+        <h1 class="page-title">Blog va Yangiliklar</h1>
+        <p class="page-subtitle">Sizning o'quv sayohatingiz uchun tushunchalar, yangilanishlar va ta'lim kontenti</p>
       </div>
     </div>
 
     <!-- Loading State -->
     <div class="loading-state" *ngIf="loading">
       <div class="spinner-large"></div>
-      <p class="loading-text">Loading articles...</p>
+      <p class="loading-text">Maqolalar yuklanmoqda...</p>
     </div>
 
     <!-- Error State -->
@@ -56,7 +56,7 @@
 
         <div class="card-footer">
           <span class="read-link">
-            Read Article
+            Maqolani o'qish
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
@@ -76,9 +76,9 @@
           <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
         </svg>
       </div>
-      <h3 class="empty-title">No Articles Yet</h3>
+      <h3 class="empty-title">Hali maqolalar yo'q</h3>
       <p class="empty-message">
-        We haven't published any blog posts yet. Check back soon for educational content and updates!
+        Biz hali hech qanday blog postlarini nashr qilmadik. Ta'lim kontenti va yangilanishlar uchun tez orada qaytib keling!
       </p>
     </div>
 
@@ -91,7 +91,7 @@
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
-        <span>Previous</span>
+        <span>Oldingi</span>
       </button>
 
       <div class="pagination-info">
@@ -103,7 +103,7 @@
       <button class="btn-pagination btn-next"
               (click)="nextPage()"
               [disabled]="page * limit >= total">
-        <span>Next</span>
+        <span>Keyingi</span>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="5" y1="12" x2="19" y2="12"></line>
           <polyline points="12 5 19 12 12 19"></polyline>

@@ -3,7 +3,7 @@
     <!-- Loading State -->
     <div class="loading-state" *ngIf="loading">
       <div class="spinner-large"></div>
-      <p class="loading-text">Loading article...</p>
+      <p class="loading-text">Maqola yuklanmoqda...</p>
     </div>
 
     <!-- Error State -->
@@ -24,7 +24,7 @@
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
-        <span>Back to Blog</span>
+        <span>Blogga qaytish</span>
       </button>
 
       <!-- Article -->
@@ -54,7 +54,7 @@
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
           </div>
-          <span class="footer-text">Last updated on {{ post.updatedAt | date:'MMMM dd, yyyy' }}</span>
+          <span class="footer-text">Oxirgi yangilangan sana {{ post.updatedAt | date:'MMMM dd, yyyy' }}</span>
         </footer>
       </article>
 
@@ -68,12 +68,12 @@
             </svg>
           </div>
           <div class="cta-text">
-            <h3>Explore More Articles</h3>
-            <p>Discover more educational content and insights</p>
+            <h3>Ko'proq maqolalarni o'rganing</h3>
+            <p>Ko'proq ta'lim kontenti va tushunchalarni kashf eting</p>
           </div>
         </div>
         <button routerLink="/blog" class="btn-cta">
-          <span>View All Articles</span>
+          <span>Barcha maqolalarni ko'rish</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>

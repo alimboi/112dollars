@@ -5,9 +5,9 @@
       <div class="header-content">
         <h1 class="admin-title">
           <span class="icon">🛡️</span>
-          Admin Dashboard
+          Administrator Boshqaruv Paneli
         </h1>
-        <p class="admin-subtitle">Manage references and content</p>
+        <p class="admin-subtitle">Ma'lumotnomalar va kontentni boshqarish</p>
       </div>
     </div>
 
@@ -19,7 +19,7 @@
         (click)="switchTab('references')"
       >
         <span class="tab-icon">📚</span>
-        References
+        Ma'lumotnomalar
       </button>
       <button
         class="tab-button"
@@ -27,7 +27,7 @@
         (click)="switchTab('blog')"
       >
         <span class="tab-icon">🖼️</span>
-        Blog Galleries
+        Blog Galereyalari
       </button>
       <button
         *ngIf="isSuperAdmin()"
@@ -36,7 +36,7 @@
         (click)="switchTab('admins')"
       >
         <span class="tab-icon">👥</span>
-        Admin Management
+        Administrator Boshqaruvi
       </button>
     </div>
 
@@ -45,7 +45,7 @@
       <div class="header-actions">
         <button class="btn btn-primary" routerLink="/admin/references/new">
           <span class="icon">➕</span>
-          Create Reference
+          Ma'lumotnoma yaratish
         </button>
       </div>
 
@@ -53,28 +53,28 @@
       <div class="filters-section">
         <div class="filters-row">
           <div class="filter-group">
-            <label for="publishedFilter">Status:</label>
+            <label for="publishedFilter">Holat:</label>
             <select
               id="publishedFilter"
               [(ngModel)]="publishedFilter"
               (change)="onFilterChange()"
               class="filter-select"
             >
-              <option value="all">All References</option>
-              <option value="published">Published Only</option>
-              <option value="unpublished">Unpublished Only</option>
+              <option value="all">Barcha ma'lumotnomalar</option>
+              <option value="published">Faqat nashr qilinganlar</option>
+              <option value="unpublished">Faqat nashr qilinmaganlar</option>
             </select>
           </div>
 
           <div class="filter-group">
-            <label for="majorFilter">Major:</label>
+            <label for="majorFilter">Mutaxassislik:</label>
             <select
               id="majorFilter"
               [(ngModel)]="majorFilter"
               (change)="onMajorFilterChange()"
               class="filter-select"
             >
-              <option [ngValue]="'all'">All Majors</option>
+              <option [ngValue]="'all'">Barcha mutaxassisliklar</option>
               <option *ngFor="let major of majors" [ngValue]="major.id">
                 {{ major.name }}
               </option>
@@ -82,7 +82,7 @@
           </div>
 
           <div class="filter-group">
-            <label for="topicFilter">Topic:</label>
+            <label for="topicFilter">Mavzu:</label>
             <select
               id="topicFilter"
               [(ngModel)]="topicFilter"
@@ -90,7 +90,7 @@
               class="filter-select"
               [disabled]="majorFilter !== 'all' && filteredTopics.length === 0"
             >
-              <option [ngValue]="'all'">All Topics</option>
+              <option [ngValue]="'all'">Barcha mavzular</option>
               <option *ngFor="let topic of filteredTopics" [ngValue]="topic.id">
                 {{ topic.name }}
               </option>
@@ -100,7 +100,7 @@
 
         <div class="stats">
           <span class="stat-item">
-            <strong>Total:</strong> {{ totalReferences }}
+            <strong>Jami:</strong> {{ totalReferences }}
           </span>
         </div>
       </div>
@@ -108,25 +108,25 @@
       <!-- Loading State -->
       <div *ngIf="loading" class="loading-state">
         <div class="spinner"></div>
-        <p>Loading references...</p>
+        <p>Ma'lumotnomalar yuklanmoqda...</p>
       </div>
 
       <!-- Error State -->
       <div *ngIf="error && !loading" class="error-state">
         <div class="error-icon">⚠️</div>
-        <h3>Error Loading References</h3>
+        <h3>Ma'lumotnomalarni yuklashda xatolik</h3>
         <p>{{ error }}</p>
-        <button class="btn btn-outline" (click)="loadReferences()">Try Again</button>
+        <button class="btn btn-outline" (click)="loadReferences()">Qaytadan urinish</button>
       </div>
 
       <!-- References Table -->
       <div *ngIf="!loading && !error" class="references-table">
         <div *ngIf="references.length === 0" class="empty-state">
           <div class="empty-icon">📄</div>
-          <h3>No References Found</h3>
-          <p>Start by creating your first reference</p>
+          <h3>Ma'lumotnomalar topilmadi</h3>
+          <p>Birinchi ma'lumotnomangizni yaratishdan boshlang</p>
           <button class="btn btn-primary" routerLink="/admin/references/new">
-            Create Reference
+            Ma'lumotnoma yaratish
           </button>
         </div>
 
@@ -134,13 +134,13 @@
           <thead>
             <tr>
               <th>ID</th>
-              <th>Title</th>
-              <th>Major</th>
-              <th>Topic</th>
-              <th>Status</th>
-              <th>Created</th>
-              <th>Creator</th>
-              <th>Actions</th>
+              <th>Sarlavha</th>
+              <th>Mutaxassislik</th>
+              <th>Mavzu</th>
+              <th>Holat</th>
+              <th>Yaratilgan</th>
+              <th>Yaratuvchi</th>
+              <th>Amallar</th>
             </tr>
           </thead>
           <tbody>
@@ -173,42 +173,42 @@
               </td>
               <td class="status-cell">
                 <span class="status-badge" [class.published]="reference.isPublished">
-                  {{ reference.isPublished ? '✓ Published' : '○ Draft' }}
+                  {{ reference.isPublished ? '✓ Nashr qilingan' : '○ Qoralama' }}
                 </span>
               </td>
               <td class="date-cell">
                 {{ formatDate(reference.createdAt) }}
               </td>
               <td class="creator-cell">
-                {{ reference.creator?.email || 'Unknown' }}
+                {{ reference.creator?.email || 'Noma\'lum' }}
               </td>
               <td class="actions-cell">
                 <div class="action-buttons">
                   <button
                     class="btn-icon btn-view"
                     [routerLink]="['/references', reference.id]"
-                    title="View"
+                    title="Ko'rish"
                   >
                     👁️
                   </button>
                   <button
                     class="btn-icon btn-edit"
                     [routerLink]="['/admin/references', reference.id, 'edit']"
-                    title="Edit"
+                    title="Tahrirlash"
                   >
                     ✏️
                   </button>
                   <button
                     class="btn-icon btn-toggle"
                     (click)="togglePublish(reference)"
-                    [title]="reference.isPublished ? 'Unpublish' : 'Publish'"
+                    [title]="reference.isPublished ? 'Nashrdan olib tashlash' : 'Nashr qilish'"
                   >
                     {{ reference.isPublished ? '🔽' : '🔼' }}
                   </button>
                   <button
                     class="btn-icon btn-delete"
                     (click)="deleteReference(reference)"
-                    title="Delete"
+                    title="O'chirish"
                   >
                     🗑️
                   </button>
@@ -226,7 +226,7 @@
           (click)="goToPage(currentPage - 1)"
           [disabled]="currentPage === 1"
         >
-          ← Previous
+          ← Oldingi
         </button>
 
         <div class="page-numbers">
@@ -245,7 +245,7 @@
           (click)="goToPage(currentPage + 1)"
           [disabled]="currentPage === totalPages"
         >
-          Next →
+          Keyingi →
         </button>
       </div>
     </div>
@@ -255,7 +255,7 @@
       <div class="header-actions">
         <button class="btn btn-primary" routerLink="/admin/galleries/new">
           <span class="icon">➕</span>
-          Create New Gallery
+          Yangi galereya yaratish
         </button>
       </div>
 
@@ -276,21 +276,21 @@
           <div class="gallery-thumbnail">
             <img [src]="getMainGalleryImage(gallery)" [alt]="gallery.title" />
             <span class="image-count" *ngIf="getGalleryImageCount(gallery) > 1">
-              {{ getGalleryImageCount(gallery) }} images
+              {{ getGalleryImageCount(gallery) }} ta rasm
             </span>
           </div>
           <div class="gallery-info">
-            <h3>{{ gallery.title || 'Untitled' }}</h3>
+            <h3>{{ gallery.title || 'Nomsiz' }}</h3>
             <p class="description">{{ gallery.description | slice: 0:100 }}{{ gallery.description.length > 100 ? '...' : '' }}</p>
             <span class="status-badge" [ngClass]="gallery.isPublished ? 'published' : 'draft'">
-              {{ gallery.isPublished ? 'Published' : 'Draft' }}
+              {{ gallery.isPublished ? 'Nashr qilingan' : 'Qoralama' }}
             </span>
           </div>
           <div class="gallery-actions">
             <button
               class="btn-icon"
               [routerLink]="['/admin/galleries', gallery.id, 'edit']"
-              title="Edit"
+              title="Tahrirlash"
             >
               ✏️
             </button>
@@ -298,7 +298,7 @@
               class="btn-icon btn-danger"
               (click)="deleteGallery(gallery.id)"
               [disabled]="false"
-              title="Delete"
+              title="O'chirish"
             >
               🗑️
             </button>
@@ -308,10 +308,10 @@
         <!-- Empty State -->
         <div class="empty-state" *ngIf="galleries.length === 0">
           <div class="empty-icon">🖼️</div>
-          <h3>No galleries yet</h3>
-          <p>Create your first gallery to get started</p>
+          <h3>Hali galereyalar yo'q</h3>
+          <p>Boshlash uchun birinchi galereyangizni yarating</p>
           <button class="btn btn-primary" routerLink="/admin/galleries/new">
-            Create Gallery
+            Galereya yaratish
           </button>
         </div>
       </div>
@@ -325,35 +325,35 @@
           <div class="stat-icon">👥</div>
           <div class="stat-content">
             <div class="stat-value">{{ adminStats.totalAdmins }}</div>
-            <div class="stat-label">Total Admins</div>
+            <div class="stat-label">Jami administratorlar</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">✅</div>
           <div class="stat-content">
             <div class="stat-value">{{ adminStats.activeAdmins }}</div>
-            <div class="stat-label">Active Admins</div>
+            <div class="stat-label">Faol administratorlar</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">⏸️</div>
           <div class="stat-content">
             <div class="stat-value">{{ adminStats.inactiveAdmins }}</div>
-            <div class="stat-label">Inactive Admins</div>
+            <div class="stat-label">Faol bo'lmagan administratorlar</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">🎓</div>
           <div class="stat-content">
             <div class="stat-value">{{ adminStats.studentManagers }}</div>
-            <div class="stat-label">Student Managers</div>
+            <div class="stat-label">Talaba menejerlari</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">📝</div>
           <div class="stat-content">
             <div class="stat-value">{{ adminStats.contentManagers }}</div>
-            <div class="stat-label">Content Managers</div>
+            <div class="stat-label">Kontent menejerlari</div>
           </div>
         </div>
       </div>
@@ -362,13 +362,13 @@
       <div class="header-actions">
         <button class="btn btn-primary" (click)="showCreateAdminForm = !showCreateAdminForm">
           <span class="icon">{{ showCreateAdminForm ? '✖️' : '➕' }}</span>
-          {{ showCreateAdminForm ? 'Cancel' : 'Create New Admin' }}
+          {{ showCreateAdminForm ? 'Bekor qilish' : 'Yangi administrator yaratish' }}
         </button>
       </div>
 
       <!-- Create Admin Form -->
       <div class="create-admin-form" *ngIf="showCreateAdminForm && !showEditAdminForm">
-        <h3>Create New Admin</h3>
+        <h3>Yangi administrator yaratish</h3>
         <div class="form-grid">
           <div class="form-group">
             <label for="adminEmail">Email *</label>
@@ -381,17 +381,17 @@
             />
           </div>
           <div class="form-group">
-            <label for="adminPassword">Password *</label>
+            <label for="adminPassword">Parol *</label>
             <input
               id="adminPassword"
               type="password"
               [(ngModel)]="newAdmin.password"
-              placeholder="At least 8 characters"
+              placeholder="Kamida 8 ta belgi"
               class="form-control"
             />
           </div>
           <div class="form-group">
-            <label for="adminRole">Role *</label>
+            <label for="adminRole">Rol *</label>
             <select id="adminRole" [(ngModel)]="newAdmin.role" class="form-control">
               <option *ngFor="let role of adminRoles" [value]="role.value">
                 {{ role.label }}
@@ -399,29 +399,29 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="adminTelegram">Telegram Username</label>
+            <label for="adminTelegram">Telegram foydalanuvchi nomi</label>
             <input
               id="adminTelegram"
               type="text"
               [(ngModel)]="newAdmin.telegramUsername"
-              placeholder="@username or username"
+              placeholder="@username yoki username"
               class="form-control"
             />
           </div>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" (click)="createAdmin()">
-            Create Admin
+            Administrator yaratish
           </button>
           <button class="btn btn-outline" (click)="showCreateAdminForm = false">
-            Cancel
+            Bekor qilish
           </button>
         </div>
       </div>
 
       <!-- Edit Admin Form -->
       <div class="create-admin-form" *ngIf="showEditAdminForm">
-        <h3>Edit Admin</h3>
+        <h3>Administratorni tahrirlash</h3>
         <div class="form-grid">
           <div class="form-group">
             <label for="editAdminEmail">Email</label>
@@ -434,17 +434,17 @@
             />
           </div>
           <div class="form-group">
-            <label for="editAdminPassword">Password (leave empty to keep current)</label>
+            <label for="editAdminPassword">Parol (joriyni saqlash uchun bo'sh qoldiring)</label>
             <input
               id="editAdminPassword"
               type="password"
               [(ngModel)]="editAdmin.password"
-              placeholder="Enter new password to change"
+              placeholder="O'zgartirish uchun yangi parolni kiriting"
               class="form-control"
             />
           </div>
           <div class="form-group">
-            <label for="editAdminRole">Role</label>
+            <label for="editAdminRole">Rol</label>
             <select id="editAdminRole" [(ngModel)]="editAdmin.role" class="form-control">
               <option *ngFor="let role of adminRoles" [value]="role.value">
                 {{ role.label }}
@@ -452,41 +452,41 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="editAdminTelegram">Telegram Username</label>
+            <label for="editAdminTelegram">Telegram foydalanuvchi nomi</label>
             <input
               id="editAdminTelegram"
               type="text"
               [(ngModel)]="editAdmin.telegramUsername"
-              placeholder="@username or username"
+              placeholder="@username yoki username"
               class="form-control"
             />
           </div>
         </div>
         <div class="form-actions">
           <button class="btn btn-primary" (click)="saveEditAdmin()">
-            Save Changes
+            O'zgarishlarni saqlash
           </button>
           <button class="btn btn-outline" (click)="cancelEdit()">
-            Cancel
+            Bekor qilish
           </button>
         </div>
       </div>
 
       <!-- Admins List -->
       <div class="admins-section">
-        <h3>All Admins</h3>
+        <h3>Barcha administratorlar</h3>
         <div class="admins-table">
           <table *ngIf="admins.length > 0">
             <thead>
               <tr>
                 <th>ID</th>
                 <th>Email</th>
-                <th>Username</th>
-                <th>Role</th>
+                <th>Foydalanuvchi nomi</th>
+                <th>Rol</th>
                 <th>Telegram</th>
-                <th>Status</th>
-                <th>Last Login</th>
-                <th>Actions</th>
+                <th>Holat</th>
+                <th>Oxirgi kirish</th>
+                <th>Amallar</th>
               </tr>
             </thead>
             <tbody>
@@ -514,16 +514,16 @@
                 </td>
                 <td>
                   <span class="status-badge" [class.active]="admin.isActive">
-                    {{ admin.isActive ? '✓ Active' : '○ Inactive' }}
+                    {{ admin.isActive ? '✓ Faol' : '○ Faol emas' }}
                   </span>
                 </td>
-                <td>{{ admin.lastLogin ? formatDate(admin.lastLogin) : 'Never' }}</td>
+                <td>{{ admin.lastLogin ? formatDate(admin.lastLogin) : 'Hech qachon' }}</td>
                 <td class="actions-cell">
                   <div class="action-buttons">
                     <button
                       class="btn-icon btn-edit"
                       (click)="openEditAdmin(admin)"
-                      title="Edit Admin"
+                      title="Administratorni tahrirlash"
                     >
                       ✏️
                     </button>
@@ -531,7 +531,7 @@
                       *ngIf="admin.isActive && admin.role !== 'super_admin' && currentUser?.id !== admin.id"
                       class="btn-icon btn-warning"
                       (click)="deactivateAdmin(admin)"
-                      title="Deactivate"
+                      title="Faolsizlantirish"
                     >
                       ⏸️
                     </button>
@@ -539,12 +539,12 @@
                       *ngIf="!admin.isActive"
                       class="btn-icon btn-success"
                       (click)="reactivateAdmin(admin)"
-                      title="Reactivate"
+                      title="Qayta faollashtirish"
                     >
                       ▶️
                     </button>
                     <span *ngIf="currentUser?.id === admin.id" class="you-badge">
-                      (You)
+                      (Siz)
                     </span>
                   </div>
                 </td>
@@ -554,15 +554,15 @@
 
           <div class="empty-state" *ngIf="admins.length === 0">
             <div class="empty-icon">👥</div>
-            <h3>No Admins Found</h3>
-            <p>Create your first admin to get started</p>
+            <h3>Administratorlar topilmadi</h3>
+            <p>Boshlash uchun birinchi administratoringizni yarating</p>
           </div>
         </div>
       </div>
 
       <!-- Activity Logs -->
       <div class="activity-logs-section">
-        <h3>Recent Activity</h3>
+        <h3>So'nggi faoliyat</h3>
         <div class="activity-logs">
           <div class="activity-item" *ngFor="let log of activityLogs">
             <div class="activity-icon">📝</div>
@@ -578,7 +578,7 @@
 
           <div class="empty-state" *ngIf="activityLogs.length === 0">
             <div class="empty-icon">📋</div>
-            <p>No recent activity</p>
+            <p>So'nggi faoliyat yo'q</p>
           </div>
         </div>
       </div>

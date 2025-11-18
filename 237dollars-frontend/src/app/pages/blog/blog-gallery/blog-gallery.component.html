@@ -2,21 +2,21 @@
   <div class="container">
     <!-- Header -->
     <div class="gallery-header">
-      <h1 class="gallery-title">Gallery</h1>
-      <p class="gallery-subtitle">Explore our curated collections</p>
+      <h1 class="gallery-title">Galereya</h1>
+      <p class="gallery-subtitle">Bizning tanlangan to'plamlarimizni o'rganing</p>
     </div>
 
     <!-- Loading State -->
     <div class="loading-container" *ngIf="loading && galleries.length === 0">
       <div class="spinner-large"></div>
-      <p>Loading galleries...</p>
+      <p>Galereyalar yuklanmoqda...</p>
     </div>
 
     <!-- Error State -->
     <div class="error-state" *ngIf="error && !loading">
       <div class="error-icon">⚠️</div>
       <p>{{ error }}</p>
-      <button class="btn-retry" (click)="loadGalleries()">Try Again</button>
+      <button class="btn-retry" (click)="loadGalleries()">Qaytadan urinish</button>
     </div>
 
     <!-- Gallery Grid -->
@@ -49,7 +49,7 @@
           <div class="hover-overlay" (click)="openGalleryModal(gallery)">
             <div class="overlay-content">
               <span class="view-full-icon">🔍</span>
-              <p class="view-full-text">View Full</p>
+              <p class="view-full-text">To'liq ko'rish</p>
               <span class="image-count" *ngIf="gallery.images.length > 1">
                 {{ (gallery.mainImageIndex || 0) + 1 }} / {{ gallery.images.length }}
               </span>
@@ -67,8 +67,8 @@
       <!-- Empty State -->
       <div class="empty-state" *ngIf="galleries.length === 0 && !loading">
         <div class="empty-icon">📸</div>
-        <h3>No Galleries Found</h3>
-        <p>Check back soon for our latest collections</p>
+        <h3>Galereyalar topilmadi</h3>
+        <p>Eng so'nggi to'plamlarimiz uchun tez orada qaytib keling</p>
       </div>
     </div>
 
@@ -79,11 +79,11 @@
         (click)="goToPage(currentPage - 1)"
         [disabled]="currentPage === 1 || loading"
       >
-        ← Previous
+        ← Oldingi
       </button>
 
       <div class="page-info">
-        Page <strong>{{ currentPage }}</strong> of <strong>{{ totalPages }}</strong>
+        Sahifa <strong>{{ currentPage }}</strong> / <strong>{{ totalPages }}</strong>
       </div>
 
       <button
@@ -91,7 +91,7 @@
         (click)="goToPage(currentPage + 1)"
         [disabled]="currentPage === totalPages || loading"
       >
-        Next →
+        Keyingi →
       </button>
     </div>
   </div>
@@ -115,7 +115,7 @@
           class="nav-arrow nav-arrow-left"
           (click)="previousImage()"
           *ngIf="selectedGallery && selectedGallery.images.length > 1"
-          title="Previous image"
+          title="Oldingi rasm"
         >
           ‹
         </button>
@@ -124,7 +124,7 @@
           class="nav-arrow nav-arrow-right"
           (click)="nextImage()"
           *ngIf="selectedGallery && selectedGallery.images.length > 1"
-          title="Next image"
+          title="Keyingi rasm"
         >
           ›
         </button>
@@ -148,9 +148,9 @@
             class="thumbnail"
             [class.active]="i === currentImageIndex"
             (click)="goToImage(i)"
-            [title]="'Image ' + (i + 1)"
+            [title]="'Rasm ' + (i + 1)"
           >
-            <img [src]="getAbsoluteImageUrl(image.imageUrl)" [alt]="'Thumbnail ' + (i + 1)" />
+            <img [src]="getAbsoluteImageUrl(image.imageUrl)" [alt]="'Eskiz ' + (i + 1)" />
           </button>
         </div>
       </div>

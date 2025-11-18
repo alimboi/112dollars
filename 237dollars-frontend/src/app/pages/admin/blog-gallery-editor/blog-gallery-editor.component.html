@@ -2,23 +2,23 @@
   <!-- Header -->
   <div class="editor-header">
     <div class="header-content">
-      <button class="btn-back" (click)="goBack()" title="Go back">← Back</button>
-      <h1>{{ isEditMode ? 'Edit Gallery' : 'Create New Gallery' }}</h1>
+      <button class="btn-back" (click)="goBack()" title="Orqaga qaytish">← Orqaga</button>
+      <h1>{{ isEditMode ? 'Galereyani tahrirlash' : 'Yangi galereya yaratish' }}</h1>
       <div class="header-actions">
         <button
           class="btn btn-secondary"
           (click)="goBack()"
           [disabled]="saving"
         >
-          Cancel
+          Bekor qilish
         </button>
         <button
           class="btn btn-primary"
           (click)="saveGallery()"
           [disabled]="saving || images.length === 0"
         >
-          <span *ngIf="!saving">Save Gallery</span>
-          <span *ngIf="saving">Saving...</span>
+          <span *ngIf="!saving">Galereyani saqlash</span>
+          <span *ngIf="saving">Saqlanmoqda...</span>
         </button>
       </div>
     </div>
@@ -37,7 +37,7 @@
   <!-- Loading State -->
   <div class="loading-overlay" *ngIf="loading">
     <div class="spinner"></div>
-    <p>Loading gallery...</p>
+    <p>Galereya yuklanmoqda...</p>
   </div>
 
   <!-- Main Content -->
@@ -46,48 +46,48 @@
       <!-- Left Panel: Gallery Info -->
       <div class="left-panel">
         <div class="panel-section">
-          <h2>Gallery Information</h2>
+          <h2>Galereya ma'lumotlari</h2>
 
           <!-- Title -->
           <div class="form-group">
-            <label for="title">Title <span class="optional-badge">optional</span></label>
+            <label for="title">Sarlavha <span class="optional-badge">ixtiyoriy</span></label>
             <input
               type="text"
               id="title"
               [(ngModel)]="title"
               class="form-input"
               [disabled]="saving"
-              placeholder="Gallery title (optional)"
+              placeholder="Galereya sarlavhasi (ixtiyoriy)"
               maxlength="255"
             />
           </div>
 
           <!-- Description -->
           <div class="form-group">
-            <label for="description">Description <span class="optional-badge">optional</span></label>
+            <label for="description">Tavsif <span class="optional-badge">ixtiyoriy</span></label>
             <textarea
               id="description"
               [(ngModel)]="description"
               class="form-textarea"
               [disabled]="saving"
-              placeholder="Gallery description (optional)"
+              placeholder="Galereya tavsifi (ixtiyoriy)"
               rows="6"
             ></textarea>
           </div>
 
           <!-- Main Image Selection -->
           <div class="form-group">
-            <label>Main Image (shown in gallery grid)</label>
+            <label>Asosiy rasm (galereya jadvalida ko'rsatiladi)</label>
             <div class="main-image-preview" *ngIf="images.length > 0 && images[mainImageIndex]">
               <img
                 [src]="getAbsoluteImageUrl(images[mainImageIndex].imageUrl)"
-                alt="Main image preview"
+                alt="Asosiy rasm oldindan ko'rinishi"
                 (error)="onImageError($event, images[mainImageIndex])"
               />
-              <p class="preview-label">Image {{ mainImageIndex + 1 }} of {{ images.length }}</p>
+              <p class="preview-label">{{ mainImageIndex + 1 }}-rasm / {{ images.length }} ta rasm</p>
             </div>
             <div class="no-images" *ngIf="images.length === 0">
-              <p>Add images to select a main image</p>
+              <p>Asosiy rasmni tanlash uchun rasmlar qo'shing</p>
             </div>
           </div>
 
@@ -99,7 +99,7 @@
                 [(ngModel)]="isPublished"
                 [disabled]="saving"
               />
-              Published
+              Nashr qilingan
             </label>
             <div class="button-group" style="margin-top: 1rem;">
               <button
@@ -107,21 +107,21 @@
                 (click)="publishGallery()"
                 [disabled]="saving || isPublished"
               >
-                Publish
+                Nashr qilish
               </button>
               <button
                 class="btn btn-sm btn-outline"
                 (click)="unpublishGallery()"
                 [disabled]="saving || !isPublished"
               >
-                Unpublish
+                Nashrdan olib tashlash
               </button>
               <button
                 class="btn btn-sm btn-danger"
                 (click)="deleteGallery()"
                 [disabled]="saving"
               >
-                Delete
+                O'chirish
               </button>
             </div>
           </div>
@@ -131,8 +131,8 @@
       <!-- Right Panel: Images Manager -->
       <div class="right-panel">
         <div class="panel-section">
-          <h2>Gallery Images ({{ images.length }})</h2>
-          <p class="section-hint">Select one as the main image. Drag or use buttons to reorder.</p>
+          <h2>Galereya rasmlari ({{ images.length }})</h2>
+          <p class="section-hint">Birini asosiy rasm sifatida tanlang. Tartibni o'zgartirish uchun sudrab torting yoki tugmalardan foydalaning.</p>
 
           <!-- Upload Options -->
           <div class="upload-section">
@@ -141,8 +141,8 @@
               (click)="triggerFileUpload()"
               [disabled]="uploading || saving"
             >
-              <span *ngIf="!uploading">📁 Upload Images from Device</span>
-              <span *ngIf="uploading">Uploading: {{ uploadProgress }}%</span>
+              <span *ngIf="!uploading">📁 Qurilmadan rasmlar yuklash</span>
+              <span *ngIf="uploading">Yuklanmoqda: {{ uploadProgress }}%</span>
             </button>
 
           </div>
@@ -171,7 +171,7 @@
               <div class="image-thumbnail">
                 <img
                   [src]="getAbsoluteImageUrl(image.imageUrl)"
-                  [alt]="'Image ' + (i + 1)"
+                  [alt]="'Rasm ' + (i + 1)"
                   (error)="onImageError($event, image)"
                 />
                 <span class="image-number">{{ i + 1 }}</span>
@@ -189,7 +189,7 @@
                   class="btn-control"
                   [class.active]="i === mainImageIndex"
                   (click)="setMainImage(i)"
-                  [title]="i === mainImageIndex ? 'This is the main image' : 'Set as main image'"
+                  [title]="i === mainImageIndex ? 'Bu asosiy rasm' : 'Asosiy rasm qilib belgilash'"
                 >
                   ★
                 </button>
@@ -199,7 +199,7 @@
                   class="btn-control"
                   (click)="moveImageUp(i)"
                   [disabled]="i === 0"
-                  title="Move up"
+                  title="Yuqoriga ko'chirish"
                 >
                   ↑
                 </button>
@@ -209,7 +209,7 @@
                   class="btn-control"
                   (click)="moveImageDown(i)"
                   [disabled]="i === images.length - 1"
-                  title="Move down"
+                  title="Pastga ko'chirish"
                 >
                   ↓
                 </button>
@@ -218,7 +218,7 @@
                 <button
                   class="btn-control btn-danger"
                   (click)="removeImage(i)"
-                  title="Remove image"
+                  title="Rasmni olib tashlash"
                 >
                   ✕
                 </button>
@@ -229,8 +229,8 @@
           <!-- Empty State -->
           <div class="empty-state" *ngIf="images.length === 0">
             <div class="empty-icon">🖼️</div>
-            <h3>No media yet</h3>
-            <p>Upload images from your device or add media URLs to get started</p>
+            <h3>Hali media yo'q</h3>
+            <p>Boshlash uchun qurilmangizdan rasmlar yuklang yoki media URL manzillarini qo'shing</p>
           </div>
         </div>
       </div>

@@ -5,21 +5,21 @@
     <div class="editor-header">
       <div class="header-left">
         <button class="btn-back" routerLink="/admin">
-          ← Adminga qaytish
+          ← Back to Admin
         </button>
         <h1 class="editor-title">
-          {{ isEditMode ? 'Ma'lumotnomani tahrirlash' : 'Yangi ma'lumotnoma yaratish' }}
+          {{ isEditMode ? 'Edit Reference' : 'Create New Reference' }}
         </h1>
       </div>
       <div class="header-actions">
         <button class="btn btn-outline" (click)="togglePreview()">
-          {{ previewMode ? '✏️ Tahrirlash' : '👁️ Preview' }}
+          {{ previewMode ? '✏️ Edit' : '👁️ Preview' }}
         </button>
         <button class="btn btn-outline" (click)="saveReference(false)" [disabled]="saving">
-          💾 Qoralamani saqlash
+          💾 Save Draft
         </button>
         <button class="btn btn-primary" (click)="saveReference(true)" [disabled]="saving">
-          🚀 Nashr qilish
+          🚀 Publish
         </button>
       </div>
     </div>
@@ -27,20 +27,20 @@
     <!-- Loading State -->
     <div *ngIf="loading" class="loading-overlay">
       <div class="spinner"></div>
-      <p>Yuklanmoqda...</p>
+      <p>Loading...</p>
     </div>
 
     <!-- PREVIEW MODE -->
     <div *ngIf="previewMode" class="preview-container">
       <div class="preview-header">
-        <h2>{{ referenceTitle || 'Nomsiz ma'lumotnoma' }}</h2>
+        <h2>{{ referenceTitle || 'Untitled Reference' }}</h2>
         <p class="preview-description">{{ referenceDescription }}</p>
       </div>
 
       <div class="preview-content">
         <div *ngFor="let block of contentBlocks" class="preview-block">
 
-          <!-- 'sarlavha' blok -->
+          <!-- Heading Block -->
           <h2 *ngIf="block.blockType === 'heading'" [ngStyle]="getThemeAwareStyle({
             'font-family': block.styling?.fontFamily,
             'font-size.px': block.styling?.fontSize,
@@ -120,9 +120,9 @@
     <!-- EDIT MODE -->
     <div *ngIf="!previewMode && !loading" class="edit-container">
 
-      <!-- Asosiy ma'lumot -->
+      <!-- Basic Information -->
       <div class="basic-info-section">
-        <h3>Asosiy ma'lumot</h3>
+        <h3>Basic Information</h3>
 
         <div class="form-row">
           <div class="form-group">
@@ -133,7 +133,7 @@
               (change)="onMajorChange()"
               class="form-control"
               [disabled]="isEditMode">
-              <option [ngValue]="null">Mutaxassislikni tanlang</option>
+              <option [ngValue]="null">Select Major</option>
               <option *ngFor="let major of majors" [ngValue]="major.id">
                 {{ major.name }}
               </option>
@@ -147,7 +147,7 @@
               [(ngModel)]="selectedTopicId"
               class="form-control"
               [disabled]="!selectedMajorId || isEditMode">
-              <option [ngValue]="null">Mavzuni tanlang</option>
+              <option [ngValue]="null">Select Topic</option>
               <option *ngFor="let topic of topics" [ngValue]="topic.id">
                 {{ topic.name }}
               </option>
@@ -162,30 +162,30 @@
             id="title"
             [(ngModel)]="referenceTitle"
             class="form-control"
-            placeholder="masalan, To'liq HTML5 qo'llanma">
+            placeholder="e.g., Complete HTML5 Guide">
         </div>
 
         <div class="form-group">
-          <label for="description">Tavsif</label>
+          <label for="description">Description</label>
           <textarea
             id="description"
             [(ngModel)]="referenceDescription"
             class="form-control"
             rows="3"
-            placeholder="Ushbu ma'lumotnoma haqida qisqacha tavsif"></textarea>
+            placeholder="Short description of this reference"></textarea>
         </div>
       </div>
 
-      <!-- Kontent bloklari Section -->
+      <!-- Content Blocks Section -->
       <div class="content-blocks-section">
-        <h3>Kontent bloklari</h3>
+        <h3>Content Blocks</h3>
 
         <div class="blocks-layout">
 
           <!-- Left Panel: Block List -->
           <div class="blocks-list-panel">
             <div class="panel-header">
-              <h4>Kontent bloklari ({{ contentBlocks.length }})</h4>
+              <h4>Content Blocks ({{ contentBlocks.length }})</h4>
             </div>
 
             <div class="blocks-list" cdkDropList (cdkDropListDropped)="drop($event)">
@@ -208,29 +208,29 @@
             </div>
 
             <div *ngIf="contentBlocks.length === 0" class="empty-blocks">
-              <p>Hali kontent bloklari yo'q</p>
-              <p class="hint">O'ng tomondagi tugmalar yordamida bloklar qo'shing →</p>
+              <p>No content blocks yet</p>
+              <p class="hint">Add blocks using buttons on the right →</p>
             </div>
           </div>
 
           <!-- Center Panel: Block Editor -->
           <div class="block-editor-panel" *ngIf="showBlockEditor && currentBlock">
             <div class="panel-header">
-              <h4>{{ editingBlockIndex !== null ? 'Tahrirlash' : 'Add' }} {{ currentBlock.blockType | titlecase }} Block</h4>
+              <h4>{{ editingBlockIndex !== null ? 'Edit' : 'Add' }} {{ currentBlock.blockType | titlecase }} Block</h4>
               <button class="btn-close" (click)="closeBlockEditor()">✕</button>
             </div>
 
             <div class="editor-content">
 
-              <!-- TEXT/'sarlavha' blok EDITOR -->
+              <!-- TEXT/HEADING BLOCK EDITOR -->
               <div *ngIf="currentBlock.blockType === 'text' || currentBlock.blockType === 'heading'" class="text-editor">
 
                 <div class="form-group">
-                  <label>Mavzu nomi (ixtiyoriy)</label>
+                  <label>Topic Name (Optional)</label>
                   <input type="text"
                          [(ngModel)]="currentBlock.topicName"
                          class="form-control"
-                         placeholder="masalan, HTMLga kirish">
+                         placeholder="e.g., Introduction to HTML">
                 </div>
 
                 <div class="form-group">
@@ -239,16 +239,16 @@
                     [(ngModel)]="currentBlock.content"
                     class="form-control content-textarea"
                     rows="6"
-                    placeholder="Bu yerga matningizni kiriting..."></textarea>
+                    placeholder="Enter your text here..."></textarea>
                 </div>
 
                 <!-- Styling Toolbar -->
                 <div class="styling-toolbar">
-                  <h5>Matn uslublash</h5>
+                  <h5>Text Styling</h5>
 
                   <div class="toolbar-row">
                     <div class="toolbar-group">
-                      <label>Shrift</label>
+                      <label>Font</label>
                       <select [(ngModel)]="currentBlock.styling!.fontFamily" class="form-control-sm">
                         <option>Arial</option>
                         <option>Times New Roman</option>
@@ -260,7 +260,7 @@
                     </div>
 
                     <div class="toolbar-group">
-                      <label>O'lcham</label>
+                      <label>Size</label>
                       <input type="number"
                              [(ngModel)]="currentBlock.styling!.fontSize"
                              class="form-control-sm"
@@ -269,14 +269,14 @@
                     </div>
 
                     <div class="toolbar-group">
-                      <label>Rang</label>
+                      <label>Color</label>
                       <input type="color"
                              [(ngModel)]="currentBlock.styling!.color"
                              class="color-picker">
                     </div>
 
                     <div class="toolbar-group">
-                      <label>Fon</label>
+                      <label>Background</label>
                       <input type="color"
                              [(ngModel)]="currentBlock.styling!.backgroundColor"
                              class="color-picker">
@@ -285,28 +285,28 @@
 
                   <div class="toolbar-row">
                     <div class="toolbar-group">
-                      <label>Qalinlik</label>
+                      <label>Weight</label>
                       <select [(ngModel)]="currentBlock.styling!.fontWeight" class="form-control-sm">
-                        <option value="normal">Oddiy</option>
-                        <option value="bold">Qalin</option>
-                        <option value="300">Yengil</option>
-                        <option value="600">Yarim qalin</option>
+                        <option value="normal">Normal</option>
+                        <option value="bold">Bold</option>
+                        <option value="300">Light</option>
+                        <option value="600">Semi-bold</option>
                         <option value="900">Black</option>
                       </select>
                     </div>
 
                     <div class="toolbar-group">
-                      <label>Tekislash</label>
+                      <label>Align</label>
                       <select [(ngModel)]="currentBlock.styling!.textAlign" class="form-control-sm">
-                        <option value="left">Chapga</option>
-                        <option value="center">Markazga</option>
-                        <option value="right">O'ngga</option>
-                        <option value="justify">Ikki tomonlama</option>
+                        <option value="left">Left</option>
+                        <option value="center">Center</option>
+                        <option value="right">Right</option>
+                        <option value="justify">Justify</option>
                       </select>
                     </div>
 
                     <div class="toolbar-group">
-                      <label>Qator balandligi</label>
+                      <label>Line Height</label>
                       <input type="number"
                              [(ngModel)]="currentBlock.styling!.lineHeight"
                              class="form-control-sm"
@@ -316,7 +316,7 @@
                     </div>
 
                     <div class="toolbar-group">
-                      <label>Oraliq</label>
+                      <label>Spacing</label>
                       <input type="number"
                              [(ngModel)]="currentBlock.styling!.letterSpacing"
                              class="form-control-sm"
@@ -327,7 +327,7 @@
 
                   <div class="toolbar-row">
                     <div class="toolbar-group">
-                      <label>Yuqori chegara</label>
+                      <label>Margin Top</label>
                       <input type="number"
                              [(ngModel)]="currentBlock.styling!.marginTop"
                              class="form-control-sm"
@@ -336,7 +336,7 @@
                     </div>
 
                     <div class="toolbar-group">
-                      <label>Pastki chegara</label>
+                      <label>Margin Bottom</label>
                       <input type="number"
                              [(ngModel)]="currentBlock.styling!.marginBottom"
                              class="form-control-sm"
@@ -345,7 +345,7 @@
                     </div>
 
                     <div class="toolbar-group">
-                      <label>Ichki oraliq</label>
+                      <label>Padding</label>
                       <input type="number"
                              [(ngModel)]="currentBlock.styling!.padding"
                              class="form-control-sm"
@@ -355,9 +355,9 @@
                   </div>
                 </div>
 
-                <!-- Jonli oldindan ko'rish -->
+                <!-- Live Preview -->
                 <div class="live-preview">
-                  <h5>Jonli oldindan ko'rish:</h5>
+                  <h5>Live Preview:</h5>
                   <div class="preview-box" [ngStyle]="getThemeAwareStyle({
                     'font-family': currentBlock.styling?.fontFamily,
                     'font-size.px': currentBlock.styling?.fontSize,
@@ -369,7 +369,7 @@
                     'letter-spacing.px': currentBlock.styling?.letterSpacing,
                     'padding.px': currentBlock.styling?.padding
                   })">
-                    {{ currentBlock.content || 'Sizning matningiz shu yerda ko'rinadi...' }}
+                    {{ currentBlock.content || 'Your text will appear here...' }}
                   </div>
                 </div>
               </div>
@@ -378,12 +378,12 @@
               <div *ngIf="currentBlock.blockType === 'image'" class="image-editor">
 
                 <div class="form-group">
-                  <label>Rasm yuklash *</label>
+                  <label>Upload Image *</label>
                   <input type="file"
                          (change)="onImageSelect($event)"
                          accept="image/jpeg,image/png"
                          class="form-control">
-                  <small>JPG yoki PNG, maksimal 2MB</small>
+                  <small>JPG or PNG, max 2MB</small>
                 </div>
 
                 <div *ngIf="currentBlock.content || currentBlock.blockData?.url" class="image-preview">
@@ -391,35 +391,35 @@
                 </div>
 
                 <div class="form-group">
-                  <label>Muqobil matn</label>
+                  <label>Alt Text</label>
                   <input type="text"
                          [(ngModel)]="currentBlock.blockData!.alt"
                          class="form-control"
-                         placeholder="Rasmni tasvirlang">
+                         placeholder="Describe the image">
                 </div>
 
                 <div class="form-row">
                   <div class="form-group">
-                    <label>Kenglik</label>
+                    <label>Width</label>
                     <input type="text"
                            [(ngModel)]="currentBlock.blockData!.width"
                            class="form-control"
-                           placeholder="100% yoki 500px">
+                           placeholder="100% or 500px">
                   </div>
 
                   <div class="form-group">
-                    <label>Joylashuv</label>
+                    <label>Alignment</label>
                     <select [(ngModel)]="currentBlock.blockData!.alignment" class="form-control">
-                      <option value="left">Chapga</option>
-                      <option value="center">Markazga</option>
-                      <option value="right">O'ngga</option>
+                      <option value="left">Left</option>
+                      <option value="center">Center</option>
+                      <option value="right">Right</option>
                     </select>
                   </div>
                 </div>
 
                 <div class="form-row">
                   <div class="form-group">
-                    <label>Burchak radiusi (px)</label>
+                    <label>Border Radius (px)</label>
                     <input type="number"
                            [(ngModel)]="currentBlock.blockData!.borderRadius"
                            class="form-control"
@@ -428,12 +428,12 @@
                   </div>
 
                   <div class="form-group">
-                    <label>Soya</label>
+                    <label>Shadow</label>
                     <select [(ngModel)]="currentBlock.blockData!.boxShadow" class="form-control">
-                      <option value="none">Yo'q</option>
-                      <option value="light">Yengil</option>
-                      <option value="medium">O'rtacha</option>
-                      <option value="dark">Quyuq</option>
+                      <option value="none">None</option>
+                      <option value="light">Light</option>
+                      <option value="medium">Medium</option>
+                      <option value="dark">Dark</option>
                     </select>
                   </div>
                 </div>
@@ -449,7 +449,7 @@
                          (ngModelChange)="onVideoUrlChange($event)"
                          class="form-control"
                          placeholder="https://www.youtube.com/watch?v=...">
-                  <small>YouTube video havolasini joylashtiring</small>
+                  <small>Paste a YouTube video link</small>
                 </div>
 
                 <div *ngIf="currentBlock.blockData?.videoId" class="video-preview">
@@ -464,7 +464,7 @@
 
                 <div class="form-row">
                   <div class="form-group">
-                    <label>Kenglik</label>
+                    <label>Width</label>
                     <select [(ngModel)]="currentBlock.blockData!.width" class="form-control">
                       <option value="100%">100%</option>
                       <option value="80%">80%</option>
@@ -474,11 +474,11 @@
                   </div>
 
                   <div class="form-group">
-                    <label>Joylashuv</label>
+                    <label>Alignment</label>
                     <select [(ngModel)]="currentBlock.blockData!.alignment" class="form-control">
-                      <option value="left">Chapga</option>
-                      <option value="center">Markazga</option>
-                      <option value="right">O'ngga</option>
+                      <option value="left">Left</option>
+                      <option value="center">Center</option>
+                      <option value="right">Right</option>
                     </select>
                   </div>
                 </div>
@@ -488,7 +488,7 @@
               <div *ngIf="currentBlock.blockType === 'code_block'" class="code-editor">
 
                 <div class="form-group">
-                  <label>Til</label>
+                  <label>Language</label>
                   <select [(ngModel)]="currentBlock.blockData!.language" class="form-control">
                     <option value="javascript">JavaScript</option>
                     <option value="python">Python</option>
@@ -505,7 +505,7 @@
                     [(ngModel)]="currentBlock.content"
                     class="form-control code-textarea"
                     rows="10"
-                    placeholder="Bu yerga kodingizni joylashtiring..."></textarea>
+                    placeholder="Paste your code here..."></textarea>
                 </div>
 
                 <!-- Code Preview -->
@@ -521,43 +521,43 @@
             </div>
 
             <div class="editor-footer">
-              <button class="btn btn-outline" (click)="closeBlockEditor()">Bekor qilish</button>
+              <button class="btn btn-outline" (click)="closeBlockEditor()">Cancel</button>
               <button class="btn btn-primary" (click)="saveCurrentBlock()">
-                {{ editingBlockIndex !== null ? 'Blokni yangilash' : 'Blok qo'shish' }}
+                {{ editingBlockIndex !== null ? 'Update Block' : 'Add Block' }}
               </button>
             </div>
           </div>
 
-          <!-- Right Panel: Blok qo'shish Buttons -->
+          <!-- Right Panel: Add Block Buttons -->
           <div class="add-blocks-panel" *ngIf="!showBlockEditor">
             <div class="panel-header">
-              <h4>Kontent qo'shish</h4>
+              <h4>Add Content</h4>
             </div>
 
             <div class="add-buttons">
               <button class="add-btn" (click)="addHeadingBlock()">
                 <span class="btn-icon">📌</span>
-                <span class="btn-text">Sarlavha qo'shish</span>
+                <span class="btn-text">Add Heading</span>
               </button>
 
               <button class="add-btn" (click)="addTextBlock()">
                 <span class="btn-icon">📝</span>
-                <span class="btn-text">Matn qo'shish</span>
+                <span class="btn-text">Add Text</span>
               </button>
 
               <button class="add-btn" (click)="addImageBlock()">
                 <span class="btn-icon">🖼️</span>
-                <span class="btn-text">Rasm qo'shish</span>
+                <span class="btn-text">Add Image</span>
               </button>
 
               <button class="add-btn" (click)="addVideoBlock()">
                 <span class="btn-icon">▶️</span>
-                <span class="btn-text">Video qo'shish</span>
+                <span class="btn-text">Add Video</span>
               </button>
 
               <button class="add-btn" (click)="addCodeBlock()">
                 <span class="btn-icon">&#123; &#125;</span>
-                <span class="btn-text">Kod qo'shish</span>
+                <span class="btn-text">Add Code</span>
               </button>
             </div>
           </div>
@@ -565,17 +565,17 @@
         </div>
       </div>
 
-      <!-- Jonli oldindan ko'rish bo'limi -->
+      <!-- Live Preview Section -->
       <div class="live-preview-section" *ngIf="!previewMode && !loading && contentBlocks.length > 0">
         <div class="preview-header-divider">
-          <h3>📺 Jonli oldindan ko'rish</h3>
-          <p class="preview-subtitle">Kontentingiz qanday ko'rinishini ko'ring</p>
+          <h3>📺 Live Preview</h3>
+          <p class="preview-subtitle">See how your content will look</p>
         </div>
 
         <div class="live-preview-container">
           <div class="preview-meta">
             <div class="preview-title-block">
-              <h2 class="preview-main-title">{{ referenceTitle || 'Nomsiz ma'lumotnoma' }}</h2>
+              <h2 class="preview-main-title">{{ referenceTitle || 'Untitled Reference' }}</h2>
               <p class="preview-main-description">{{ referenceDescription }}</p>
             </div>
           </div>
@@ -583,7 +583,7 @@
           <div class="preview-blocks">
             <div *ngFor="let block of contentBlocks" class="preview-block">
 
-              <!-- 'sarlavha' blok Preview -->
+              <!-- Heading Block Preview -->
               <h3 *ngIf="block.blockType === 'heading'" [ngStyle]="getThemeAwareStyle({
                 'font-family': block.styling?.fontFamily,
                 'font-size.px': block.styling?.fontSize,

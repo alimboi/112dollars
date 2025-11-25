@@ -16,24 +16,37 @@ async function seed() {
   const topicRepository = dataSource.getRepository(Topic);
   const userRepository = dataSource.getRepository(User);
 
-  // Create Super Admin user
-  const existingAdmin = await userRepository.findOne({
+  // Remove old seeded admin if exists
+  const oldAdmin = await userRepository.findOne({
     where: { email: 'admin@237dollars.com' },
   });
 
+  if (oldAdmin) {
+    await userRepository.remove(oldAdmin);
+    console.log('✅ Removed old seeded admin (admin@237dollars.com)');
+  }
+
+  // Create Super Admin user with 1995udba@gmail.com
+  const existingAdmin = await userRepository.findOne({
+    where: { email: '1995udba@gmail.com' },
+  });
+
   if (!existingAdmin) {
-    const hashedPassword = await bcrypt.hash('Admin@237dollars', 12);
+    const hashedPassword = await bcrypt.hash('SuperAdmin@2024', 12);
     const superAdmin = userRepository.create({
-      email: 'admin@237dollars.com',
+      email: '1995udba@gmail.com',
+      username: 'superadmin',
+      firstName: 'Super',
+      lastName: 'Admin',
       password: hashedPassword,
       role: UserRole.SUPER_ADMIN,
       isActive: true,
       emailVerified: true, // Skip email verification for seeded admin
     });
     await userRepository.save(superAdmin);
-    console.log('✅ Super Admin created: admin@237dollars.com / Admin@237dollars');
+    console.log('✅ Super Admin created: 1995udba@gmail.com / SuperAdmin@2024');
   } else {
-    console.log('ℹ️  Super Admin already exists');
+    console.log('ℹ️  Super Admin already exists: 1995udba@gmail.com');
   }
 
   // Seed Majors and Topics

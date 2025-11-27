@@ -46,7 +46,12 @@ async function seed() {
     await userRepository.save(superAdmin);
     console.log('✅ Super Admin created: 1995udba@gmail.com / SuperAdmin@2024');
   } else {
-    console.log('ℹ️  Super Admin already exists: 1995udba@gmail.com');
+    // Update existing admin to ensure emailVerified is true
+    existingAdmin.emailVerified = true;
+    existingAdmin.role = UserRole.SUPER_ADMIN;
+    existingAdmin.isActive = true;
+    await userRepository.save(existingAdmin);
+    console.log('✅ Super Admin updated: 1995udba@gmail.com - emailVerified set to true');
   }
 
   // Seed Majors and Topics

@@ -47,24 +47,31 @@ export class TelegramBotService implements OnModuleInit {
   async onModuleInit() {
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
 
-    if (!botToken) {
-      this.logger.warn('TELEGRAM_BOT_TOKEN not set in environment variables. Bot will not start.');
+    if (!botToken || botToken === 'your-telegram-bot-token') {
+      this.logger.warn('TELEGRAM_BOT_TOKEN not configured. Bot will not start.');
       return;
     }
 
     this.bot = new Telegraf(botToken);
     this.setupCommands();
 
-    try {
-      await this.bot.launch();
-      this.logger.log('Telegram bot started successfully');
-    } catch (error) {
-      this.logger.error('Failed to start telegram bot:', error);
-    }
-
-    // Graceful shutdown
-    process.once('SIGINT', () => this.bot.stop('SIGINT'));
-    process.once('SIGTERM', () => this.bot.stop('SIGTERM'));
+    // Start bot in background without blocking app startup
+    // Use a timeout to prevent hanging if Telegram API is unreachable
+    Promise.race([
+      this.bot.launch(),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Bot launch timeout')), 5000)
+      ),
+    ])
+      .then(() => {
+        this.logger.log('Telegram bot started successfully');
+        // Graceful shutdown
+        process.once('SIGINT', () => this.bot.stop('SIGINT'));
+        process.once('SIGTERM', () => this.bot.stop('SIGTERM'));
+      })
+      .catch((error) => {
+        this.logger.warn('Telegram bot failed to start (non-blocking):', error.message);
+      });
   }
 
   /**

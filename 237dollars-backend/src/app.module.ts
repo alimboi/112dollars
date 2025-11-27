@@ -19,7 +19,7 @@ import { DiscountsModule } from './modules/discounts/discounts.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { UploadModule } from './modules/upload/upload.module';
-import { TelegramBotModule } from './modules/telegram-bot/telegram-bot.module';
+// import { TelegramBotModule } from './modules/telegram-bot/telegram-bot.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { RolesGuard } from './modules/auth/guards/roles.guard';
 
@@ -47,7 +47,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
     AdminModule,
     AnalyticsModule,
     UploadModule,
-    TelegramBotModule,
+    // TelegramBotModule, // Disabled temporarily to speed up startup
   ],
   controllers: [AppController],
   providers: [

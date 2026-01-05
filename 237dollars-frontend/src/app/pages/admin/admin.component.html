@@ -156,8 +156,8 @@
               (drop)="onReferenceDrop($event, i)"
               (dragend)="onReferenceDragEnd()"
             >
-              <td class="id-cell">{{ reference.id }}</td>
-              <td class="title-cell">
+              <td class="id-cell" data-label="ID">{{ reference.id }}</td>
+              <td class="title-cell" data-label="Title">
                 <div class="title-content">
                   <strong>{{ reference.title }}</strong>
                   <p *ngIf="reference.description" class="description">
@@ -165,24 +165,24 @@
                   </p>
                 </div>
               </td>
-              <td class="major-cell">
+              <td class="major-cell" data-label="Major">
                 {{ reference.topic?.major?.name || 'N/A' }}
               </td>
-              <td class="topic-cell">
+              <td class="topic-cell" data-label="Topic">
                 {{ reference.topic?.name || 'N/A' }}
               </td>
-              <td class="status-cell">
+              <td class="status-cell" data-label="Status">
                 <span class="status-badge" [class.published]="reference.isPublished">
                   {{ reference.isPublished ? '✓ Published' : '○ Draft' }}
                 </span>
               </td>
-              <td class="date-cell">
+              <td class="date-cell" data-label="Created">
                 {{ formatDate(reference.createdAt) }}
               </td>
-              <td class="creator-cell">
+              <td class="creator-cell" data-label="Creator">
                 {{ reference.creator?.email || 'Unknown' }}
               </td>
-              <td class="actions-cell">
+              <td class="actions-cell" data-label="">
                 <div class="action-buttons">
                   <button
                     class="btn-icon btn-view"
@@ -491,10 +491,10 @@
             </thead>
             <tbody>
               <tr *ngFor="let admin of admins" [class.inactive]="!admin.isActive">
-                <td>{{ admin.id }}</td>
-                <td>{{ admin.email }}</td>
-                <td>{{ admin.username || 'N/A' }}</td>
-                <td>
+                <td data-label="ID">{{ admin.id }}</td>
+                <td data-label="Email">{{ admin.email }}</td>
+                <td data-label="Username">{{ admin.username || 'N/A' }}</td>
+                <td data-label="Role">
                   <select
                     *ngIf="admin.role !== 'super_admin' && currentUser?.id !== admin.id"
                     [(ngModel)]="admin.role"
@@ -509,16 +509,16 @@
                     {{ formatRole(admin.role) }}
                   </span>
                 </td>
-                <td>
+                <td data-label="Telegram">
                   <span class="telegram-username">{{ admin.telegramUsername ? '@' + admin.telegramUsername : 'N/A' }}</span>
                 </td>
-                <td>
+                <td data-label="Status">
                   <span class="status-badge" [class.active]="admin.isActive">
                     {{ admin.isActive ? '✓ Active' : '○ Inactive' }}
                   </span>
                 </td>
-                <td>{{ admin.lastLogin ? formatDate(admin.lastLogin) : 'Never' }}</td>
-                <td class="actions-cell">
+                <td data-label="Last Login">{{ admin.lastLogin ? formatDate(admin.lastLogin) : 'Never' }}</td>
+                <td class="actions-cell" data-label="">
                   <div class="action-buttons">
                     <button
                       class="btn-icon btn-edit"

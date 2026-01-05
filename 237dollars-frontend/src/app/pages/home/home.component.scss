@@ -407,6 +407,11 @@
       left: 5%;
     }
   }
+
+  /* Hide floating cards on very small screens to prevent overlap */
+  @media (max-width: 480px) {
+    display: none;
+  }
 }
 
 @keyframes float {
